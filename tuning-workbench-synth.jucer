@@ -5,7 +5,26 @@
               pluginManufacturer="Surge Synth Team" pluginManufacturerCode="SgST"
               pluginCode="TnWB" bundleIdentifier="org.surge-synth-team.tuning-workbench-synth">
   <MAINGROUP id="Wx8OVz" name="tuning-workbench-synth">
+    <GROUP id="{CA268845-16D3-86C8-8B06-4671890A089B}" name="Resources">
+      <FILE id="trzx3e" name="FiraCode-Regular.ttf" compile="0" resource="1"
+            file="Resources/FiraCode-Regular.ttf"/>
+    </GROUP>
     <GROUP id="{6ED763C0-9606-6D7A-5B64-593A63DFD51B}" name="Source">
+      <FILE id="n1ZTwg" name="TWSTextAndControls.cpp" compile="1" resource="0"
+            file="Source/TWSTextAndControls.cpp"/>
+      <FILE id="hwGTe3" name="TWSTextAndControls.h" compile="0" resource="0"
+            file="Source/TWSTextAndControls.h"/>
+      <FILE id="Ts6iMc" name="DSP.h" compile="0" resource="0" file="Source/DSP.h"/>
+      <FILE id="rzWxVS" name="TWSTuningGrid.cpp" compile="1" resource="0"
+            file="Source/TWSTuningGrid.cpp"/>
+      <FILE id="EktZbK" name="TWSTuningGrid.h" compile="0" resource="0" file="Source/TWSTuningGrid.h"/>
+      <FILE id="lrIVOB" name="TWSAbout.cpp" compile="1" resource="0" file="Source/TWSAbout.cpp"/>
+      <FILE id="LgtMv0" name="TWSAbout.h" compile="0" resource="0" file="Source/TWSAbout.h"/>
+      <FILE id="FxNuuG" name="TWSMainPanel.cpp" compile="1" resource="0"
+            file="Source/TWSMainPanel.cpp"/>
+      <FILE id="jBOSMM" name="TWSMainPanel.h" compile="0" resource="0" file="Source/TWSMainPanel.h"/>
+      <FILE id="SYnydg" name="TWSVoice.cpp" compile="1" resource="0" file="Source/TWSVoice.cpp"/>
+      <FILE id="r51Jwq" name="TWSVoice.h" compile="0" resource="0" file="Source/TWSVoice.h"/>
       <FILE id="n0uf26" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="a76uaJ" name="PluginProcessor.h" compile="0" resource="0"
@@ -16,7 +35,7 @@
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
-    <XCODE_MAC targetFolder="Builds/MacOSX" vst3Folder="./lib/vst3sdk" extraCompilerFlags="-DJUCE_DISPLAY_SPLASH_SCREEN=0 -DJUCE_REPORT_APP_USAGE=0 -Ilibs/tuning-library/include">
+    <XCODE_MAC targetFolder="Builds/MacOSX" vst3Folder="./lib/vst3sdk" extraCompilerFlags="-DJUCE_DISPLAY_SPLASH_SCREEN=0 -DJUCE_REPORT_APP_USAGE=0 -I../../lib/tuning-library/include">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug"/>
         <CONFIGURATION isDebug="0" name="Release"/>
@@ -38,7 +57,7 @@
         <MODULEPATH id="juce_opengl" path="./assets/JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
-    <VS2017 targetFolder="Builds/VisualStudio2017" vst3Folder="./lib/vst3sdk">
+    <VS2017 targetFolder="Builds/VisualStudio2017" vst3Folder="./lib/vst3sdk"  extraCompilerFlags="/DJUCE_DISPLAY_SPLASH_SCREEN=0 /DJUCE_REPORT_APP_USAGE=0 /I../../lib/tuning-library/include">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug"/>
         <CONFIGURATION isDebug="0" name="Release"/>
@@ -60,7 +79,7 @@
         <MODULEPATH id="juce_opengl" path="./assets/JUCE/modules"/>
       </MODULEPATHS>
     </VS2017>
-    <LINUX_MAKE targetFolder="Builds/LinuxMakefile">
+    <LINUX_MAKE targetFolder="Builds/Linux" extraCompilerFlags="-DJUCE_DISPLAY_SPLASH_SCREEN=0 -DJUCE_REPORT_APP_USAGE=0 -I../../lib/tuning-library/include">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug"/>
         <CONFIGURATION isDebug="0" name="Release"/>
