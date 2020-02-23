@@ -11,19 +11,128 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
+#include "TWSVoice.h"
+
+
 //==============================================================================
 TuningworkbenchsynthAudioProcessor::TuningworkbenchsynthAudioProcessor()
-#ifndef JucePlugin_PreferredChannelConfigurations
-     : AudioProcessor (BusesProperties()
-                     #if ! JucePlugin_IsMidiEffect
-                      #if ! JucePlugin_IsSynth
-                       .withInput  ("Input",  AudioChannelSet::stereo(), true)
-                      #endif
-                       .withOutput ("Output", AudioChannelSet::stereo(), true)
-                     #endif
-                       )
-#endif
+    : AudioProcessor (BusesProperties()
+                      .withOutput ("Output", AudioChannelSet::stereo(), true)
+        ),
+      parameters( *this,
+                  nullptr,
+                  Identifier( "tuning-workbench-synthesiser" ),
+                  {
+                      std::make_unique<AudioParameterFloat>( "sinLevel",
+                                                             "Sin Osc Level",
+                                                             0.0, 1.0, 1.0 ),
+                      std::make_unique<AudioParameterFloat>( "squareLevel",
+                                                             "Square Osc Level",
+                                                             0.0, 1.0, 1.0 ),
+                      std::make_unique<AudioParameterFloat>( "sawLevel",
+                                                             "Saw Osc Level",
+                                                             0.0, 1.0, 1.0 ),
+                      std::make_unique<AudioParameterFloat>( "triLevel",
+                                                             "Tri Osc Level",
+                                                             0.0, 1.0, 1.0 ),
+                      std::make_unique<AudioParameterInt>( "uni_count",
+                                                           "Unison Count",
+                                                           1, 10, 1 ),
+                      std::make_unique<AudioParameterFloat>( "uni_spread",
+                                                             "Unison Spread",
+                                                             10, 100, 1 ),
+
+                      std::make_unique<AudioParameterInt>( "pb_down",
+                                                           "Pitch Bend Down",
+                                                           1, 10, 2 ),
+                      std::make_unique<AudioParameterInt>( "pb_up",
+                                                           "Pitch Bend",
+                                                           1, 10, 2 ),
+
+                      std::make_unique<AudioParameterFloat>( "amp_attack",
+                                                            "Amp Attack",
+                                                            0, 10.0, 0.1 ),
+                      std::make_unique<AudioParameterFloat>( "amp_decay",
+                                                            "Amp Decay",
+                                                            0, 10.0, 0.1 ),
+                      std::make_unique<AudioParameterFloat>( "amp_sustain",
+                                                            "Amp Sustain",
+                                                            0, 1.0, 0.5 ),
+                      std::make_unique<AudioParameterFloat>( "amp_release",
+                                                            "Amp Release",
+                                                            0, 10.0, 0.1 ),
+
+                      std::make_unique<AudioParameterFloat>( "filter_attack",
+                                                            "Filter Attack",
+                                                            0, 10.0, 0.1 ),
+                      std::make_unique<AudioParameterFloat>( "filter_decay",
+                                                            "Filter Decay",
+                                                            0, 10.0, 0.1 ),
+                      std::make_unique<AudioParameterFloat>( "filter_sustain",
+                                                            "Filter Sustain",
+                                                            0, 1.0, 0.5 ),
+                      std::make_unique<AudioParameterFloat>( "filter_release",
+                                                            "Filter Release",
+                                                            0, 10.0, 0.1 ),
+                      std::make_unique<AudioParameterFloat>( "filter_depth",
+                                                            "Filter ModulationDepth",
+                                                            0, 1.0, 0.0 ),
+
+                      std::make_unique<AudioParameterInt>( "filter_type",
+                                                           "Filter Type",
+                                                           0,2,0 ),
+                      std::make_unique<AudioParameterFloat>( "filter_cutoff",
+                                                             "Filter Cutoff",
+                                                             10, 30000.0, 880 ),
+                      std::make_unique<AudioParameterFloat>( "filter_resonance",
+                                                             "Filter Resonance",
+                                                             0, 1.0, 0.7 ),
+
+                      std::make_unique<AudioParameterFloat>( "master_sat",
+                                                             "Master Saturation",
+                                                             0, 5, 0 ),
+                      std::make_unique<AudioParameterFloat>( "master_level",
+                                                             "Master Level",
+                                                             0, 1.0, 1.0 )
+
+                  } )
 {
+    for( int i=0; i<32; ++i )
+        synth.addVoice( new TWSVoice(this) );
+
+    synth.addSound( new TWSSound( this ) );
+
+#define SP(x) x = parameters.getRawParameterValue( #x )
+    
+    SP(sinLevel);
+    SP(squareLevel);
+    SP(sawLevel);
+    SP(triLevel);
+
+    SP(uni_count);
+    SP(uni_spread);
+    
+    SP(amp_attack);
+    SP(amp_decay);
+    SP(amp_sustain);
+    SP(amp_release);
+
+    SP(filter_attack);
+    SP(filter_decay);
+    SP(filter_sustain);
+    SP(filter_release);
+    SP(filter_depth);
+
+    SP(filter_cutoff);
+    SP(filter_resonance);
+
+    SP(master_sat);
+    SP(master_level);
+
+    auto initS = Tunings::evenTemperament12NoteScale();
+    setSCL( initS.rawText, false );
+    setKBM( "", false );
+    retune();
 }
 
 TuningworkbenchsynthAudioProcessor::~TuningworkbenchsynthAudioProcessor()
@@ -38,29 +147,17 @@ const String TuningworkbenchsynthAudioProcessor::getName() const
 
 bool TuningworkbenchsynthAudioProcessor::acceptsMidi() const
 {
-   #if JucePlugin_WantsMidiInput
     return true;
-   #else
-    return false;
-   #endif
 }
 
 bool TuningworkbenchsynthAudioProcessor::producesMidi() const
 {
-   #if JucePlugin_ProducesMidiOutput
-    return true;
-   #else
     return false;
-   #endif
 }
 
 bool TuningworkbenchsynthAudioProcessor::isMidiEffect() const
 {
-   #if JucePlugin_IsMidiEffect
-    return true;
-   #else
     return false;
-   #endif
 }
 
 double TuningworkbenchsynthAudioProcessor::getTailLengthSeconds() const
@@ -95,8 +192,7 @@ void TuningworkbenchsynthAudioProcessor::changeProgramName (int index, const Str
 //==============================================================================
 void TuningworkbenchsynthAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    // Use this method as the place to do any pre-playback
-    // initialisation that you need..
+    synth.setCurrentPlaybackSampleRate( sampleRate );
 }
 
 void TuningworkbenchsynthAudioProcessor::releaseResources()
@@ -105,57 +201,31 @@ void TuningworkbenchsynthAudioProcessor::releaseResources()
     // spare memory, etc.
 }
 
-#ifndef JucePlugin_PreferredChannelConfigurations
 bool TuningworkbenchsynthAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
 {
-  #if JucePlugin_IsMidiEffect
-    ignoreUnused (layouts);
-    return true;
-  #else
     // This is the place where you check if the layout is supported.
     // In this template code we only support mono or stereo.
     if (layouts.getMainOutputChannelSet() != AudioChannelSet::mono()
-     && layouts.getMainOutputChannelSet() != AudioChannelSet::stereo())
+        && layouts.getMainOutputChannelSet() != AudioChannelSet::stereo())
         return false;
 
     // This checks if the input layout matches the output layout
-   #if ! JucePlugin_IsSynth
     if (layouts.getMainOutputChannelSet() != layouts.getMainInputChannelSet())
         return false;
-   #endif
 
     return true;
-  #endif
 }
-#endif
 
 void TuningworkbenchsynthAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
 {
-    ScopedNoDenormals noDenormals;
-    auto totalNumInputChannels  = getTotalNumInputChannels();
-    auto totalNumOutputChannels = getTotalNumOutputChannels();
-
-    // In case we have more outputs than inputs, this code clears any output
-    // channels that didn't contain input data, (because these aren't
-    // guaranteed to be empty - they may contain garbage).
-    // This is here to avoid people getting screaming feedback
-    // when they first compile a plugin, but obviously you don't need to keep
-    // this code if your algorithm always overwrites all the output channels.
-    for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
-        buffer.clear (i, 0, buffer.getNumSamples());
-
-    // This is the place where you'd normally do the guts of your plugin's
-    // audio processing...
-    // Make sure to reset the state if your inner loop is processing
-    // the samples and the outer loop is handling the channels.
-    // Alternatively, you can process the samples with the channels
-    // interleaved by keeping the same state.
-    for (int channel = 0; channel < totalNumInputChannels; ++channel)
+    static float mo = 0;
+    float ml = *sinLevel;
+    if( mo != ml )
     {
-        auto* channelData = buffer.getWritePointer (channel);
-
-        // ..do something to the data...
+        std::cout << "AL=" << ml << std::endl;
+        mo = ml;
     }
+    synth.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples() );
 }
 
 //==============================================================================
@@ -166,21 +236,109 @@ bool TuningworkbenchsynthAudioProcessor::hasEditor() const
 
 AudioProcessorEditor* TuningworkbenchsynthAudioProcessor::createEditor()
 {
-    return new TuningworkbenchsynthAudioProcessorEditor (*this);
+    return new TuningworkbenchsynthAudioProcessorEditor (*this, parameters);
 }
 
 //==============================================================================
 void TuningworkbenchsynthAudioProcessor::getStateInformation (MemoryBlock& destData)
 {
-    // You should use this method to store your parameters in the memory block.
-    // You could do that either as raw data, or use the XML or ValueTree classes
-    // as intermediaries to make it easy to save and load complex data.
+    auto state = parameters.copyState();
+    std::unique_ptr<XmlElement> xml (state.createXml());
+
+    xml->deleteAllChildElementsWithTagName( "tuningState" );
+    
+    auto txml = xml->createNewChildElement( "tuningState" );
+    auto sclx = txml->createNewChildElement( "scl" );
+    sclx->addTextElement(currentSCLString);
+    auto kbmx = txml->createNewChildElement( "kbm" );
+    kbmx->addTextElement(currentKBMString);
+
+    copyXmlToBinary (*xml, destData);
 }
 
 void TuningworkbenchsynthAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
-    // You should use this method to restore your parameters from this memory block,
-    // whose contents will have been created by the getStateInformation() call.
+    std::unique_ptr<XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
+
+    if (xmlState.get() != nullptr)
+    {
+        if (xmlState->hasTagName (parameters.state.getType()))
+            parameters.replaceState (ValueTree::fromXml (*xmlState));
+
+
+        auto txml = xmlState->getChildByName( "tuningState" );
+        if( txml )
+        {
+            bool needsRT = false;
+
+            auto sclx = txml->getChildByName( "scl" );
+            auto kbmx = txml->getChildByName( "kbm" );
+            std::string s = "";
+
+            if( sclx && sclx->getFirstChildElement() && sclx->getFirstChildElement()->isTextElement() )
+            {
+                s = sclx->getFirstChildElement()->getText().toStdString();
+                if( s.size() > 1 )
+                {
+                    needsRT = true;
+                    setSCL( s, false );
+                }
+            }
+            
+            std::string k = "";
+            if( kbmx && kbmx->getFirstChildElement() && kbmx->getFirstChildElement()->isTextElement() )
+            {
+                k = kbmx->getFirstChildElement()->getText().toStdString();
+                if( k.size() > 1 )
+                {
+                    needsRT = true;
+                    setKBM( k, false );
+                }
+            }
+
+            if( needsRT )
+            {
+                retune();
+            }
+        }
+    }
+}
+
+
+void TuningworkbenchsynthAudioProcessor::setSCL( String SCL, bool dretune )
+{
+    currentSCLString = SCL;
+    if( dretune )
+        retune();
+}
+
+void TuningworkbenchsynthAudioProcessor::setKBM( String KBM, bool dretune )
+{
+    currentKBMString = KBM;
+    if( dretune )
+        retune();
+}
+
+void TuningworkbenchsynthAudioProcessor::retune() {
+    try
+    {
+        auto s = Tunings::parseSCLData( currentSCLString.toStdString() );
+        auto k = Tunings::KeyboardMapping();
+        if( currentKBMString.length() > 0 )
+        {
+            k = Tunings::parseKBMData( currentKBMString.toStdString() );
+        }
+        tuning = Tunings::Tuning( s, k );
+        for( auto l : tuningListeners )
+        {
+            l->tuningUpdated( tuning );
+        }
+    }
+    catch( Tunings::TuningError &e )
+    {
+        // FIXME - give feedback to user
+        std::cout << e.what() << std::endl;
+    }
 }
 
 //==============================================================================

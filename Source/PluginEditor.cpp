@@ -12,12 +12,17 @@
 #include "PluginEditor.h"
 
 //==============================================================================
-TuningworkbenchsynthAudioProcessorEditor::TuningworkbenchsynthAudioProcessorEditor (TuningworkbenchsynthAudioProcessor& p)
-    : AudioProcessorEditor (&p), processor (p)
+TuningworkbenchsynthAudioProcessorEditor::TuningworkbenchsynthAudioProcessorEditor (TuningworkbenchsynthAudioProcessor& p,
+    AudioProcessorValueTreeState &vts)
+    : AudioProcessorEditor (&p), mainPanel( p ), processor (p), parameters( vts )
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
-    setSize (400, 300);
+    setSize (720, 630);
+
+    // Do some look and feel magic
+    mainPanel.connectValueTreeState( vts );
+    addAndMakeVisible(mainPanel);
 }
 
 TuningworkbenchsynthAudioProcessorEditor::~TuningworkbenchsynthAudioProcessorEditor()
