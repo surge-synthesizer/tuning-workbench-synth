@@ -33,7 +33,8 @@
     Describe your class and how it works here!
                                                                     //[/Comments]
 */
-class TWSAbout  : public Component
+class TWSAbout  : public Component,
+                  public Button::Listener
 {
 public:
     //==============================================================================
@@ -46,6 +47,7 @@ public:
 
     void paint (Graphics& g) override;
     void resized() override;
+    void buttonClicked (Button* buttonThatWasClicked) override;
 
 
 
@@ -54,6 +56,14 @@ private:
     //[/UserVariables]
 
     //==============================================================================
+    std::unique_ptr<Label> version;
+    std::unique_ptr<Label> builddate;
+    std::unique_ptr<Label> builddate2;
+    std::unique_ptr<Label> builddate3;
+    std::unique_ptr<Label> builddate4;
+    std::unique_ptr<TextButton> githubButton;
+    std::unique_ptr<TextButton> licenseButton;
+    std::unique_ptr<TextButton> teamButton;
 
 
     //==============================================================================
