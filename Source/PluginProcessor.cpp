@@ -40,7 +40,7 @@ TuningworkbenchsynthAudioProcessor::TuningworkbenchsynthAudioProcessor()
                                                            1, 10, 1 ),
                       std::make_unique<AudioParameterFloat>( "uni_spread",
                                                              "Unison Spread",
-                                                             10, 100, 1 ),
+                                                             1, 100, 10 ),
 
                       std::make_unique<AudioParameterInt>( "pb_down",
                                                            "Pitch Bend Down",
