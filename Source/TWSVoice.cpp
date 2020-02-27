@@ -12,19 +12,50 @@ void TWSVoice::startNote (int midiNoteNumber, float velocity,
 {
     level = velocity * 0.15;
 
+    nunison = std::max( 1, (int)( *(p->uni_count) ) );
     // Here is where we apply the tuning
     auto cyclesPerSecond = p->tuning.frequencyForMidiNote(midiNoteNumber);
-    auto cyclesPerSample = cyclesPerSecond / getSampleRate();
 
-    nunison = std::max( 1, (int)( *(p->uni_count) ) );
-    nunison = 1;
-    
-    for( int i=0; i<nunison; ++i )
+    if( nunison == 1 )
     {
-        currentAngle[0] = rand() * 1.0 / RAND_MAX;
-        angleDelta[i] = cyclesPerSample;
-        pan[i] = 0;
-        dDelta[i] = 0;
+        auto cyclesPerSample = cyclesPerSecond / getSampleRate();
+        currentAngle[0] = 0;
+        angleDelta[0] = cyclesPerSample;
+        pan[0] = 0;
+        dDelta[0] = 0;
+    }
+    else
+    {
+        auto noteDown = p->tuning.frequencyForMidiNote( midiNoteNumber - 1 );
+        auto noteUp   = p->tuning.frequencyForMidiNote( midiNoteNumber + 1 );
+
+        double uso = *( p->uni_spread ) / 100.0 * 2.0; // the 2.0 is for up and down
+        double duso = uso / (nunison - 1);
+        double sso = -uso / 2;
+
+        level /= sqrt(nunison - 1);
+        
+        for( int i=0; i<nunison; ++i )
+        {
+            double frc = duso * i + sso;
+            auto cyc = cyclesPerSecond;
+            if( frc < 0 )
+            {
+                // between down and center
+                cyc = -frc * noteDown + ( 1 + frc ) * cyclesPerSecond;
+            }
+            else
+            {
+                cyc = frc * noteUp + ( 1 - frc ) * cyclesPerSecond;
+            }
+
+            auto cyclesPerSample = cyc / getSampleRate();
+
+            currentAngle[i] = 1.0 * rand() / RAND_MAX;
+            angleDelta[i] = cyclesPerSample;
+            pan[i] = 2.0 * i / ( nunison - 1 ) - 1.0;
+            dDelta[i] = 0;
+        }
     }
 
     ampenv.setSampleRate( getSampleRate() );
@@ -90,10 +121,17 @@ void TWSVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample
             auto oscTri = (float) ( ( ( ca > 0.5 ) ? 0.5 - ca : ca ) - 0.25 ) * 4.0 * trilv;
 
             auto currentVoice = AEG * ( oscSqr + oscSin + oscSaw + oscTri );
-            
-            // fixme - don't ignore pan
-            sampleL += currentVoice;
-            sampleR += currentVoice;
+
+            // http://www.cs.cmu.edu/~music/icm-online/readings/panlaws/
+            // FIXME - make this more efficient by using a lookup table obvs
+            auto piby2 = MathConstants<double>::pi / 2.0;
+            auto panAngle = ( pan[i] + 1.0 ) * MathConstants<double>::pi / 4.0;
+            auto lW = sqrt( ( piby2 - panAngle ) / piby2 * cos( panAngle ) );
+            auto rW = sqrt( panAngle * sin( panAngle ) / piby2 );
+
+            // std::cout << "lW/rW=" << lW << " " << rW << " " << panAngle << std::endl;
+            sampleL += lW * currentVoice;
+            sampleR += rW * currentVoice;
             
             currentAngle[i] += angleDelta[i];
             if( currentAngle[i] > 1.0 )
@@ -116,7 +154,6 @@ void TWSVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample
     // TODO: If the AEG is over kill the note
     if( ! ampenv.isActive() && isVoiceActive() )
     {
-        static int si = 0;
         clearCurrentNote();
     }
     
