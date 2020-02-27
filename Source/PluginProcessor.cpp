@@ -44,10 +44,10 @@ TuningworkbenchsynthAudioProcessor::TuningworkbenchsynthAudioProcessor()
 
                       std::make_unique<AudioParameterInt>( "pb_down",
                                                            "Pitch Bend Down",
-                                                           1, 10, 2 ),
+                                                           1, 12, 2 ),
                       std::make_unique<AudioParameterInt>( "pb_up",
                                                            "Pitch Bend",
-                                                           1, 10, 2 ),
+                                                           1, 12, 2 ),
 
                       std::make_unique<AudioParameterFloat>( "amp_attack",
                                                             "Amp Attack",
@@ -83,7 +83,7 @@ TuningworkbenchsynthAudioProcessor::TuningworkbenchsynthAudioProcessor()
                                                            0,2,0 ),
                       std::make_unique<AudioParameterFloat>( "filter_cutoff",
                                                              "Filter Cutoff",
-                                                             10, 30000.0, 880 ),
+                                                             10.0, 20000.0, 880 ),
                       std::make_unique<AudioParameterFloat>( "filter_resonance",
                                                              "Filter Resonance",
                                                              0, 1.0, 0.7 ),

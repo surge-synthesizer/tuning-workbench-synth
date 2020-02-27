@@ -23,7 +23,7 @@ public:
 class TWSVoice   : public SynthesiserVoice
 {
 public:
-    TWSVoice(TuningworkbenchsynthAudioProcessor *i) : p(i) {}
+    TWSVoice(TuningworkbenchsynthAudioProcessor *i);
 
     bool canPlaySound (SynthesiserSound* sound) override
     {
@@ -51,7 +51,13 @@ private:
     int nunison;
     double dDelta[MAX_UNISON], pan[MAX_UNISON];
 
+    static const int N_PAN = 1000;
+    double panBufferL[N_PAN], panBufferR[N_PAN];
+    
     SmoothedValue<float> sinLevel, squareLevel, sawLevel, triLevel;
+
+    SmoothedValue<float> filterCut, filterRes, filterDepth;
+    IIRFilter filterL, filterR;
     
     ADSR ampenv, filtenv;
 };
