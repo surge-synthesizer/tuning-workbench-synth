@@ -320,9 +320,11 @@ void TuningworkbenchsynthAudioProcessor::setKBM( String KBM, bool dretune )
 }
 
 void TuningworkbenchsynthAudioProcessor::retune() {
+    bool sclGood = false;
     try
     {
         auto s = Tunings::parseSCLData( currentSCLString.toStdString() );
+        sclGood = true;
         auto k = Tunings::KeyboardMapping();
         if( currentKBMString.length() > 0 )
         {
@@ -336,8 +338,10 @@ void TuningworkbenchsynthAudioProcessor::retune() {
     }
     catch( Tunings::TuningError &e )
     {
-        // FIXME - give feedback to user
-        std::cout << e.what() << std::endl;
+        AlertWindow::showMessageBoxAsync( AlertWindow::AlertIconType::WarningIcon,
+                                          "Error Applying Tuning",
+                                          e.what(),
+                                          "OK" );
     }
 }
 
