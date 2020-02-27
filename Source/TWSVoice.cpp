@@ -7,6 +7,20 @@
 #include "TWSVoice.h"
 #include "PluginProcessor.h"
 
+TWSVoice::TWSVoice(TuningworkbenchsynthAudioProcessor *i) : p(i) {
+    // http://www.cs.cmu.edu/~music/icm-online/readings/panlaws/
+    // FIXME - make this more efficient by using a lookup table obvs
+    for( int i=0; i<N_PAN; ++i )
+    {
+        double panAngle = 1.0 * i / (N_PAN - 1) * MathConstants<double>::pi / 2.0;
+        auto piby2 = MathConstants<double>::pi / 2.0;
+        auto lW = sqrt( ( piby2 - panAngle ) / piby2 * cos( panAngle ) );
+        auto rW = sqrt( panAngle * sin( panAngle ) / piby2 );
+        panBufferL[i] = lW;
+        panBufferR[i] = rW;
+    }
+}
+
 void TWSVoice::startNote (int midiNoteNumber, float velocity,
                           SynthesiserSound*, int currentPitchWheelPosition) 
 {
@@ -55,6 +69,11 @@ void TWSVoice::startNote (int midiNoteNumber, float velocity,
             angleDelta[i] = cyclesPerSample;
             pan[i] = 2.0 * i / ( nunison - 1 ) - 1.0;
             dDelta[i] = 0;
+#if DEBUG_UNISON            
+            std::cout << "UNISON i=" << i
+                      << " frc=" << frc 
+                      << " angleDelta[i] = " << angleDelta[i] * getSampleRate() << " pan[i] = " << pan[i] << std::endl;
+#endif            
         }
     }
 
@@ -67,6 +86,15 @@ void TWSVoice::startNote (int midiNoteNumber, float velocity,
     ap.release = std::max( ap.release, 0.01f );
     ampenv.setParameters(ap);
 
+    filtenv.setSampleRate( getSampleRate() );
+    auto fp = filtenv.getParameters();
+    fp.attack = *( p->filter_attack );
+    fp.decay = *( p->filter_decay );
+    fp.sustain = *( p->filter_sustain );
+    fp.release = *( p->filter_release );
+    fp.release = std::max( fp.release, 0.01f );
+    filtenv.setParameters(fp);
+
     sinLevel.reset( 32 );
     sinLevel.setCurrentAndTargetValue( *( p->sinLevel ) );
     
@@ -78,13 +106,71 @@ void TWSVoice::startNote (int midiNoteNumber, float velocity,
     
     triLevel.reset( 32 );
     triLevel.setCurrentAndTargetValue( *( p->triLevel ) );
-    
+
+    filterCut.reset(32);
+    filterCut.setCurrentAndTargetValue( *( p->filter_cutoff ) );
+
+    filterRes.reset(32);
+    filterRes.setCurrentAndTargetValue( *( p->filter_resonance ) );
+
+    filterDepth.reset(32);
+    filterDepth.setCurrentAndTargetValue( *( p->filter_depth ) );
+
+
     ampenv.noteOn();
+    filtenv.noteOn();
 }
 
 void TWSVoice::stopNote (float velocity, bool allowTailOff) 
 {
     ampenv.noteOff();
+    filtenv.noteOff();
+}
+
+inline double analogishSquare( double x )
+{
+    if( x > 1 ) x-= 1;
+    double r = 0;
+    if( x < 0.5 )
+    {
+        r = 1.0 - 0.1 * ( ( x + 0.3 ) * ( x + 0.3 ) - 0.3 * 0.3 ) / ( 0.8 * 0.8 - 0.3 * 0.3 );
+    }
+    else
+    {
+        r = 0.1 * ( ( x - 0.2 ) * ( x - 0.2 ) - 0.3 * 0.3 ) / ( 0.8 * 0.8 - 0.3 * 0.3 );
+    }
+    return r * 2.0 - 1.0;
+}
+
+inline double analogishTri( double x )
+{
+    if( x > 1 ) x-= 1;
+    double r = 0;
+    if( x < 0.5 )
+    {
+        r = ( ( x + 0.3 ) * ( x + 0.3 ) - 0.3 * 0.3 ) / ( 0.8 * 0.8 - 0.3 * 0.3 );
+    }
+    else
+    {
+        r = 1.0 - ( ( x - 0.2 ) * ( x - 0.2 ) - 0.3 * 0.3 ) / ( 0.8 * 0.8 - 0.3 * 0.3 );
+    }
+    return r * 2.0 - 1.0;
+}
+
+inline double analogishSaw( double x )
+{
+    if( x > 1 ) x-= 1;
+    double r = 0;
+    if( x < 0.94 )
+    {
+        r = ( ( x + 0.3 ) * ( x + 0.3 ) - 0.3 * 0.3 ) / ( 1.4 * 1.4 - 0.3 * 0.3 );
+    }
+    else
+    {
+        auto q = x - 1;
+        r = - q * q * q * q * 10000.0 + 1.0;
+    }
+    return r * 2.0 - 1.0;
 }
 
 void TWSVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample, int numSamples) 
@@ -95,7 +181,10 @@ void TWSVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample
     squareLevel.setTargetValue( *( p->squareLevel ) );
     sawLevel.setTargetValue( *( p->sawLevel ) );
     triLevel.setTargetValue( *( p->triLevel ) );
-    
+
+    filterCut.setTargetValue( *( p->filter_cutoff ) );
+    filterRes.setTargetValue( *( p->filter_resonance ) );
+    filterDepth.setTargetValue( *( p->filter_depth ) );
 
     while (--numSamples >= 0)
     {
@@ -104,30 +193,42 @@ void TWSVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample
         auto sampleR = 0.0f;
 
         auto AEG = ampenv.getNextSample() * level;
-
+        auto FEG = filtenv.getNextSample();
+        
         auto sinlv = sinLevel.getNextValue();
         auto sqrlv = squareLevel.getNextValue();
         auto sawlv = sawLevel.getNextValue();
         auto trilv = triLevel.getNextValue();
         
+        auto filtd = filterDepth.getNextValue();
+        auto filtc = filterCut.getNextValue() + FEG * filtd * 4000.0;
+        auto filtr = filterRes.getNextValue();
+
+        // This is overkill but for now just hammer it
+        auto c = IIRCoefficients::makeLowPass( getSampleRate(), filtc, filtr );
+        filterL.setCoefficients( c );
+        filterR.setCoefficients( c );
+        
         for( int i=0; i<nunison; ++i )
         {
             auto ca = currentAngle[i];
+            
 
             // Obviously these waveforms suck
             auto oscSin = (float) std::sin ( 2.0 * MathConstants<double>::pi * ca) * sinlv;
-            auto oscSqr = (float) ( ( ca > 0.5 ) ? 1.f : -1.f ) * sqrlv;
-            auto oscSaw = (float) ( ( ca - 0.5 ) * 2.0 ) * sawlv;
-            auto oscTri = (float) ( ( ( ca > 0.5 ) ? 0.5 - ca : ca ) - 0.25 ) * 4.0 * trilv;
+            auto oscSqr = analogishSquare(ca + 0.05) * sqrlv;
+            auto oscSaw = analogishSaw(ca + 0.07) * sawlv;
+            auto oscTri = analogishTri(ca + 0.03) * trilv;
 
             auto currentVoice = AEG * ( oscSqr + oscSin + oscSaw + oscTri );
 
-            // http://www.cs.cmu.edu/~music/icm-online/readings/panlaws/
-            // FIXME - make this more efficient by using a lookup table obvs
-            auto piby2 = MathConstants<double>::pi / 2.0;
-            auto panAngle = ( pan[i] + 1.0 ) * MathConstants<double>::pi / 4.0;
-            auto lW = sqrt( ( piby2 - panAngle ) / piby2 * cos( panAngle ) );
-            auto rW = sqrt( panAngle * sin( panAngle ) / piby2 );
+            int panIdx = ( pan[i] + 1 ) * N_PAN / 2;
+            if( panIdx < 0 ) panIdx = 0;
+            if( panIdx >= N_PAN ) panIdx = N_PAN - 1;
+
+            // This isn't precise enough to bother interpolating
+            auto lW = panBufferL[panIdx];
+            auto rW = panBufferR[panIdx];
 
             // std::cout << "lW/rW=" << lW << " " << rW << " " << panAngle << std::endl;
             sampleL += lW * currentVoice;
@@ -137,6 +238,9 @@ void TWSVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample
             if( currentAngle[i] > 1.0 )
                 currentAngle[i] -= 1.0;
         }
+
+        sampleL = filterL.processSingleSampleRaw( sampleL );
+        sampleR = filterL.processSingleSampleRaw( sampleR );
         
         if( outputBuffer.getNumChannels() == 1 )
         {

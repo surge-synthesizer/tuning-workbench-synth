@@ -193,19 +193,19 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     LPFToggle->setRadioGroupId (1);
     LPFToggle->setToggleState (true, dontSendNotification);
 
-    LPFToggle->setBounds (512, 50, 104, 24);
+    LPFToggle->setBounds (512, 50, 56, 24);
 
     HPToggle.reset (new ToggleButton ("HPF"));
     addAndMakeVisible (HPToggle.get());
     HPToggle->setRadioGroupId (1);
 
-    HPToggle->setBounds (512, 71, 104, 24);
+    HPToggle->setBounds (512, 71, 56, 24);
 
     BPFTogle.reset (new ToggleButton ("BPF"));
     addAndMakeVisible (BPFTogle.get());
     BPFTogle->setRadioGroupId (1);
 
-    BPFTogle->setBounds (512, 93, 104, 24);
+    BPFTogle->setBounds (512, 93, 56, 24);
 
     groupComponent5.reset (new GroupComponent ("new group",
                                                TRANS("Master")));
@@ -663,14 +663,14 @@ void TWSMainPanel::buttonClicked (Button* buttonThatWasClicked)
     {
         //[UserButtonCode_aboutButton] -- add your button handler code here..
         auto te = new TWSAbout();
-        
+
         DialogWindow::LaunchOptions options;
         options.content.setOwned(te);
         options.dialogTitle = "About";
         options.escapeKeyTriggersCloseButton = true;
         options.useNativeTitleBar = false;
         options.resizable = false;
-    
+
         auto dialogwindow = options.launchAsync();
         //[/UserButtonCode_aboutButton]
     }
@@ -900,13 +900,13 @@ BEGIN_JUCER_METADATA
           int="0.0" style="Rotary" textBoxPos="TextBoxBelow" textBoxEditable="1"
           textBoxWidth="60" textBoxHeight="15" skewFactor="1.0" needsCallback="0"/>
   <TOGGLEBUTTON name="LPF" id="a76275562ee11c77" memberName="LPFToggle" virtualName=""
-                explicitFocusOrder="0" pos="512 50 104 24" buttonText="LPF" connectedEdges="0"
+                explicitFocusOrder="0" pos="512 50 56 24" buttonText="LPF" connectedEdges="0"
                 needsCallback="0" radioGroupId="1" state="1"/>
   <TOGGLEBUTTON name="HPF" id="a475114ff5ac492c" memberName="HPToggle" virtualName=""
-                explicitFocusOrder="0" pos="512 71 104 24" buttonText="HPF" connectedEdges="0"
+                explicitFocusOrder="0" pos="512 71 56 24" buttonText="HPF" connectedEdges="0"
                 needsCallback="0" radioGroupId="1" state="0"/>
   <TOGGLEBUTTON name="BPF" id="87defba6f79e9432" memberName="BPFTogle" virtualName=""
-                explicitFocusOrder="0" pos="512 93 104 24" buttonText="BPF" connectedEdges="0"
+                explicitFocusOrder="0" pos="512 93 56 24" buttonText="BPF" connectedEdges="0"
                 needsCallback="0" radioGroupId="1" state="0"/>
   <GROUPCOMPONENT name="new group" id="643f7ea232ea9de9" memberName="groupComponent5"
                   virtualName="" explicitFocusOrder="0" pos="568 128 144 96" title="Master"/>
