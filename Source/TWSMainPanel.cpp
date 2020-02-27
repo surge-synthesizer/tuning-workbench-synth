@@ -306,7 +306,7 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
 
     sclTextAndControls = dynamic_cast<TWSTextAndControls*>( tabbedComponent->getTabContentComponent(0) );
     sclTextAndControls->textEditor->setText( processor.currentSCLString );
-    
+
     kbmTextAndControls = dynamic_cast<TWSTextAndControls*>( tabbedComponent->getTabContentComponent(1) );
     kbmTextAndControls->textEditor->setText( processor.currentKBMString );
 
@@ -314,7 +314,7 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     kbmTextAndControls->applyButton->setEnabled( false ); // bit of a hack
 
     tuningGrid->tuning = processor.tuning;
-    
+
     processor.addTuningUpdatedListener( sclTextAndControls );
     processor.addTuningUpdatedListener( kbmTextAndControls );
     processor.addTuningUpdatedListener( tuningGrid.get() );
@@ -662,6 +662,16 @@ void TWSMainPanel::buttonClicked (Button* buttonThatWasClicked)
     if (buttonThatWasClicked == aboutButton.get())
     {
         //[UserButtonCode_aboutButton] -- add your button handler code here..
+        auto te = new TWSAbout();
+        
+        DialogWindow::LaunchOptions options;
+        options.content.setOwned(te);
+        options.dialogTitle = "About";
+        options.escapeKeyTriggersCloseButton = true;
+        options.useNativeTitleBar = false;
+        options.resizable = false;
+    
+        auto dialogwindow = options.launchAsync();
         //[/UserButtonCode_aboutButton]
     }
 
