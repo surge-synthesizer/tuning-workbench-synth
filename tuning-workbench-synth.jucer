@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="jC9k5t" name="tuning-workbench-synth" projectType="audioplug"
-              jucerVersion="5.4.7" pluginCharacteristicsValue="pluginEditorRequiresKeys,pluginIsSynth,pluginWantsMidiIn"
+              buildVST="0" buildAU="1" buildVST3="1" buildStandalone="1" jucerVersion="5.4.7"
+              pluginCharacteristicsValue="pluginEditorRequiresKeys,pluginIsSynth,pluginWantsMidiIn"
               pluginManufacturer="Surge Synth Team" pluginManufacturerCode="SgST"
-              pluginCode="TnWB" bundleIdentifier="org.surge-synth-team.tuning-workbench-synth">
+              pluginCode="TnWB" bundleIdentifier="org.surge-synth-team.tuning-workbench-synth"
+              pluginFormats="buildVST3,buildAU,buildStandalone">
   <MAINGROUP id="Wx8OVz" name="tuning-workbench-synth">
     <GROUP id="{CA268845-16D3-86C8-8B06-4671890A089B}" name="Resources">
       <FILE id="trzx3e" name="FiraCode-Regular.ttf" compile="0" resource="1"
@@ -80,7 +82,7 @@
         <MODULEPATH id="juce_opengl" path="./assets/JUCE/modules"/>
       </MODULEPATHS>
     </VS2017>
-    <LINUX_MAKE targetFolder="Builds/Linux" extraCompilerFlags="-DJUCE_DISPLAY_SPLASH_SCREEN=0 -DJUCE_REPORT_APP_USAGE=0 -I../../lib/tuning-library/include">
+    <LINUX_MAKE targetFolder="Builds/Linux" vstLegacyFolder="VST2SDK_DIR" extraCompilerFlags="-DJUCE_DISPLAY_SPLASH_SCREEN=0 -DJUCE_REPORT_APP_USAGE=0 -I../../lib/tuning-library/include">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug"/>
         <CONFIGURATION isDebug="0" name="Release"/>
@@ -122,6 +124,7 @@
   </MODULES>
   <LIVE_SETTINGS>
     <OSX/>
+    <LINUX/>
   </LIVE_SETTINGS>
   <JUCEOPTIONS JUCE_VST3_CAN_REPLACE_VST2="0" JUCE_STRICT_REFCOUNTEDPOINTER="1"
                JUCE_PLUGINHOST_VST="0" JUCE_PLUGINHOST_VST3="1" JUCE_PLUGINHOST_AU="1"
