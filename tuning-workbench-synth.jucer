@@ -3,7 +3,7 @@
 <JUCERPROJECT id="jC9k5t" name="tuning-workbench-synth" projectType="audioplug"
               buildVST="0" buildAU="1" buildVST3="1" buildStandalone="1" jucerVersion="5.4.7"
               pluginCharacteristicsValue="pluginEditorRequiresKeys,pluginIsSynth,pluginWantsMidiIn"
-              pluginManufacturer="Surge Synth Team" pluginManufacturerCode="SgST"
+              pluginManufacturer="Surge Synth Team" pluginManufacturerCode="VmbA"
               pluginCode="TnWB" bundleIdentifier="org.surge-synth-team.tuning-workbench-synth"
               pluginFormats="buildVST3,buildAU,buildStandalone">
   <MAINGROUP id="Wx8OVz" name="tuning-workbench-synth">
