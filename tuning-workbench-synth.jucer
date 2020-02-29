@@ -5,7 +5,7 @@
               pluginCharacteristicsValue="pluginEditorRequiresKeys,pluginIsSynth,pluginWantsMidiIn"
               pluginManufacturer="Surge Synth Team" pluginManufacturerCode="VmbA"
               pluginCode="TnWB" bundleIdentifier="org.surge-synth-team.tuning-workbench-synth"
-              pluginFormats="buildVST3,buildAU,buildStandalone">
+              pluginFormats="buildVST,buildVST3,buildAU,buildStandalone">
   <MAINGROUP id="Wx8OVz" name="tuning-workbench-synth">
     <GROUP id="{CA268845-16D3-86C8-8B06-4671890A089B}" name="Resources">
       <FILE id="trzx3e" name="FiraCode-Regular.ttf" compile="0" resource="1"
