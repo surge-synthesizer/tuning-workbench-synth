@@ -24,7 +24,7 @@ TWSVoice::TWSVoice(TuningworkbenchsynthAudioProcessor *i) : p(i) {
 void TWSVoice::startNote (int midiNoteNumber, float velocity,
                           SynthesiserSound*, int currentPitchWheelPosition) 
 {
-    level = velocity * 0.15;
+    level = ( velocity + 64 ) / 192.0 * 0.15; // cramp up the velosity sens a bit
 
     nunison = std::max( 1, (int)( *(p->uni_count) ) );
     // Here is where we apply the tuning
@@ -201,7 +201,7 @@ void TWSVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample
         auto trilv = triLevel.getNextValue();
         
         auto filtd = filterDepth.getNextValue();
-        auto filtc = filterCut.getNextValue() + FEG * filtd * 4000.0;
+        auto filtc = std::max( 10.0, std::min( filterCut.getNextValue() * ( 1 + FEG * FEG * filtd * 64.0 ), getSampleRate() / 2 ) );
         auto filtr = filterRes.getNextValue();
 
         // This is overkill but for now just hammer it
