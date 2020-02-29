@@ -70,6 +70,7 @@ private:
     std::unique_ptr<TextButton> openButton;
     std::unique_ptr<TextButton> exportButton;
     std::unique_ptr<TextButton> resetButton;
+    std::unique_ptr<TextButton> advButton;
 
 
     //==============================================================================

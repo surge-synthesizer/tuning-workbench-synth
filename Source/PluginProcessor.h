@@ -92,7 +92,7 @@ private:
     std::atomic<float> *uni_count; // as float
     std::atomic<float> *uni_spread;
 
-    //std::atomic<int> *pb_down, *pb_up;
+    std::atomic<float> *pb_down, *pb_up; // as float
 
     std::atomic<float> *amp_attack, *amp_decay, *amp_sustain, *amp_release;
     std::atomic<float> *filter_attack, *filter_decay, *filter_sustain, *filter_release, *filter_depth;
@@ -101,6 +101,12 @@ private:
     std::atomic<float> *filter_cutoff, *filter_resonance;
 
     std::atomic<float> *master_sat, *master_level;
+
+    std::atomic<float> *subosc_level, *subosc_oct;
+    std::atomic<float> *pluck_flt, *pluck_atn, *pluck_init, *pluck_lev;
+    std::atomic<float> *delay_time, *delay_fb;
+
+    std::atomic<float> *lfo_type, *lfo_rate, *lfo_delay, *lfo_attack, *lfo_pitch, *lfo_filter;
     
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TuningworkbenchsynthAudioProcessor)

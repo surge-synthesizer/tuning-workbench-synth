@@ -49,6 +49,9 @@ TWSTuningGrid::TWSTuningGrid ()
     table->getHeader().addColumn( "Freq (hz)", 2, 90 );
     table->getHeader().addColumn( "log2(f/8.17)", 3, 90 );
     table->setModel( this );
+
+    std::cout << "setting sb" << std::endl;
+    table->getViewport()->setScrollBarsShown(true,false);
     //[/Constructor]
 }
 
@@ -81,8 +84,9 @@ void TWSTuningGrid::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    table->setBounds (8, 0, proportionOfWidth (1.0000f), proportionOfHeight (1.0000f));
+    table->setBounds (0, 0, proportionOfWidth (1.0000f), proportionOfHeight (1.0000f));
     //[UserResized] Add your own custom resize handling here..
+    table->getViewport()->setScrollBarsShown(true,false);
     //[/UserResized]
 }
 
@@ -205,7 +209,7 @@ BEGIN_JUCER_METADATA
                  initialHeight="300">
   <BACKGROUND backgroundColour="ff323e44"/>
   <GENERICCOMPONENT name="new component" id="d6aed48af2079d51" memberName="table"
-                    virtualName="" explicitFocusOrder="0" pos="8 0 100% 100%" class="TableListBox"
+                    virtualName="" explicitFocusOrder="0" pos="0 0 100% 100%" class="TableListBox"
                     params=""/>
 </JUCER_COMPONENT>
 
