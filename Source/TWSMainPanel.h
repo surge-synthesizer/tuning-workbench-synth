@@ -38,7 +38,8 @@ class TWSTuningGrid;
 */
 class TWSMainPanel  : public Component,
                       public FileDragAndDropTarget,
-                      public Button::Listener
+                      public Button::Listener,
+                      public ComboBox::Listener
 {
 public:
     //==============================================================================
@@ -56,6 +57,7 @@ public:
     void paint (Graphics& g) override;
     void resized() override;
     void buttonClicked (Button* buttonThatWasClicked) override;
+    void comboBoxChanged (ComboBox* comboBoxThatHasChanged) override;
     void filesDropped (const StringArray& filenames, int mouseX, int mouseY) override;
 
 
@@ -72,6 +74,7 @@ private:
     //[/UserVariables]
 
     //==============================================================================
+    std::unique_ptr<TWSTuningGrid> tuningGrid;
     std::unique_ptr<GroupComponent> groupComponent7;
     std::unique_ptr<GroupComponent> groupComponent3;
     std::unique_ptr<GroupComponent> groupComponent2;
@@ -102,11 +105,31 @@ private:
     std::unique_ptr<Slider> uni_spread;
     std::unique_ptr<Slider> uni_count;
     std::unique_ptr<GroupComponent> groupComponent6;
-    std::unique_ptr<Slider> pb_down;
     std::unique_ptr<Slider> pb_up;
+    std::unique_ptr<Slider> pb_down;
     std::unique_ptr<Label> version;
-    std::unique_ptr<TWSTuningGrid> tuningGrid;
     std::unique_ptr<TextButton> aboutButton;
+    std::unique_ptr<GroupComponent> groupComponent8;
+    std::unique_ptr<Slider> lfo_rate;
+    std::unique_ptr<Slider> lfo_delay;
+    std::unique_ptr<Slider> lfo_attack;
+    std::unique_ptr<ToggleButton> lfotritog;
+    std::unique_ptr<ToggleButton> lfosqrtog;
+    std::unique_ptr<ToggleButton> lforndtog;
+    std::unique_ptr<Slider> lfo_to_pitch;
+    std::unique_ptr<Slider> lfo_to_cutoff;
+    std::unique_ptr<GroupComponent> groupComponent9;
+    std::unique_ptr<Slider> sublevel;
+    std::unique_ptr<Slider> sub_oct;
+    std::unique_ptr<GroupComponent> groupComponent10;
+    std::unique_ptr<GroupComponent> groupComponent11;
+    std::unique_ptr<ComboBox> comboBox;
+    std::unique_ptr<Slider> delay_fb;
+    std::unique_ptr<Slider> delay_time;
+    std::unique_ptr<Slider> pluck_atn;
+    std::unique_ptr<Slider> pluck_flt;
+    std::unique_ptr<Slider> pluck_init;
+    std::unique_ptr<Slider> pluck_lev;
 
 
     //==============================================================================

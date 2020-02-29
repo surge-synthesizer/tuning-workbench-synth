@@ -93,7 +93,54 @@ TuningworkbenchsynthAudioProcessor::TuningworkbenchsynthAudioProcessor()
                                                              0, 5, 0 ),
                       std::make_unique<AudioParameterFloat>( "master_level",
                                                              "Master Level",
-                                                             0, 1.0, 1.0 )
+                                                             0, 1.0, 1.0 ),
+
+                      std::make_unique<AudioParameterFloat>( "subosc_level",
+                                                             "SubOSC Level",
+                                                             0, 1.0, 0.0 ),
+                      std::make_unique<AudioParameterInt>( "subosc_oct",
+                                                           "SubOSC Octave",
+                                                           -3, 0, -1 ),
+
+                      std::make_unique<AudioParameterFloat>( "pluck_flt",
+                                                             "Pluck Flt",
+                                                             0, 1.0, 0.0 ),
+                      std::make_unique<AudioParameterFloat>( "pluck_atn",
+                                                             "Pluck Atten",
+                                                             0, 1.0, 0.0 ),
+                      std::make_unique<AudioParameterInt>( "pluck_init",
+                                                          "Pluck Init",
+                                                          0, 4.0, 0.0 ),
+                      std::make_unique<AudioParameterFloat>( "pluck_lev",
+                                                             "Pluck Level",
+                                                             0, 1.0, 0.0 ),
+
+                      std::make_unique<AudioParameterFloat>( "delay_time",
+                                                             "Delay Time",
+                                                             0.05, 3.0, 0.5 ),
+                      std::make_unique<AudioParameterFloat>( "delay_fb",
+                                                             "Delay Feedback",
+                                                             0., 1.0, 0.1 ),
+
+
+                      std::make_unique<AudioParameterInt>( "lfo_type",
+                                                          "LFO Type",
+                                                          0, 2.0, 0.0 ),
+                      std::make_unique<AudioParameterFloat>( "lfo_rate",
+                                                             "LFO Rate",
+                                                             0.1, 100.0, 5.0 ),
+                      std::make_unique<AudioParameterFloat>( "lfo_delay",
+                                                             "LFO Delay",
+                                                             0.0, 10.0, 0.0 ),
+                      std::make_unique<AudioParameterFloat>( "lfo_attack",
+                                                             "LFO Attack",
+                                                             0., 10.0, 0.0 ),
+                      std::make_unique<AudioParameterFloat>( "lfo_pitch",
+                                                             "LFO Pitch",
+                                                             0.0, 1.0, 0.0 ),
+                      std::make_unique<AudioParameterFloat>( "lfo_filter",
+                                                             "LFO Filter",
+                                                             0.0, 10.0, 0.0 )
 
                   } )
 {
@@ -129,6 +176,26 @@ TuningworkbenchsynthAudioProcessor::TuningworkbenchsynthAudioProcessor()
     SP(master_sat);
     SP(master_level);
 
+    SP(pb_down);
+    SP(pb_up);
+
+    SP(subosc_level);
+    SP(subosc_oct);
+    SP(pluck_flt);
+    SP(pluck_atn);
+    SP(pluck_init);
+    SP(pluck_lev);
+
+    SP(delay_time);
+    SP(delay_fb);
+
+    SP(lfo_type);
+    SP(lfo_rate);
+    SP(lfo_delay);
+    SP(lfo_attack);
+    SP(lfo_pitch);
+    SP(lfo_filter);
+    
     auto initS = Tunings::evenTemperament12NoteScale();
     setSCL( initS.rawText, false );
     setKBM( "", false );

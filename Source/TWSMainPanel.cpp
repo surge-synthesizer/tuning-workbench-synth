@@ -37,23 +37,29 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
 
+    tuningGrid.reset (new TWSTuningGrid());
+    addAndMakeVisible (tuningGrid.get());
+    tuningGrid->setName ("tuningGrid");
+
+    tuningGrid->setBounds (24, 344, 296, 360);
+
     groupComponent7.reset (new GroupComponent ("new group",
                                                TRANS("Tuning")));
     addAndMakeVisible (groupComponent7.get());
 
-    groupComponent7->setBounds (8, 224, 704, 400);
+    groupComponent7->setBounds (8, 320, 768, 400);
 
     groupComponent3.reset (new GroupComponent ("new group",
                                                TRANS("Filter Envelope")));
     addAndMakeVisible (groupComponent3.get());
 
-    groupComponent3->setBounds (224, 128, 336, 96);
+    groupComponent3->setBounds (224, 32, 336, 96);
 
     groupComponent2.reset (new GroupComponent ("new group",
                                                TRANS("Amplitude Envelope")));
     addAndMakeVisible (groupComponent2.get());
 
-    groupComponent2->setBounds (224, 32, 272, 96);
+    groupComponent2->setBounds (224, 128, 272, 96);
 
     groupComponent.reset (new GroupComponent ("new group",
                                               TRANS("VCO")));
@@ -76,7 +82,7 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     tabbedComponent->addTab (TRANS("KBM File"), Colours::lightgrey, new TWSTextAndControls (false, processor), true);
     tabbedComponent->setCurrentTabIndex (0);
 
-    tabbedComponent->setBounds (312, 248, 384, 360);
+    tabbedComponent->setBounds (328, 344, 432, 360);
 
     sineMix.reset (new Slider ("sineMix"));
     addAndMakeVisible (sineMix.get());
@@ -108,7 +114,7 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     AEG_A->setSliderStyle (Slider::Rotary);
     AEG_A->setTextBoxStyle (Slider::TextBoxBelow, false, 60, 15);
 
-    AEG_A->setBounds (232, 46, 63, 72);
+    AEG_A->setBounds (232, 142, 63, 72);
 
     FEG_A.reset (new Slider ("feg_A"));
     addAndMakeVisible (FEG_A.get());
@@ -116,7 +122,7 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     FEG_A->setSliderStyle (Slider::Rotary);
     FEG_A->setTextBoxStyle (Slider::TextBoxBelow, false, 60, 15);
 
-    FEG_A->setBounds (232, 142, 63, 72);
+    FEG_A->setBounds (232, 46, 63, 72);
 
     AEG_D.reset (new Slider ("aeg_D"));
     addAndMakeVisible (AEG_D.get());
@@ -124,7 +130,7 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     AEG_D->setSliderStyle (Slider::Rotary);
     AEG_D->setTextBoxStyle (Slider::TextBoxBelow, false, 60, 15);
 
-    AEG_D->setBounds (296, 46, 63, 72);
+    AEG_D->setBounds (296, 142, 63, 72);
 
     FEG_D.reset (new Slider ("feg_D"));
     addAndMakeVisible (FEG_D.get());
@@ -132,7 +138,7 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     FEG_D->setSliderStyle (Slider::Rotary);
     FEG_D->setTextBoxStyle (Slider::TextBoxBelow, false, 60, 15);
 
-    FEG_D->setBounds (296, 142, 63, 72);
+    FEG_D->setBounds (296, 46, 63, 72);
 
     AEG_S.reset (new Slider ("aeg_S"));
     addAndMakeVisible (AEG_S.get());
@@ -140,7 +146,7 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     AEG_S->setSliderStyle (Slider::Rotary);
     AEG_S->setTextBoxStyle (Slider::TextBoxBelow, false, 60, 15);
 
-    AEG_S->setBounds (360, 46, 63, 72);
+    AEG_S->setBounds (360, 142, 63, 72);
 
     FEG_S.reset (new Slider ("feg_S"));
     addAndMakeVisible (FEG_S.get());
@@ -148,7 +154,7 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     FEG_S->setSliderStyle (Slider::Rotary);
     FEG_S->setTextBoxStyle (Slider::TextBoxBelow, false, 60, 15);
 
-    FEG_S->setBounds (360, 142, 63, 72);
+    FEG_S->setBounds (360, 46, 63, 72);
 
     AEG_R.reset (new Slider ("aeg_R"));
     addAndMakeVisible (AEG_R.get());
@@ -156,7 +162,7 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     AEG_R->setSliderStyle (Slider::Rotary);
     AEG_R->setTextBoxStyle (Slider::TextBoxBelow, false, 60, 15);
 
-    AEG_R->setBounds (424, 46, 63, 72);
+    AEG_R->setBounds (424, 142, 63, 72);
 
     FEG_R.reset (new Slider ("feg_R"));
     addAndMakeVisible (FEG_R.get());
@@ -164,13 +170,13 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     FEG_R->setSliderStyle (Slider::Rotary);
     FEG_R->setTextBoxStyle (Slider::TextBoxBelow, false, 60, 15);
 
-    FEG_R->setBounds (424, 142, 63, 72);
+    FEG_R->setBounds (424, 46, 63, 72);
 
     groupComponent4.reset (new GroupComponent ("new group",
                                                TRANS("Filter")));
     addAndMakeVisible (groupComponent4.get());
 
-    groupComponent4->setBounds (504, 32, 208, 96);
+    groupComponent4->setBounds (568, 32, 208, 96);
 
     Filt_Cutoff.reset (new Slider ("filt_cutoff"));
     addAndMakeVisible (Filt_Cutoff.get());
@@ -178,7 +184,7 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     Filt_Cutoff->setSliderStyle (Slider::Rotary);
     Filt_Cutoff->setTextBoxStyle (Slider::TextBoxBelow, false, 60, 15);
 
-    Filt_Cutoff->setBounds (577, 45, 63, 72);
+    Filt_Cutoff->setBounds (641, 45, 63, 72);
 
     Filt_Q.reset (new Slider ("fllt_Q"));
     addAndMakeVisible (Filt_Q.get());
@@ -186,32 +192,32 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     Filt_Q->setSliderStyle (Slider::Rotary);
     Filt_Q->setTextBoxStyle (Slider::TextBoxBelow, false, 60, 15);
 
-    Filt_Q->setBounds (641, 45, 63, 72);
+    Filt_Q->setBounds (705, 45, 63, 72);
 
     LPFToggle.reset (new ToggleButton ("LPF"));
     addAndMakeVisible (LPFToggle.get());
     LPFToggle->setRadioGroupId (1);
     LPFToggle->setToggleState (true, dontSendNotification);
 
-    LPFToggle->setBounds (512, 50, 56, 24);
+    LPFToggle->setBounds (576, 50, 56, 24);
 
     HPToggle.reset (new ToggleButton ("HPF"));
     addAndMakeVisible (HPToggle.get());
     HPToggle->setRadioGroupId (1);
 
-    HPToggle->setBounds (512, 71, 56, 24);
+    HPToggle->setBounds (576, 71, 56, 24);
 
     BPFTogle.reset (new ToggleButton ("BPF"));
     addAndMakeVisible (BPFTogle.get());
     BPFTogle->setRadioGroupId (1);
 
-    BPFTogle->setBounds (512, 93, 56, 24);
+    BPFTogle->setBounds (576, 93, 56, 24);
 
     groupComponent5.reset (new GroupComponent ("new group",
                                                TRANS("Master")));
     addAndMakeVisible (groupComponent5.get());
 
-    groupComponent5->setBounds (568, 128, 144, 96);
+    groupComponent5->setBounds (632, 224, 144, 96);
 
     master_sat.reset (new Slider ("master_sat"));
     addAndMakeVisible (master_sat.get());
@@ -219,7 +225,7 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     master_sat->setSliderStyle (Slider::Rotary);
     master_sat->setTextBoxStyle (Slider::TextBoxBelow, false, 60, 15);
 
-    master_sat->setBounds (577, 140, 63, 72);
+    master_sat->setBounds (641, 236, 63, 72);
 
     master_out.reset (new Slider ("master_out"));
     addAndMakeVisible (master_out.get());
@@ -227,7 +233,7 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     master_out->setSliderStyle (Slider::Rotary);
     master_out->setTextBoxStyle (Slider::TextBoxBelow, false, 60, 15);
 
-    master_out->setBounds (641, 140, 63, 72);
+    master_out->setBounds (705, 236, 63, 72);
 
     FEG_depth.reset (new Slider ("feg_depth"));
     addAndMakeVisible (FEG_depth.get());
@@ -235,7 +241,7 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     FEG_depth->setSliderStyle (Slider::Rotary);
     FEG_depth->setTextBoxStyle (Slider::TextBoxBelow, false, 60, 15);
 
-    FEG_depth->setBounds (487, 142, 63, 72);
+    FEG_depth->setBounds (487, 46, 63, 72);
 
     uni_spread.reset (new Slider ("Uni_Spread"));
     addAndMakeVisible (uni_spread.get());
@@ -254,10 +260,18 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     uni_count->setBounds (152, 70, 56, 32);
 
     groupComponent6.reset (new GroupComponent ("new group",
-                                               TRANS("Pitch Bend Range")));
+                                               TRANS("Bend")));
     addAndMakeVisible (groupComponent6.get());
 
-    groupComponent6->setBounds (8, 160, 208, 64);
+    groupComponent6->setBounds (504, 128, 120, 96);
+
+    pb_up.reset (new Slider ("PB UP"));
+    addAndMakeVisible (pb_up.get());
+    pb_up->setRange (0, 10, 0);
+    pb_up->setSliderStyle (Slider::IncDecButtons);
+    pb_up->setTextBoxStyle (Slider::TextBoxBelow, false, 60, 15);
+
+    pb_up->setBounds (550, 151, 56, 30);
 
     pb_down.reset (new Slider ("PB Down"));
     addAndMakeVisible (pb_down.get());
@@ -265,40 +279,186 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     pb_down->setSliderStyle (Slider::IncDecButtons);
     pb_down->setTextBoxStyle (Slider::TextBoxBelow, false, 60, 15);
 
-    pb_down->setBounds (50, 182, 56, 32);
-
-    pb_up.reset (new Slider ("PB Up"));
-    addAndMakeVisible (pb_up.get());
-    pb_up->setRange (0, 10, 0);
-    pb_up->setSliderStyle (Slider::IncDecButtons);
-    pb_up->setTextBoxStyle (Slider::TextBoxBelow, false, 60, 15);
-
-    pb_up->setBounds (147, 182, 56, 32);
+    pb_down->setBounds (550, 183, 58, 30);
 
     version.reset (new Label ("Version Label",
                               TRANS("set-this")));
     addAndMakeVisible (version.get());
     version->setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Regular"));
-    version->setJustificationType (Justification::centredLeft);
+    version->setJustificationType (Justification::centredRight);
     version->setEditable (false, false, false);
     version->setColour (Label::textColourId, Colour (0xffa6a6a6));
     version->setColour (TextEditor::textColourId, Colours::black);
     version->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
-    version->setBounds (0, 0, 190, 16);
-
-    tuningGrid.reset (new TWSTuningGrid());
-    addAndMakeVisible (tuningGrid.get());
-    tuningGrid->setName ("tuningGrid");
-
-    tuningGrid->setBounds (24, 248, 272, 360);
+    version->setBounds (490, 9, 190, 16);
 
     aboutButton.reset (new TextButton ("aboutButton"));
     addAndMakeVisible (aboutButton.get());
     aboutButton->setButtonText (TRANS("About"));
     aboutButton->addListener (this);
 
-    aboutButton->setBounds (632, 8, 79, 24);
+    aboutButton->setBounds (688, 3, 79, 24);
+
+    groupComponent8.reset (new GroupComponent ("new group",
+                                               TRANS("LFO")));
+    addAndMakeVisible (groupComponent8.get());
+
+    groupComponent8->setBounds (224, 224, 400, 96);
+
+    lfo_rate.reset (new Slider ("lfo_rate"));
+    addAndMakeVisible (lfo_rate.get());
+    lfo_rate->setRange (0, 10, 0);
+    lfo_rate->setSliderStyle (Slider::Rotary);
+    lfo_rate->setTextBoxStyle (Slider::TextBoxBelow, false, 60, 15);
+
+    lfo_rate->setBounds (304, 238, 63, 72);
+
+    lfo_delay.reset (new Slider ("lfo_delay"));
+    addAndMakeVisible (lfo_delay.get());
+    lfo_delay->setRange (0, 10, 0);
+    lfo_delay->setSliderStyle (Slider::Rotary);
+    lfo_delay->setTextBoxStyle (Slider::TextBoxBelow, false, 60, 15);
+
+    lfo_delay->setBounds (368, 238, 63, 72);
+
+    lfo_attack.reset (new Slider ("lfo_attack"));
+    addAndMakeVisible (lfo_attack.get());
+    lfo_attack->setRange (0, 10, 0);
+    lfo_attack->setSliderStyle (Slider::Rotary);
+    lfo_attack->setTextBoxStyle (Slider::TextBoxBelow, false, 60, 15);
+
+    lfo_attack->setBounds (432, 238, 63, 72);
+
+    lfotritog.reset (new ToggleButton ("lfotri"));
+    addAndMakeVisible (lfotritog.get());
+    lfotritog->setButtonText (TRANS("TRI"));
+    lfotritog->setRadioGroupId (1);
+    lfotritog->setToggleState (true, dontSendNotification);
+
+    lfotritog->setBounds (237, 242, 56, 24);
+
+    lfosqrtog.reset (new ToggleButton ("lfosq"));
+    addAndMakeVisible (lfosqrtog.get());
+    lfosqrtog->setButtonText (TRANS("SQR"));
+    lfosqrtog->setRadioGroupId (1);
+
+    lfosqrtog->setBounds (237, 263, 56, 24);
+
+    lforndtog.reset (new ToggleButton ("lfornd"));
+    addAndMakeVisible (lforndtog.get());
+    lforndtog->setButtonText (TRANS("RND"));
+    lforndtog->setRadioGroupId (1);
+
+    lforndtog->setBounds (237, 285, 56, 24);
+
+    lfo_to_pitch.reset (new Slider ("lfo_to_pitch"));
+    addAndMakeVisible (lfo_to_pitch.get());
+    lfo_to_pitch->setRange (0, 10, 0);
+    lfo_to_pitch->setSliderStyle (Slider::Rotary);
+    lfo_to_pitch->setTextBoxStyle (Slider::TextBoxBelow, false, 60, 15);
+
+    lfo_to_pitch->setBounds (496, 238, 63, 72);
+
+    lfo_to_cutoff.reset (new Slider ("lfo_to_cutoff"));
+    addAndMakeVisible (lfo_to_cutoff.get());
+    lfo_to_cutoff->setRange (0, 10, 0);
+    lfo_to_cutoff->setSliderStyle (Slider::Rotary);
+    lfo_to_cutoff->setTextBoxStyle (Slider::TextBoxBelow, false, 60, 15);
+
+    lfo_to_cutoff->setBounds (560, 238, 63, 72);
+
+    groupComponent9.reset (new GroupComponent ("new group",
+                                               TRANS("Sub")));
+    addAndMakeVisible (groupComponent9.get());
+
+    groupComponent9->setBounds (8, 160, 208, 64);
+
+    sublevel.reset (new Slider ("sineMix"));
+    addAndMakeVisible (sublevel.get());
+    sublevel->setRange (0, 1, 0);
+    sublevel->setSliderStyle (Slider::LinearHorizontal);
+    sublevel->setTextBoxStyle (Slider::NoTextBox, false, 80, 20);
+
+    sublevel->setBounds (18, 179, 94, 30);
+
+    sub_oct.reset (new Slider ("Octave"));
+    addAndMakeVisible (sub_oct.get());
+    sub_oct->setRange (0, 10, 0);
+    sub_oct->setSliderStyle (Slider::IncDecButtons);
+    sub_oct->setTextBoxStyle (Slider::TextBoxBelow, false, 60, 15);
+
+    sub_oct->setBounds (148, 177, 56, 32);
+
+    groupComponent10.reset (new GroupComponent ("new group",
+                                                TRANS("Pluck")));
+    addAndMakeVisible (groupComponent10.get());
+
+    groupComponent10->setBounds (8, 224, 208, 96);
+
+    groupComponent11.reset (new GroupComponent ("new group",
+                                                TRANS("Delay")));
+    addAndMakeVisible (groupComponent11.get());
+
+    groupComponent11->setBounds (632, 128, 144, 96);
+
+    comboBox.reset (new ComboBox ("new combo box"));
+    addAndMakeVisible (comboBox.get());
+    comboBox->setEditableText (false);
+    comboBox->setJustificationType (Justification::centredLeft);
+    comboBox->setTextWhenNothingSelected (String());
+    comboBox->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
+    comboBox->addListener (this);
+
+    comboBox->setBounds (8, 3, 168, 24);
+
+    delay_fb.reset (new Slider ("delay_fb"));
+    addAndMakeVisible (delay_fb.get());
+    delay_fb->setRange (0, 10, 0);
+    delay_fb->setSliderStyle (Slider::Rotary);
+    delay_fb->setTextBoxStyle (Slider::TextBoxBelow, false, 60, 15);
+
+    delay_fb->setBounds (712, 144, 63, 72);
+
+    delay_time.reset (new Slider ("delay_time"));
+    addAndMakeVisible (delay_time.get());
+    delay_time->setRange (0, 10, 0);
+    delay_time->setSliderStyle (Slider::Rotary);
+    delay_time->setTextBoxStyle (Slider::TextBoxBelow, false, 60, 15);
+
+    delay_time->setBounds (640, 144, 63, 72);
+
+    pluck_atn.reset (new Slider ("squareMix"));
+    addAndMakeVisible (pluck_atn.get());
+    pluck_atn->setRange (0, 1, 0);
+    pluck_atn->setSliderStyle (Slider::LinearHorizontal);
+    pluck_atn->setTextBoxStyle (Slider::NoTextBox, false, 80, 20);
+
+    pluck_atn->setBounds (48, 264, 88, 30);
+
+    pluck_flt.reset (new Slider ("sineMix"));
+    addAndMakeVisible (pluck_flt.get());
+    pluck_flt->setRange (0, 1, 0);
+    pluck_flt->setSliderStyle (Slider::LinearHorizontal);
+    pluck_flt->setTextBoxStyle (Slider::NoTextBox, false, 80, 20);
+
+    pluck_flt->setBounds (48, 240, 88, 30);
+
+    pluck_init.reset (new Slider ("sawMix"));
+    addAndMakeVisible (pluck_init.get());
+    pluck_init->setRange (0, 1, 0);
+    pluck_init->setSliderStyle (Slider::LinearHorizontal);
+    pluck_init->setTextBoxStyle (Slider::NoTextBox, false, 80, 20);
+
+    pluck_init->setBounds (48, 288, 88, 30);
+
+    pluck_lev.reset (new Slider ("lfo_rate"));
+    addAndMakeVisible (pluck_lev.get());
+    pluck_lev->setRange (0, 10, 0);
+    pluck_lev->setSliderStyle (Slider::Rotary);
+    pluck_lev->setTextBoxStyle (Slider::TextBoxBelow, false, 60, 15);
+
+    pluck_lev->setBounds (144, 240, 63, 72);
 
 
     //[UserPreSize]
@@ -320,7 +480,7 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     processor.addTuningUpdatedListener( tuningGrid.get() );
     //[/UserPreSize]
 
-    setSize (720, 630);
+    setSize (784, 730);
 
 
     //[Constructor] You can add your own custom stuff here..
@@ -340,6 +500,7 @@ TWSMainPanel::~TWSMainPanel()
     buttonAttachments.clear();
     //[/Destructor_pre]
 
+    tuningGrid = nullptr;
     groupComponent7 = nullptr;
     groupComponent3 = nullptr;
     groupComponent2 = nullptr;
@@ -370,11 +531,31 @@ TWSMainPanel::~TWSMainPanel()
     uni_spread = nullptr;
     uni_count = nullptr;
     groupComponent6 = nullptr;
-    pb_down = nullptr;
     pb_up = nullptr;
+    pb_down = nullptr;
     version = nullptr;
-    tuningGrid = nullptr;
     aboutButton = nullptr;
+    groupComponent8 = nullptr;
+    lfo_rate = nullptr;
+    lfo_delay = nullptr;
+    lfo_attack = nullptr;
+    lfotritog = nullptr;
+    lfosqrtog = nullptr;
+    lforndtog = nullptr;
+    lfo_to_pitch = nullptr;
+    lfo_to_cutoff = nullptr;
+    groupComponent9 = nullptr;
+    sublevel = nullptr;
+    sub_oct = nullptr;
+    groupComponent10 = nullptr;
+    groupComponent11 = nullptr;
+    comboBox = nullptr;
+    delay_fb = nullptr;
+    delay_time = nullptr;
+    pluck_atn = nullptr;
+    pluck_flt = nullptr;
+    pluck_init = nullptr;
+    pluck_lev = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -390,7 +571,7 @@ void TWSMainPanel::paint (Graphics& g)
     g.fillAll (Colour (0xff323e44));
 
     {
-        int x = 0, y = 0, width = proportionOfWidth (1.0000f), height = 27;
+        int x = 0, y = 3, width = proportionOfWidth (1.0000f), height = 27;
         String text (TRANS("Tuning Workbench"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -498,7 +679,7 @@ void TWSMainPanel::paint (Graphics& g)
     }
 
     {
-        int x = 571, y = 43, width = 22, height = 21;
+        int x = 635, y = 43, width = 22, height = 21;
         String text (TRANS("f"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -510,7 +691,7 @@ void TWSMainPanel::paint (Graphics& g)
     }
 
     {
-        int x = 635, y = 43, width = 22, height = 21;
+        int x = 699, y = 43, width = 22, height = 21;
         String text (TRANS("q"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -522,7 +703,7 @@ void TWSMainPanel::paint (Graphics& g)
     }
 
     {
-        int x = 571, y = 139, width = 22, height = 21;
+        int x = 635, y = 235, width = 22, height = 21;
         String text (TRANS("sat"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -534,7 +715,7 @@ void TWSMainPanel::paint (Graphics& g)
     }
 
     {
-        int x = 635, y = 139, width = 22, height = 21;
+        int x = 699, y = 235, width = 22, height = 21;
         String text (TRANS("out"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -546,7 +727,7 @@ void TWSMainPanel::paint (Graphics& g)
     }
 
     {
-        int x = 477, y = 139, width = 22, height = 21;
+        int x = 480, y = 45, width = 22, height = 21;
         String text (TRANS("mod"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -606,7 +787,7 @@ void TWSMainPanel::paint (Graphics& g)
     }
 
     {
-        int x = 15, y = 180, width = 31, height = 30;
+        int x = 516, y = 181, width = 31, height = 30;
         String text (TRANS("Dn"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -618,7 +799,7 @@ void TWSMainPanel::paint (Graphics& g)
     }
 
     {
-        int x = 119, y = 180, width = 31, height = 30;
+        int x = 516, y = 149, width = 31, height = 30;
         String text (TRANS("Up"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -637,6 +818,150 @@ void TWSMainPanel::paint (Graphics& g)
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
         g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Regular"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centred, true);
+    }
+
+    {
+        int x = 116, y = 185, width = 22, height = 21;
+        String text (TRANS("oct"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Regular"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centred, true);
+    }
+
+    {
+        int x = 360, y = 237, width = 22, height = 21;
+        String text (TRANS("del"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Regular"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centred, true);
+    }
+
+    {
+        int x = 296, y = 237, width = 22, height = 21;
+        String text (TRANS("rate"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Regular"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centred, true);
+    }
+
+    {
+        int x = 432, y = 237, width = 22, height = 21;
+        String text (TRANS("atk"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Regular"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centred, true);
+    }
+
+    {
+        int x = 496, y = 237, width = 22, height = 21;
+        String text (TRANS("ptc"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Regular"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centred, true);
+    }
+
+    {
+        int x = 552, y = 237, width = 22, height = 21;
+        String text (TRANS("flt"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Regular"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centred, true);
+    }
+
+    {
+        int x = 640, y = 141, width = 22, height = 21;
+        String text (TRANS("time"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Regular"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centred, true);
+    }
+
+    {
+        int x = 712, y = 141, width = 22, height = 21;
+        String text (TRANS("fb"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Regular"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centred, true);
+    }
+
+    {
+        int x = 21, y = 236, width = 31, height = 30;
+        String text (TRANS("Flt"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Regular"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centredLeft, true);
+    }
+
+    {
+        int x = 21, y = 260, width = 31, height = 30;
+        String text (TRANS("Attn"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Regular"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centredLeft, true);
+    }
+
+    {
+        int x = 21, y = 284, width = 31, height = 30;
+        String text (TRANS("Init"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Regular"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centredLeft, true);
+    }
+
+    {
+        int x = 144, y = 237, width = 22, height = 21;
+        String text (TRANS("lev"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Regular"));
         g.drawText (text, x, y, width, height,
                     Justification::centred, true);
     }
@@ -677,6 +1002,21 @@ void TWSMainPanel::buttonClicked (Button* buttonThatWasClicked)
 
     //[UserbuttonClicked_Post]
     //[/UserbuttonClicked_Post]
+}
+
+void TWSMainPanel::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
+{
+    //[UsercomboBoxChanged_Pre]
+    //[/UsercomboBoxChanged_Pre]
+
+    if (comboBoxThatHasChanged == comboBox.get())
+    {
+        //[UserComboBoxCode_comboBox] -- add your combo box handling code here..
+        //[/UserComboBoxCode_comboBox]
+    }
+
+    //[UsercomboBoxChanged_Post]
+    //[/UsercomboBoxChanged_Post]
 }
 
 void TWSMainPanel::filesDropped (const StringArray& filenames, int mouseX, int mouseY)
@@ -736,6 +1076,22 @@ void TWSMainPanel::connectValueTreeState(AudioProcessorValueTreeState &t )
     s( "filter_resonance", Filt_Q );
     s( "master_sat", master_sat );
     s( "master_level", master_out );
+
+    s( "subosc_level", sublevel );
+    s( "subosc_oct", sub_oct );
+    s( "pluck_flt", pluck_flt );
+    s( "pluck_atn", pluck_atn );
+    s( "pluck_init", pluck_init );
+    s( "pluck_lev", pluck_lev );
+
+    s( "lfo_rate", lfo_rate );
+    s( "lfo_delay", lfo_delay );
+    s( "lfo_attack", lfo_attack );
+    s( "lfo_pitch", lfo_to_pitch );
+    s( "lfo_filter", lfo_to_cutoff );
+
+    s( "delay_fb", delay_fb );
+    s( "delay_time", delay_time );
 }
 //[/MiscUserCode]
 
@@ -753,13 +1109,13 @@ BEGIN_JUCER_METADATA
                  parentClasses="public Component, public FileDragAndDropTarget"
                  constructorParams="TuningworkbenchsynthAudioProcessor &amp;p"
                  variableInitialisers="processor(p)" snapPixels="8" snapActive="1"
-                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="720"
-                 initialHeight="630">
+                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="784"
+                 initialHeight="730">
   <METHODS>
     <METHOD name="filesDropped (const StringArray&amp; filenames, int mouseX, int mouseY)"/>
   </METHODS>
   <BACKGROUND backgroundColour="ff323e44">
-    <TEXT pos="0 0 100% 27" fill="solid: ffffffff" hasStroke="0" text="Tuning Workbench"
+    <TEXT pos="0 3 100% 27" fill="solid: ffffffff" hasStroke="0" text="Tuning Workbench"
           fontname="Default font" fontsize="20.0" kerning="0.0" bold="0"
           italic="0" justification="36"/>
     <TEXT pos="227 43 22 21" fill="solid: ffffffff" hasStroke="0" text="A"
@@ -786,19 +1142,19 @@ BEGIN_JUCER_METADATA
     <TEXT pos="419 139 22 21" fill="solid: ffffffff" hasStroke="0" text="R"
           fontname="Default font" fontsize="12.0" kerning="0.0" bold="0"
           italic="0" justification="36"/>
-    <TEXT pos="571 43 22 21" fill="solid: ffffffff" hasStroke="0" text="f"
+    <TEXT pos="635 43 22 21" fill="solid: ffffffff" hasStroke="0" text="f"
           fontname="Default font" fontsize="12.0" kerning="0.0" bold="0"
           italic="0" justification="36"/>
-    <TEXT pos="635 43 22 21" fill="solid: ffffffff" hasStroke="0" text="q"
+    <TEXT pos="699 43 22 21" fill="solid: ffffffff" hasStroke="0" text="q"
           fontname="Default font" fontsize="12.0" kerning="0.0" bold="0"
           italic="0" justification="36"/>
-    <TEXT pos="571 139 22 21" fill="solid: ffffffff" hasStroke="0" text="sat"
+    <TEXT pos="635 235 22 21" fill="solid: ffffffff" hasStroke="0" text="sat"
           fontname="Default font" fontsize="12.0" kerning="0.0" bold="0"
           italic="0" justification="36"/>
-    <TEXT pos="635 139 22 21" fill="solid: ffffffff" hasStroke="0" text="out"
+    <TEXT pos="699 235 22 21" fill="solid: ffffffff" hasStroke="0" text="out"
           fontname="Default font" fontsize="12.0" kerning="0.0" bold="0"
           italic="0" justification="36"/>
-    <TEXT pos="477 139 22 21" fill="solid: ffffffff" hasStroke="0" text="mod"
+    <TEXT pos="480 45 22 21" fill="solid: ffffffff" hasStroke="0" text="mod"
           fontname="Default font" fontsize="12.0" kerning="0.0" bold="0"
           italic="0" justification="36"/>
     <TEXT pos="21 44 31 30" fill="solid: ffffffff" hasStroke="0" text="Sine"
@@ -813,22 +1169,61 @@ BEGIN_JUCER_METADATA
     <TEXT pos="21 116 31 30" fill="solid: ffffffff" hasStroke="0" text="Tri"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="0"
           italic="0" justification="33"/>
-    <TEXT pos="15 180 31 30" fill="solid: ffffffff" hasStroke="0" text="Dn"
+    <TEXT pos="516 181 31 30" fill="solid: ffffffff" hasStroke="0" text="Dn"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="0"
           italic="0" justification="33"/>
-    <TEXT pos="119 180 31 30" fill="solid: ffffffff" hasStroke="0" text="Up"
+    <TEXT pos="516 149 31 30" fill="solid: ffffffff" hasStroke="0" text="Up"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="0"
           italic="0" justification="33"/>
     <TEXT pos="151 44 56 30" fill="solid: ffffffff" hasStroke="0" text="Unison"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="0"
           italic="0" justification="36"/>
+    <TEXT pos="116 185 22 21" fill="solid: ffffffff" hasStroke="0" text="oct"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="0"
+          italic="0" justification="36"/>
+    <TEXT pos="360 237 22 21" fill="solid: ffffffff" hasStroke="0" text="del"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="0"
+          italic="0" justification="36"/>
+    <TEXT pos="296 237 22 21" fill="solid: ffffffff" hasStroke="0" text="rate"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="0"
+          italic="0" justification="36"/>
+    <TEXT pos="432 237 22 21" fill="solid: ffffffff" hasStroke="0" text="atk"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="0"
+          italic="0" justification="36"/>
+    <TEXT pos="496 237 22 21" fill="solid: ffffffff" hasStroke="0" text="ptc"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="0"
+          italic="0" justification="36"/>
+    <TEXT pos="552 237 22 21" fill="solid: ffffffff" hasStroke="0" text="flt"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="0"
+          italic="0" justification="36"/>
+    <TEXT pos="640 141 22 21" fill="solid: ffffffff" hasStroke="0" text="time"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="0"
+          italic="0" justification="36"/>
+    <TEXT pos="712 141 22 21" fill="solid: ffffffff" hasStroke="0" text="fb"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="0"
+          italic="0" justification="36"/>
+    <TEXT pos="21 236 31 30" fill="solid: ffffffff" hasStroke="0" text="Flt"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="0"
+          italic="0" justification="33"/>
+    <TEXT pos="21 260 31 30" fill="solid: ffffffff" hasStroke="0" text="Attn"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="0"
+          italic="0" justification="33"/>
+    <TEXT pos="21 284 31 30" fill="solid: ffffffff" hasStroke="0" text="Init"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="0"
+          italic="0" justification="33"/>
+    <TEXT pos="144 237 22 21" fill="solid: ffffffff" hasStroke="0" text="lev"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="0"
+          italic="0" justification="36"/>
   </BACKGROUND>
+  <GENERICCOMPONENT name="tuningGrid" id="8857390d3f7a2a0b" memberName="tuningGrid"
+                    virtualName="" explicitFocusOrder="0" pos="24 344 296 360" class="TWSTuningGrid"
+                    params=""/>
   <GROUPCOMPONENT name="new group" id="2fbebfe69a2a9d0" memberName="groupComponent7"
-                  virtualName="" explicitFocusOrder="0" pos="8 224 704 400" title="Tuning"/>
+                  virtualName="" explicitFocusOrder="0" pos="8 320 768 400" title="Tuning"/>
   <GROUPCOMPONENT name="new group" id="d1ab89cbe04d6843" memberName="groupComponent3"
-                  virtualName="" explicitFocusOrder="0" pos="224 128 336 96" title="Filter Envelope"/>
+                  virtualName="" explicitFocusOrder="0" pos="224 32 336 96" title="Filter Envelope"/>
   <GROUPCOMPONENT name="new group" id="d2339ec442610ced" memberName="groupComponent2"
-                  virtualName="" explicitFocusOrder="0" pos="224 32 272 96" title="Amplitude Envelope"/>
+                  virtualName="" explicitFocusOrder="0" pos="224 128 272 96" title="Amplitude Envelope"/>
   <GROUPCOMPONENT name="new group" id="8e34fd0e54cfbee4" memberName="groupComponent"
                   virtualName="" explicitFocusOrder="0" pos="8 32 208 128" title="VCO"/>
   <SLIDER name="squareMix" id="5bec37d607899054" memberName="squareMix"
@@ -837,7 +1232,7 @@ BEGIN_JUCER_METADATA
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
           needsCallback="0"/>
   <TABBEDCOMPONENT name="new tabbed component" id="db420304d870887d" memberName="tabbedComponent"
-                   virtualName="" explicitFocusOrder="0" pos="312 248 384 360" orientation="top"
+                   virtualName="" explicitFocusOrder="0" pos="328 344 432 360" orientation="top"
                    tabBarDepth="30" initialTab="0">
     <TAB name="SCL File" colour="ffd3d3d3" useJucerComp="0" contentClassName="TWSTextAndControls"
          constructorParams="true, processor" jucerComponentFile=""/>
@@ -857,71 +1252,71 @@ BEGIN_JUCER_METADATA
           int="0.0" style="LinearHorizontal" textBoxPos="NoTextBox" textBoxEditable="1"
           textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="0"/>
   <SLIDER name="aeg_A" id="3f8f972f16f259c9" memberName="AEG_A" virtualName=""
-          explicitFocusOrder="0" pos="232 46 63 72" min="0.0" max="10.0"
-          int="0.0" style="Rotary" textBoxPos="TextBoxBelow" textBoxEditable="1"
-          textBoxWidth="60" textBoxHeight="15" skewFactor="1.0" needsCallback="0"/>
-  <SLIDER name="feg_A" id="307c85464b04b122" memberName="FEG_A" virtualName=""
           explicitFocusOrder="0" pos="232 142 63 72" min="0.0" max="10.0"
           int="0.0" style="Rotary" textBoxPos="TextBoxBelow" textBoxEditable="1"
           textBoxWidth="60" textBoxHeight="15" skewFactor="1.0" needsCallback="0"/>
-  <SLIDER name="aeg_D" id="4b80491e05a59f72" memberName="AEG_D" virtualName=""
-          explicitFocusOrder="0" pos="296 46 63 72" min="0.0" max="10.0"
+  <SLIDER name="feg_A" id="307c85464b04b122" memberName="FEG_A" virtualName=""
+          explicitFocusOrder="0" pos="232 46 63 72" min="0.0" max="10.0"
           int="0.0" style="Rotary" textBoxPos="TextBoxBelow" textBoxEditable="1"
           textBoxWidth="60" textBoxHeight="15" skewFactor="1.0" needsCallback="0"/>
-  <SLIDER name="feg_D" id="1ab4422d750007b8" memberName="FEG_D" virtualName=""
+  <SLIDER name="aeg_D" id="4b80491e05a59f72" memberName="AEG_D" virtualName=""
           explicitFocusOrder="0" pos="296 142 63 72" min="0.0" max="10.0"
           int="0.0" style="Rotary" textBoxPos="TextBoxBelow" textBoxEditable="1"
           textBoxWidth="60" textBoxHeight="15" skewFactor="1.0" needsCallback="0"/>
-  <SLIDER name="aeg_S" id="5e5c0eeeb9f48337" memberName="AEG_S" virtualName=""
-          explicitFocusOrder="0" pos="360 46 63 72" min="0.0" max="10.0"
+  <SLIDER name="feg_D" id="1ab4422d750007b8" memberName="FEG_D" virtualName=""
+          explicitFocusOrder="0" pos="296 46 63 72" min="0.0" max="10.0"
           int="0.0" style="Rotary" textBoxPos="TextBoxBelow" textBoxEditable="1"
           textBoxWidth="60" textBoxHeight="15" skewFactor="1.0" needsCallback="0"/>
-  <SLIDER name="feg_S" id="d0284dcf8a50fe6a" memberName="FEG_S" virtualName=""
+  <SLIDER name="aeg_S" id="5e5c0eeeb9f48337" memberName="AEG_S" virtualName=""
           explicitFocusOrder="0" pos="360 142 63 72" min="0.0" max="10.0"
           int="0.0" style="Rotary" textBoxPos="TextBoxBelow" textBoxEditable="1"
           textBoxWidth="60" textBoxHeight="15" skewFactor="1.0" needsCallback="0"/>
-  <SLIDER name="aeg_R" id="86c4bfb8f4ba8511" memberName="AEG_R" virtualName=""
-          explicitFocusOrder="0" pos="424 46 63 72" min="0.0" max="10.0"
+  <SLIDER name="feg_S" id="d0284dcf8a50fe6a" memberName="FEG_S" virtualName=""
+          explicitFocusOrder="0" pos="360 46 63 72" min="0.0" max="10.0"
           int="0.0" style="Rotary" textBoxPos="TextBoxBelow" textBoxEditable="1"
           textBoxWidth="60" textBoxHeight="15" skewFactor="1.0" needsCallback="0"/>
-  <SLIDER name="feg_R" id="d10d41e8cf59cdfb" memberName="FEG_R" virtualName=""
+  <SLIDER name="aeg_R" id="86c4bfb8f4ba8511" memberName="AEG_R" virtualName=""
           explicitFocusOrder="0" pos="424 142 63 72" min="0.0" max="10.0"
           int="0.0" style="Rotary" textBoxPos="TextBoxBelow" textBoxEditable="1"
           textBoxWidth="60" textBoxHeight="15" skewFactor="1.0" needsCallback="0"/>
+  <SLIDER name="feg_R" id="d10d41e8cf59cdfb" memberName="FEG_R" virtualName=""
+          explicitFocusOrder="0" pos="424 46 63 72" min="0.0" max="10.0"
+          int="0.0" style="Rotary" textBoxPos="TextBoxBelow" textBoxEditable="1"
+          textBoxWidth="60" textBoxHeight="15" skewFactor="1.0" needsCallback="0"/>
   <GROUPCOMPONENT name="new group" id="5ea4de9077e4e327" memberName="groupComponent4"
-                  virtualName="" explicitFocusOrder="0" pos="504 32 208 96" title="Filter"/>
+                  virtualName="" explicitFocusOrder="0" pos="568 32 208 96" title="Filter"/>
   <SLIDER name="filt_cutoff" id="fb57dc5327ec8482" memberName="Filt_Cutoff"
-          virtualName="" explicitFocusOrder="0" pos="577 45 63 72" min="0.0"
+          virtualName="" explicitFocusOrder="0" pos="641 45 63 72" min="0.0"
           max="10.0" int="0.0" style="Rotary" textBoxPos="TextBoxBelow"
           textBoxEditable="1" textBoxWidth="60" textBoxHeight="15" skewFactor="1.0"
           needsCallback="0"/>
   <SLIDER name="fllt_Q" id="9b609f0af7cc9a16" memberName="Filt_Q" virtualName=""
-          explicitFocusOrder="0" pos="641 45 63 72" min="0.0" max="10.0"
+          explicitFocusOrder="0" pos="705 45 63 72" min="0.0" max="10.0"
           int="0.0" style="Rotary" textBoxPos="TextBoxBelow" textBoxEditable="1"
           textBoxWidth="60" textBoxHeight="15" skewFactor="1.0" needsCallback="0"/>
   <TOGGLEBUTTON name="LPF" id="a76275562ee11c77" memberName="LPFToggle" virtualName=""
-                explicitFocusOrder="0" pos="512 50 56 24" buttonText="LPF" connectedEdges="0"
+                explicitFocusOrder="0" pos="576 50 56 24" buttonText="LPF" connectedEdges="0"
                 needsCallback="0" radioGroupId="1" state="1"/>
   <TOGGLEBUTTON name="HPF" id="a475114ff5ac492c" memberName="HPToggle" virtualName=""
-                explicitFocusOrder="0" pos="512 71 56 24" buttonText="HPF" connectedEdges="0"
+                explicitFocusOrder="0" pos="576 71 56 24" buttonText="HPF" connectedEdges="0"
                 needsCallback="0" radioGroupId="1" state="0"/>
   <TOGGLEBUTTON name="BPF" id="87defba6f79e9432" memberName="BPFTogle" virtualName=""
-                explicitFocusOrder="0" pos="512 93 56 24" buttonText="BPF" connectedEdges="0"
+                explicitFocusOrder="0" pos="576 93 56 24" buttonText="BPF" connectedEdges="0"
                 needsCallback="0" radioGroupId="1" state="0"/>
   <GROUPCOMPONENT name="new group" id="643f7ea232ea9de9" memberName="groupComponent5"
-                  virtualName="" explicitFocusOrder="0" pos="568 128 144 96" title="Master"/>
+                  virtualName="" explicitFocusOrder="0" pos="632 224 144 96" title="Master"/>
   <SLIDER name="master_sat" id="71bfa7556a0d4988" memberName="master_sat"
-          virtualName="" explicitFocusOrder="0" pos="577 140 63 72" min="0.0"
+          virtualName="" explicitFocusOrder="0" pos="641 236 63 72" min="0.0"
           max="10.0" int="0.0" style="Rotary" textBoxPos="TextBoxBelow"
           textBoxEditable="1" textBoxWidth="60" textBoxHeight="15" skewFactor="1.0"
           needsCallback="0"/>
   <SLIDER name="master_out" id="4050b7c060ab07f8" memberName="master_out"
-          virtualName="" explicitFocusOrder="0" pos="641 140 63 72" min="0.0"
+          virtualName="" explicitFocusOrder="0" pos="705 236 63 72" min="0.0"
           max="10.0" int="0.0" style="Rotary" textBoxPos="TextBoxBelow"
           textBoxEditable="1" textBoxWidth="60" textBoxHeight="15" skewFactor="1.0"
           needsCallback="0"/>
   <SLIDER name="feg_depth" id="d36f99a31a63f29e" memberName="FEG_depth"
-          virtualName="" explicitFocusOrder="0" pos="487 142 63 72" min="0.0"
+          virtualName="" explicitFocusOrder="0" pos="487 46 63 72" min="0.0"
           max="10.0" int="0.0" style="Rotary" textBoxPos="TextBoxBelow"
           textBoxEditable="1" textBoxWidth="60" textBoxHeight="15" skewFactor="1.0"
           needsCallback="0"/>
@@ -936,26 +1331,102 @@ BEGIN_JUCER_METADATA
           textBoxEditable="1" textBoxWidth="60" textBoxHeight="15" skewFactor="1.0"
           needsCallback="0"/>
   <GROUPCOMPONENT name="new group" id="b05188e3af5159ec" memberName="groupComponent6"
-                  virtualName="" explicitFocusOrder="0" pos="8 160 208 64" title="Pitch Bend Range"/>
-  <SLIDER name="PB Down" id="cd1af9391f3be38b" memberName="pb_down" virtualName=""
-          explicitFocusOrder="0" pos="50 182 56 32" min="0.0" max="10.0"
+                  virtualName="" explicitFocusOrder="0" pos="504 128 120 96" title="Bend"/>
+  <SLIDER name="PB UP" id="cd1af9391f3be38b" memberName="pb_up" virtualName=""
+          explicitFocusOrder="0" pos="550 151 56 30" min="0.0" max="10.0"
           int="0.0" style="IncDecButtons" textBoxPos="TextBoxBelow" textBoxEditable="1"
           textBoxWidth="60" textBoxHeight="15" skewFactor="1.0" needsCallback="0"/>
-  <SLIDER name="PB Up" id="778d93a375abf370" memberName="pb_up" virtualName=""
-          explicitFocusOrder="0" pos="147 182 56 32" min="0.0" max="10.0"
+  <SLIDER name="PB Down" id="778d93a375abf370" memberName="pb_down" virtualName=""
+          explicitFocusOrder="0" pos="550 183 58 30" min="0.0" max="10.0"
           int="0.0" style="IncDecButtons" textBoxPos="TextBoxBelow" textBoxEditable="1"
           textBoxWidth="60" textBoxHeight="15" skewFactor="1.0" needsCallback="0"/>
   <LABEL name="Version Label" id="f03eb6156ac44877" memberName="version"
-         virtualName="" explicitFocusOrder="0" pos="0 0 190 16" textCol="ffa6a6a6"
+         virtualName="" explicitFocusOrder="0" pos="490 9 190 16" textCol="ffa6a6a6"
          edTextCol="ff000000" edBkgCol="0" labelText="set-this" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="12.0" kerning="0.0" bold="0" italic="0" justification="33"/>
-  <GENERICCOMPONENT name="tuningGrid" id="8857390d3f7a2a0b" memberName="tuningGrid"
-                    virtualName="" explicitFocusOrder="0" pos="24 248 272 360" class="TWSTuningGrid"
-                    params=""/>
+         fontsize="12.0" kerning="0.0" bold="0" italic="0" justification="34"/>
   <TEXTBUTTON name="aboutButton" id="611931d47a95eacb" memberName="aboutButton"
-              virtualName="" explicitFocusOrder="0" pos="632 8 79 24" buttonText="About"
+              virtualName="" explicitFocusOrder="0" pos="688 3 79 24" buttonText="About"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
+  <GROUPCOMPONENT name="new group" id="fbbdde6af60bfa90" memberName="groupComponent8"
+                  virtualName="" explicitFocusOrder="0" pos="224 224 400 96" title="LFO"/>
+  <SLIDER name="lfo_rate" id="6a9193d7258c1681" memberName="lfo_rate" virtualName=""
+          explicitFocusOrder="0" pos="304 238 63 72" min="0.0" max="10.0"
+          int="0.0" style="Rotary" textBoxPos="TextBoxBelow" textBoxEditable="1"
+          textBoxWidth="60" textBoxHeight="15" skewFactor="1.0" needsCallback="0"/>
+  <SLIDER name="lfo_delay" id="bd0a101d21e402b5" memberName="lfo_delay"
+          virtualName="" explicitFocusOrder="0" pos="368 238 63 72" min="0.0"
+          max="10.0" int="0.0" style="Rotary" textBoxPos="TextBoxBelow"
+          textBoxEditable="1" textBoxWidth="60" textBoxHeight="15" skewFactor="1.0"
+          needsCallback="0"/>
+  <SLIDER name="lfo_attack" id="2fb75b347cd330db" memberName="lfo_attack"
+          virtualName="" explicitFocusOrder="0" pos="432 238 63 72" min="0.0"
+          max="10.0" int="0.0" style="Rotary" textBoxPos="TextBoxBelow"
+          textBoxEditable="1" textBoxWidth="60" textBoxHeight="15" skewFactor="1.0"
+          needsCallback="0"/>
+  <TOGGLEBUTTON name="lfotri" id="4854b4183a8e0826" memberName="lfotritog" virtualName=""
+                explicitFocusOrder="0" pos="237 242 56 24" buttonText="TRI" connectedEdges="0"
+                needsCallback="0" radioGroupId="1" state="1"/>
+  <TOGGLEBUTTON name="lfosq" id="9096bc04f359db3a" memberName="lfosqrtog" virtualName=""
+                explicitFocusOrder="0" pos="237 263 56 24" buttonText="SQR" connectedEdges="0"
+                needsCallback="0" radioGroupId="1" state="0"/>
+  <TOGGLEBUTTON name="lfornd" id="3007921d4cb0e134" memberName="lforndtog" virtualName=""
+                explicitFocusOrder="0" pos="237 285 56 24" buttonText="RND" connectedEdges="0"
+                needsCallback="0" radioGroupId="1" state="0"/>
+  <SLIDER name="lfo_to_pitch" id="6102623ee8a927fd" memberName="lfo_to_pitch"
+          virtualName="" explicitFocusOrder="0" pos="496 238 63 72" min="0.0"
+          max="10.0" int="0.0" style="Rotary" textBoxPos="TextBoxBelow"
+          textBoxEditable="1" textBoxWidth="60" textBoxHeight="15" skewFactor="1.0"
+          needsCallback="0"/>
+  <SLIDER name="lfo_to_cutoff" id="74ecf6b446a99ae5" memberName="lfo_to_cutoff"
+          virtualName="" explicitFocusOrder="0" pos="560 238 63 72" min="0.0"
+          max="10.0" int="0.0" style="Rotary" textBoxPos="TextBoxBelow"
+          textBoxEditable="1" textBoxWidth="60" textBoxHeight="15" skewFactor="1.0"
+          needsCallback="0"/>
+  <GROUPCOMPONENT name="new group" id="1a6ff50d70c6708f" memberName="groupComponent9"
+                  virtualName="" explicitFocusOrder="0" pos="8 160 208 64" title="Sub"/>
+  <SLIDER name="sineMix" id="7c74ce40dda4a6af" memberName="sublevel" virtualName=""
+          explicitFocusOrder="0" pos="18 179 94 30" min="0.0" max="1.0"
+          int="0.0" style="LinearHorizontal" textBoxPos="NoTextBox" textBoxEditable="1"
+          textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="0"/>
+  <SLIDER name="Octave" id="c496b5d553a407cc" memberName="sub_oct" virtualName=""
+          explicitFocusOrder="0" pos="148 177 56 32" min="0.0" max="10.0"
+          int="0.0" style="IncDecButtons" textBoxPos="TextBoxBelow" textBoxEditable="1"
+          textBoxWidth="60" textBoxHeight="15" skewFactor="1.0" needsCallback="0"/>
+  <GROUPCOMPONENT name="new group" id="54484da892d90c71" memberName="groupComponent10"
+                  virtualName="" explicitFocusOrder="0" pos="8 224 208 96" title="Pluck"/>
+  <GROUPCOMPONENT name="new group" id="8ef713d8bfa0a07b" memberName="groupComponent11"
+                  virtualName="" explicitFocusOrder="0" pos="632 128 144 96" title="Delay"/>
+  <COMBOBOX name="new combo box" id="970d30d04b5c167c" memberName="comboBox"
+            virtualName="" explicitFocusOrder="0" pos="8 3 168 24" editable="0"
+            layout="33" items="" textWhenNonSelected="" textWhenNoItems="(no choices)"/>
+  <SLIDER name="delay_fb" id="e034138b2cf38cda" memberName="delay_fb" virtualName=""
+          explicitFocusOrder="0" pos="712 144 63 72" min="0.0" max="10.0"
+          int="0.0" style="Rotary" textBoxPos="TextBoxBelow" textBoxEditable="1"
+          textBoxWidth="60" textBoxHeight="15" skewFactor="1.0" needsCallback="0"/>
+  <SLIDER name="delay_time" id="83f72f5048c8af2d" memberName="delay_time"
+          virtualName="" explicitFocusOrder="0" pos="640 144 63 72" min="0.0"
+          max="10.0" int="0.0" style="Rotary" textBoxPos="TextBoxBelow"
+          textBoxEditable="1" textBoxWidth="60" textBoxHeight="15" skewFactor="1.0"
+          needsCallback="0"/>
+  <SLIDER name="squareMix" id="ecc8a0f8fce934e8" memberName="pluck_atn"
+          virtualName="" explicitFocusOrder="0" pos="48 264 88 30" min="0.0"
+          max="1.0" int="0.0" style="LinearHorizontal" textBoxPos="NoTextBox"
+          textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
+          needsCallback="0"/>
+  <SLIDER name="sineMix" id="9085283745af7088" memberName="pluck_flt" virtualName=""
+          explicitFocusOrder="0" pos="48 240 88 30" min="0.0" max="1.0"
+          int="0.0" style="LinearHorizontal" textBoxPos="NoTextBox" textBoxEditable="1"
+          textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="0"/>
+  <SLIDER name="sawMix" id="db5365e77efe03e8" memberName="pluck_init" virtualName=""
+          explicitFocusOrder="0" pos="48 288 88 30" min="0.0" max="1.0"
+          int="0.0" style="LinearHorizontal" textBoxPos="NoTextBox" textBoxEditable="1"
+          textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="0"/>
+  <SLIDER name="lfo_rate" id="e8ae948f8e79bbb2" memberName="pluck_lev"
+          virtualName="" explicitFocusOrder="0" pos="144 240 63 72" min="0.0"
+          max="10.0" int="0.0" style="Rotary" textBoxPos="TextBoxBelow"
+          textBoxEditable="1" textBoxWidth="60" textBoxHeight="15" skewFactor="1.0"
+          needsCallback="0"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
