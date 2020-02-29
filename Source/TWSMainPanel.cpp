@@ -37,6 +37,12 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
 
+    groupComponent8.reset (new GroupComponent ("new group",
+                                               TRANS("LFO")));
+    addAndMakeVisible (groupComponent8.get());
+
+    groupComponent8->setBounds (224, 224, 400, 96);
+
     tuningGrid.reset (new TWSTuningGrid());
     addAndMakeVisible (tuningGrid.get());
     tuningGrid->setName ("tuningGrid");
@@ -259,12 +265,6 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
 
     uni_count->setBounds (152, 70, 56, 32);
 
-    groupComponent6.reset (new GroupComponent ("new group",
-                                               TRANS("Bend")));
-    addAndMakeVisible (groupComponent6.get());
-
-    groupComponent6->setBounds (504, 128, 120, 96);
-
     pb_up.reset (new Slider ("PB UP"));
     addAndMakeVisible (pb_up.get());
     pb_up->setRange (0, 10, 0);
@@ -299,12 +299,6 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     aboutButton->addListener (this);
 
     aboutButton->setBounds (688, 3, 79, 24);
-
-    groupComponent8.reset (new GroupComponent ("new group",
-                                               TRANS("LFO")));
-    addAndMakeVisible (groupComponent8.get());
-
-    groupComponent8->setBounds (224, 224, 400, 96);
 
     lfo_rate.reset (new Slider ("lfo_rate"));
     addAndMakeVisible (lfo_rate.get());
@@ -460,6 +454,54 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
 
     pluck_lev->setBounds (144, 240, 63, 72);
 
+    SubPower.reset (new TWSPowerToggle());
+    addAndMakeVisible (SubPower.get());
+    SubPower->setName ("new component");
+
+    SubPower->setBounds (184, 160, 16, 16);
+
+    PluckPower.reset (new TWSPowerToggle());
+    addAndMakeVisible (PluckPower.get());
+    PluckPower->setName ("new component");
+
+    PluckPower->setBounds (184, 224, 16, 16);
+
+    DelayPower.reset (new TWSPowerToggle());
+    addAndMakeVisible (DelayPower.get());
+    DelayPower->setName ("new component");
+
+    DelayPower->setBounds (744, 128, 16, 16);
+
+    VCOPower.reset (new TWSPowerToggle());
+    addAndMakeVisible (VCOPower.get());
+    VCOPower->setName ("new component");
+
+    VCOPower->setBounds (184, 32, 16, 16);
+
+    wheelLab.reset (new Label ("new label",
+                               TRANS("wheel")));
+    addAndMakeVisible (wheelLab.get());
+    wheelLab->setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Regular"));
+    wheelLab->setJustificationType (Justification::centred);
+    wheelLab->setEditable (false, false, false);
+    wheelLab->setColour (Label::backgroundColourId, Colour (0xffab1d1d));
+    wheelLab->setColour (TextEditor::textColourId, Colours::black);
+    wheelLab->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
+
+    wheelLab->setBounds (545, 219, 55, 24);
+
+    ModWheelPower.reset (new TWSPowerToggle());
+    addAndMakeVisible (ModWheelPower.get());
+    ModWheelPower->setName ("new component");
+
+    ModWheelPower->setBounds (593, 224, 16, 16);
+
+    groupComponent6.reset (new GroupComponent ("new group",
+                                               TRANS("Bend")));
+    addAndMakeVisible (groupComponent6.get());
+
+    groupComponent6->setBounds (504, 128, 120, 96);
+
 
     //[UserPreSize]
     version->setText( TWS_VERSION, dontSendNotification );
@@ -478,6 +520,10 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     processor.addTuningUpdatedListener( sclTextAndControls );
     processor.addTuningUpdatedListener( kbmTextAndControls );
     processor.addTuningUpdatedListener( tuningGrid.get() );
+
+    wheelLab->setColour (Label::backgroundColourId, getLookAndFeel().findColour (ResizableWindow::backgroundColourId));
+
+    VCOPower->setToggleState( true, dontSendNotification );
     //[/UserPreSize]
 
     setSize (784, 730);
@@ -500,6 +546,7 @@ TWSMainPanel::~TWSMainPanel()
     buttonAttachments.clear();
     //[/Destructor_pre]
 
+    groupComponent8 = nullptr;
     tuningGrid = nullptr;
     groupComponent7 = nullptr;
     groupComponent3 = nullptr;
@@ -530,12 +577,10 @@ TWSMainPanel::~TWSMainPanel()
     FEG_depth = nullptr;
     uni_spread = nullptr;
     uni_count = nullptr;
-    groupComponent6 = nullptr;
     pb_up = nullptr;
     pb_down = nullptr;
     version = nullptr;
     aboutButton = nullptr;
-    groupComponent8 = nullptr;
     lfo_rate = nullptr;
     lfo_delay = nullptr;
     lfo_attack = nullptr;
@@ -556,6 +601,13 @@ TWSMainPanel::~TWSMainPanel()
     pluck_flt = nullptr;
     pluck_init = nullptr;
     pluck_lev = nullptr;
+    SubPower = nullptr;
+    PluckPower = nullptr;
+    DelayPower = nullptr;
+    VCOPower = nullptr;
+    wheelLab = nullptr;
+    ModWheelPower = nullptr;
+    groupComponent6 = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -1093,6 +1145,25 @@ void TWSMainPanel::connectValueTreeState(AudioProcessorValueTreeState &t )
     s( "delay_fb", delay_fb );
     s( "delay_time", delay_time );
 }
+
+void TWSPowerToggle::paintButton( Graphics &g, bool hl, bool dn )
+{
+    g.fillAll (getLookAndFeel().findColour (ResizableWindow::backgroundColourId));
+    if( getToggleState() )
+    {
+        g.setColour( findColour( Slider::thumbColourId ) );
+        g.fillEllipse( 2, 3, 12, 12 );
+        g.setColour( findColour( Label::textColourId ) );
+        g.drawEllipse( 2, 3, 12, 11, 1 );
+        g.fillRect( 7, 2, 2, 6 );
+    }
+    else
+    {
+        g.setColour( findColour( GroupComponent::outlineColourId ) );
+        g.drawEllipse( 2, 3, 12, 12, 1 );
+        g.fillRect( 7, 3, 2, 6 );
+    }
+}
 //[/MiscUserCode]
 
 
@@ -1215,6 +1286,8 @@ BEGIN_JUCER_METADATA
           fontname="Default font" fontsize="12.0" kerning="0.0" bold="0"
           italic="0" justification="36"/>
   </BACKGROUND>
+  <GROUPCOMPONENT name="new group" id="fbbdde6af60bfa90" memberName="groupComponent8"
+                  virtualName="" explicitFocusOrder="0" pos="224 224 400 96" title="LFO"/>
   <GENERICCOMPONENT name="tuningGrid" id="8857390d3f7a2a0b" memberName="tuningGrid"
                     virtualName="" explicitFocusOrder="0" pos="24 344 296 360" class="TWSTuningGrid"
                     params=""/>
@@ -1330,8 +1403,6 @@ BEGIN_JUCER_METADATA
           max="10.0" int="0.0" style="IncDecButtons" textBoxPos="TextBoxBelow"
           textBoxEditable="1" textBoxWidth="60" textBoxHeight="15" skewFactor="1.0"
           needsCallback="0"/>
-  <GROUPCOMPONENT name="new group" id="b05188e3af5159ec" memberName="groupComponent6"
-                  virtualName="" explicitFocusOrder="0" pos="504 128 120 96" title="Bend"/>
   <SLIDER name="PB UP" id="cd1af9391f3be38b" memberName="pb_up" virtualName=""
           explicitFocusOrder="0" pos="550 151 56 30" min="0.0" max="10.0"
           int="0.0" style="IncDecButtons" textBoxPos="TextBoxBelow" textBoxEditable="1"
@@ -1348,8 +1419,6 @@ BEGIN_JUCER_METADATA
   <TEXTBUTTON name="aboutButton" id="611931d47a95eacb" memberName="aboutButton"
               virtualName="" explicitFocusOrder="0" pos="688 3 79 24" buttonText="About"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
-  <GROUPCOMPONENT name="new group" id="fbbdde6af60bfa90" memberName="groupComponent8"
-                  virtualName="" explicitFocusOrder="0" pos="224 224 400 96" title="LFO"/>
   <SLIDER name="lfo_rate" id="6a9193d7258c1681" memberName="lfo_rate" virtualName=""
           explicitFocusOrder="0" pos="304 238 63 72" min="0.0" max="10.0"
           int="0.0" style="Rotary" textBoxPos="TextBoxBelow" textBoxEditable="1"
@@ -1427,6 +1496,28 @@ BEGIN_JUCER_METADATA
           max="10.0" int="0.0" style="Rotary" textBoxPos="TextBoxBelow"
           textBoxEditable="1" textBoxWidth="60" textBoxHeight="15" skewFactor="1.0"
           needsCallback="0"/>
+  <GENERICCOMPONENT name="new component" id="ac8ce2870242f1fe" memberName="SubPower"
+                    virtualName="" explicitFocusOrder="0" pos="184 160 16 16" class="TWSPowerToggle"
+                    params=""/>
+  <GENERICCOMPONENT name="new component" id="55e0f7d8357b759a" memberName="PluckPower"
+                    virtualName="" explicitFocusOrder="0" pos="184 224 16 16" class="TWSPowerToggle"
+                    params=""/>
+  <GENERICCOMPONENT name="new component" id="1d9d3b36c701b236" memberName="DelayPower"
+                    virtualName="" explicitFocusOrder="0" pos="744 128 16 16" class="TWSPowerToggle"
+                    params=""/>
+  <GENERICCOMPONENT name="new component" id="392fcad2efd873fc" memberName="VCOPower"
+                    virtualName="" explicitFocusOrder="0" pos="184 32 16 16" class="TWSPowerToggle"
+                    params=""/>
+  <LABEL name="new label" id="5599c301ca781b78" memberName="wheelLab"
+         virtualName="" explicitFocusOrder="0" pos="545 219 55 24" bkgCol="ffab1d1d"
+         edTextCol="ff000000" edBkgCol="0" labelText="wheel" editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
+         fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="36"/>
+  <GENERICCOMPONENT name="new component" id="15fed711e2489031" memberName="ModWheelPower"
+                    virtualName="" explicitFocusOrder="0" pos="593 224 16 16" class="TWSPowerToggle"
+                    params=""/>
+  <GROUPCOMPONENT name="new group" id="b05188e3af5159ec" memberName="groupComponent6"
+                  virtualName="" explicitFocusOrder="0" pos="504 128 120 96" title="Bend"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
