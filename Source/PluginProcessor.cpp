@@ -218,13 +218,6 @@ bool TuningworkbenchsynthAudioProcessor::isBusesLayoutSupported (const BusesLayo
 
 void TuningworkbenchsynthAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
 {
-    static float mo = 0;
-    float ml = *sinLevel;
-    if( mo != ml )
-    {
-        std::cout << "AL=" << ml << std::endl;
-        mo = ml;
-    }
     synth.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples() );
 }
 
