@@ -26,11 +26,11 @@ void TWSVoice::startNote (int midiNoteNumber, float velocity,
 {
     setPitchWheel( currentPitchWheelPosition );
     noteNum = midiNoteNumber;
-    
+
     level = ( velocity + 64 ) / 192.0 * 0.15; // cramp up the velosity sens a bit
 
     nunison = std::max( 1, (int)( *(p->uni_count) ) );
-
+    filterTypeAtOutset = *( p->filter_type );
     
     if( nunison == 1 )
     {
@@ -169,6 +169,8 @@ void TWSVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample
     if( ! isVoiceActive() ) return;
     const int resetFilterEvery = 4;
 
+    bool usef = *(p->filter_on) != 0 ? true : false;
+    
     sinLevel.setTargetValue( *( p->sinLevel ) );
     squareLevel.setTargetValue( *( p->squareLevel ) );
     sawLevel.setTargetValue( *( p->sawLevel ) );
@@ -199,17 +201,43 @@ void TWSVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample
         auto sqrlv = squareLevel.getNextValue();
         auto sawlv = sawLevel.getNextValue();
         auto trilv = triLevel.getNextValue();
-        
-        auto filtd = filterDepth.getNextValue();
-        auto filtc = std::max( 10.0, std::min( filterCut.getNextValue() * ( 1 + FEG * FEG * filtd * 64.0 ), getSampleRate() / 2 ) );
-        auto filtr = filterRes.getNextValue();
 
-        // This is overkill but for now just hammer it
-        if( sc % resetFilterEvery == 0 )
+        
+        if( usef )
         {
-            auto c = IIRCoefficients::makeLowPass( getSampleRate(), filtc, filtr );
-            filterL.setCoefficients( c );
-            filterR.setCoefficients( c );
+            auto filtd = filterDepth.getNextValue();
+            auto filtc = std::max( 10.0, std::min( filterCut.getNextValue() * ( 1 + FEG * FEG * filtd * 64.0 ), getSampleRate() / 2 ) );
+            auto filtr = filterRes.getNextValue();
+            
+            // This is overkill but for now just hammer it
+            if( sc % resetFilterEvery == 0 )
+            {
+                switch( filterTypeAtOutset )
+                {
+                case 2: // HPF
+                {
+                    auto c = IIRCoefficients::makeHighPass( getSampleRate(), filtc, filtr );
+                    filterL.setCoefficients( c );
+                    filterR.setCoefficients( c );
+                    break;
+                }
+                case 3: // BPF
+                {
+                    auto c = IIRCoefficients::makeBandPass( getSampleRate(), filtc, filtr );
+                    filterL.setCoefficients( c );
+                    filterR.setCoefficients( c );
+                    break;
+                }
+                default: // LPF
+                {
+                    auto c = IIRCoefficients::makeLowPass( getSampleRate(), filtc, filtr );
+                    filterL.setCoefficients( c );
+                    filterR.setCoefficients( c );
+                    break;
+                }
+                    
+                }
+            }
         }
         sc++;
         
@@ -249,8 +277,11 @@ void TWSVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample
                 currentAngle[i] -= 1.0;
         }
 
-        sampleL = filterL.processSingleSampleRaw( sampleL );
-        sampleR = filterL.processSingleSampleRaw( sampleR );
+        if( usef )
+        {
+            sampleL = filterL.processSingleSampleRaw( sampleL );
+            sampleR = filterL.processSingleSampleRaw( sampleR );
+        }
         
         if( outputBuffer.getNumChannels() == 1 )
         {

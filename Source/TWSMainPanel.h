@@ -30,6 +30,15 @@ public:
     TWSPowerToggle() : ToggleButton() { };
     virtual void paintButton( Graphics &g, bool hl, bool dn );
 };
+
+struct TWSLambdaParamListener : public virtual AudioProcessorParameter::Listener
+{
+    virtual void parameterGestureChanged( int, bool ) { }
+    virtual void parameterValueChanged( int idx, float nv ) {
+        lfunc(idx, nv);
+    }
+    std::function<void(int,float)> lfunc = [](int,float){};
+};
 //[/Headers]
 
 
@@ -77,6 +86,7 @@ private:
     std::vector<std::unique_ptr<SliderAttachment>> sliderAttachments;
     typedef AudioProcessorValueTreeState::ButtonAttachment ButtonAttachment;
     std::vector<std::unique_ptr<ButtonAttachment>> buttonAttachments;
+    std::vector<TWSLambdaParamListener*> lambdaAtttachments;
     //[/UserVariables]
 
     //==============================================================================
@@ -103,8 +113,8 @@ private:
     std::unique_ptr<Slider> Filt_Cutoff;
     std::unique_ptr<Slider> Filt_Q;
     std::unique_ptr<ToggleButton> LPFToggle;
-    std::unique_ptr<ToggleButton> HPToggle;
-    std::unique_ptr<ToggleButton> BPFTogle;
+    std::unique_ptr<ToggleButton> HPFToggle;
+    std::unique_ptr<ToggleButton> BPFToggle;
     std::unique_ptr<GroupComponent> groupComponent5;
     std::unique_ptr<Slider> master_sat;
     std::unique_ptr<Slider> master_out;
@@ -142,6 +152,7 @@ private:
     std::unique_ptr<Label> wheelLab;
     std::unique_ptr<TWSPowerToggle> ModWheelPower;
     std::unique_ptr<GroupComponent> groupComponent6;
+    std::unique_ptr<TWSPowerToggle> FilterPower;
 
 
     //==============================================================================

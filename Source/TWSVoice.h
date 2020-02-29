@@ -71,6 +71,7 @@ private:
 
     SmoothedValue<float> filterCut, filterRes, filterDepth;
     IIRFilter filterL, filterR;
+    int filterTypeAtOutset;
     
     ADSR ampenv, filtenv;
 };
