@@ -50,7 +50,6 @@ TWSTuningGrid::TWSTuningGrid ()
     table->getHeader().addColumn( "log2(f/8.17)", 3, 90 );
     table->setModel( this );
 
-    std::cout << "setting sb" << std::endl;
     table->getViewport()->setScrollBarsShown(true,false);
     //[/Constructor]
 }

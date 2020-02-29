@@ -37,14 +37,27 @@ public:
 
     void pitchWheelMoved (int pw) override
     {
-        double pwf = (1.0 * pw - 8192)/8192;
-        std::cout << "pitchWheel is at " << pwf << std::endl;
+        setPitchWheel( pw );
     }
+
     void controllerMoved (int, int) override {}
 
     void renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample, int numSamples) override;
 
 private:
+    void setPitchWheel( int pw ) {
+        pwAmount = (1.0 * pw - 8192)/8192;
+    }
+
+    double pitchWheelNoteShift();
+        
+    double frequencyForFractionalNote( double fracNote );
+        
+    int noteNum;
+    double pwAmount;
+    double priorRenderedPW = 0;
+    
+    
     TuningworkbenchsynthAudioProcessor *p;
 
     double currentAngle[MAX_UNISON], angleDelta[MAX_UNISON], level = 0.0;
