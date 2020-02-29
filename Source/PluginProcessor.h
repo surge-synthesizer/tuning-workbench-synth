@@ -19,6 +19,7 @@
 */
 
 class TWSVoice;
+class TWSMainPanel;
 
 class TuningUpdatedListener {
 public:
@@ -84,6 +85,7 @@ public:
     String currentSCLString = "", currentKBMString = "";
     
     friend class TWSVoice;
+    friend class TWSMainPanel;
 private:
     Synthesiser synth;
     AudioProcessorValueTreeState parameters;
@@ -97,7 +99,7 @@ private:
     std::atomic<float> *amp_attack, *amp_decay, *amp_sustain, *amp_release;
     std::atomic<float> *filter_attack, *filter_decay, *filter_sustain, *filter_release, *filter_depth;
 
-    //std::atomic<int> *filter_type;
+    std::atomic<float> *filter_type;
     std::atomic<float> *filter_cutoff, *filter_resonance;
 
     std::atomic<float> *master_sat, *master_level;
@@ -108,7 +110,7 @@ private:
 
     std::atomic<float> *lfo_type, *lfo_rate, *lfo_delay, *lfo_attack, *lfo_pitch, *lfo_filter;
 
-    std::atomic<float> *vco_on, *sub_on, *pluck_on, *delay_on;
+    std::atomic<float> *vco_on, *sub_on, *pluck_on, *delay_on, *modwheel_on, *filter_on;
     
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TuningworkbenchsynthAudioProcessor)

@@ -80,7 +80,7 @@ TuningworkbenchsynthAudioProcessor::TuningworkbenchsynthAudioProcessor()
 
                       std::make_unique<AudioParameterInt>( "filter_type",
                                                            "Filter Type",
-                                                           0,2,0 ),
+                                                           1,3,1 ),
                       std::make_unique<AudioParameterFloat>( "filter_cutoff",
                                                              "Filter Cutoff",
                                                              10.0, 20000.0, 880 ),
@@ -154,6 +154,12 @@ TuningworkbenchsynthAudioProcessor::TuningworkbenchsynthAudioProcessor()
                       std::make_unique<AudioParameterInt>( "delay_on",
                                                            "Delay On",
                                                            0, 1.0, 1.0 ),
+                      std::make_unique<AudioParameterInt>( "modwheel_on",
+                                                           "ModWheel On",
+                                                           0, 1.0, 0.0 ),
+                      std::make_unique<AudioParameterInt>( "filter_on",
+                                                           "Filter On",
+                                                           0, 1.0, 1.0 )
 
                   } )
 {
@@ -183,6 +189,7 @@ TuningworkbenchsynthAudioProcessor::TuningworkbenchsynthAudioProcessor()
     SP(filter_release);
     SP(filter_depth);
 
+    SP(filter_type);
     SP(filter_cutoff);
     SP(filter_resonance);
 
@@ -213,6 +220,8 @@ TuningworkbenchsynthAudioProcessor::TuningworkbenchsynthAudioProcessor()
     SP(sub_on);
     SP(pluck_on);
     SP(delay_on);
+    SP(modwheel_on);
+    SP(filter_on);
     
     auto initS = Tunings::evenTemperament12NoteScale();
     setSCL( initS.rawText, false );

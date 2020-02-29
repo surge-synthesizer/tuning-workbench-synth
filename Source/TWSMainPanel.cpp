@@ -203,21 +203,24 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     LPFToggle.reset (new ToggleButton ("LPF"));
     addAndMakeVisible (LPFToggle.get());
     LPFToggle->setRadioGroupId (1);
+    LPFToggle->addListener (this);
     LPFToggle->setToggleState (true, dontSendNotification);
 
     LPFToggle->setBounds (576, 50, 56, 24);
 
-    HPToggle.reset (new ToggleButton ("HPF"));
-    addAndMakeVisible (HPToggle.get());
-    HPToggle->setRadioGroupId (1);
+    HPFToggle.reset (new ToggleButton ("HPF"));
+    addAndMakeVisible (HPFToggle.get());
+    HPFToggle->setRadioGroupId (1);
+    HPFToggle->addListener (this);
 
-    HPToggle->setBounds (576, 71, 56, 24);
+    HPFToggle->setBounds (576, 71, 56, 24);
 
-    BPFTogle.reset (new ToggleButton ("BPF"));
-    addAndMakeVisible (BPFTogle.get());
-    BPFTogle->setRadioGroupId (1);
+    BPFToggle.reset (new ToggleButton ("BPF"));
+    addAndMakeVisible (BPFToggle.get());
+    BPFToggle->setRadioGroupId (1);
+    BPFToggle->addListener (this);
 
-    BPFTogle->setBounds (576, 93, 56, 24);
+    BPFToggle->setBounds (576, 93, 56, 24);
 
     groupComponent5.reset (new GroupComponent ("new group",
                                                TRANS("Master")));
@@ -502,6 +505,12 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
 
     groupComponent6->setBounds (504, 128, 120, 96);
 
+    FilterPower.reset (new TWSPowerToggle());
+    addAndMakeVisible (FilterPower.get());
+    FilterPower->setName ("new component");
+
+    FilterPower->setBounds (744, 32, 16, 16);
+
 
     //[UserPreSize]
     version->setText( TWS_VERSION, dontSendNotification );
@@ -524,6 +533,12 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     wheelLab->setColour (Label::backgroundColourId, getLookAndFeel().findColour (ResizableWindow::backgroundColourId));
 
     VCOPower->setToggleState( true, dontSendNotification );
+    VCOPower->addListener(this);
+    SubPower->addListener(this);
+    PluckPower->addListener(this);
+    DelayPower->addListener(this);
+    ModWheelPower->addListener(this);
+    FilterPower->addListener(this);
     //[/UserPreSize]
 
     setSize (784, 730);
@@ -544,6 +559,7 @@ TWSMainPanel::~TWSMainPanel()
 
     sliderAttachments.clear();
     buttonAttachments.clear();
+    lambdaAtttachments.clear();
     //[/Destructor_pre]
 
     groupComponent8 = nullptr;
@@ -569,8 +585,8 @@ TWSMainPanel::~TWSMainPanel()
     Filt_Cutoff = nullptr;
     Filt_Q = nullptr;
     LPFToggle = nullptr;
-    HPToggle = nullptr;
-    BPFTogle = nullptr;
+    HPFToggle = nullptr;
+    BPFToggle = nullptr;
     groupComponent5 = nullptr;
     master_sat = nullptr;
     master_out = nullptr;
@@ -608,6 +624,7 @@ TWSMainPanel::~TWSMainPanel()
     wheelLab = nullptr;
     ModWheelPower = nullptr;
     groupComponent6 = nullptr;
+    FilterPower = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -1036,7 +1053,43 @@ void TWSMainPanel::buttonClicked (Button* buttonThatWasClicked)
     //[UserbuttonClicked_Pre]
     //[/UserbuttonClicked_Pre]
 
-    if (buttonThatWasClicked == aboutButton.get())
+    if (buttonThatWasClicked == LPFToggle.get())
+    {
+        //[UserButtonCode_LPFToggle] -- add your button handler code here..
+        if( buttonThatWasClicked->getToggleState() )
+        {
+            auto ft = processor.parameters.getParameter("filter_type");
+            ft->beginChangeGesture();
+            ft->setValueNotifyingHost( 0.0 );
+            ft->endChangeGesture();
+        }
+        //[/UserButtonCode_LPFToggle]
+    }
+    else if (buttonThatWasClicked == HPFToggle.get())
+    {
+        //[UserButtonCode_HPFToggle] -- add your button handler code here..
+        if( buttonThatWasClicked->getToggleState() )
+        {
+            auto ft = processor.parameters.getParameter("filter_type");
+            ft->beginChangeGesture();
+            ft->setValueNotifyingHost( 0.5 );
+            ft->endChangeGesture();
+        }
+        //[/UserButtonCode_HPFToggle]
+    }
+    else if (buttonThatWasClicked == BPFToggle.get())
+    {
+        //[UserButtonCode_BPFToggle] -- add your button handler code here..
+        if( buttonThatWasClicked->getToggleState() )
+        {
+            auto ft = processor.parameters.getParameter("filter_type");
+            ft->beginChangeGesture();
+            ft->setValueNotifyingHost( 1.0 );
+            ft->endChangeGesture();
+        }
+        //[/UserButtonCode_BPFToggle]
+    }
+    else if (buttonThatWasClicked == aboutButton.get())
     {
         //[UserButtonCode_aboutButton] -- add your button handler code here..
         auto te = new TWSAbout();
@@ -1053,6 +1106,37 @@ void TWSMainPanel::buttonClicked (Button* buttonThatWasClicked)
     }
 
     //[UserbuttonClicked_Post]
+    auto stv = [this, &buttonThatWasClicked](const char* lb) {
+                   auto ft = this->processor.parameters.getParameter(lb);
+                   ft->beginChangeGesture();
+                   ft->setValueNotifyingHost(buttonThatWasClicked->getToggleState() ? 1 : 0 );
+                   ft->endChangeGesture();
+               };
+    if (buttonThatWasClicked == VCOPower.get() )
+    {
+        stv( "vco_on" );
+    }
+    if (buttonThatWasClicked == SubPower.get() )
+    {
+        stv( "sub_on" );
+    }
+    if (buttonThatWasClicked == PluckPower.get() )
+    {
+        stv( "pluck_on" );
+    }
+    if (buttonThatWasClicked == DelayPower.get() )
+    {
+        stv( "delay_on" );
+    }
+    if (buttonThatWasClicked == ModWheelPower.get() )
+    {
+        stv( "modwheel_on" );
+    }
+    if (buttonThatWasClicked == FilterPower.get() )
+    {
+        stv( "filter_on" );
+    }
+
     //[/UserbuttonClicked_Post]
 }
 
@@ -1102,6 +1186,22 @@ void TWSMainPanel::connectValueTreeState(AudioProcessorValueTreeState &t )
                      sliderAttachments.push_back(std::make_unique<SliderAttachment>( t, lb, *(sll.get() ) ) );
                  };
 
+    auto pb = [this, &t](const char* lb, std::unique_ptr<TWSPowerToggle> &ptg )
+                  {
+                      // FIXME - don't leak this listener
+                      auto l = new TWSLambdaParamListener();
+                      l->lfunc = [&ptg](int i, float v)
+                                     {
+                                         if( v == 0 )
+                                             ptg->setToggleState( false, dontSendNotification );
+                                         else
+                                             ptg->setToggleState( true, dontSendNotification );
+                                     };
+                      t.getParameter(lb)->addListener(l);
+                      l->lfunc(0,t.getParameter(lb)->getValue());
+                      lambdaAtttachments.push_back(l);
+                  };
+
     s("sinLevel", sineMix);
     s("squareLevel", squareMix);
     s("sawLevel", sawMix);
@@ -1144,6 +1244,30 @@ void TWSMainPanel::connectValueTreeState(AudioProcessorValueTreeState &t )
 
     s( "delay_fb", delay_fb );
     s( "delay_time", delay_time );
+
+    pb( "vco_on", VCOPower );
+    pb( "sub_on", SubPower );
+    pb( "pluck_on", PluckPower );
+    pb( "delay_on", DelayPower );
+    pb( "modwheel_on", ModWheelPower );
+    pb( "filter_on", FilterPower );
+
+    /*
+    ** Hook up the filter tri-state
+    */
+    {
+        // FIXME - don't leak this listener
+        auto l = new TWSLambdaParamListener();
+        l->lfunc = [this](int i, float v)
+                       {
+                           this->LPFToggle->setToggleState( v == 0, dontSendNotification );
+                           this->HPFToggle->setToggleState( v == 0.5, dontSendNotification );
+                           this->BPFToggle->setToggleState( v == 1, dontSendNotification );
+                       };
+        t.getParameter("filter_type")->addListener(l);
+        l->lfunc(0,t.getParameter("filter_type")->getValue());
+        lambdaAtttachments.push_back(l);
+    }
 }
 
 void TWSPowerToggle::paintButton( Graphics &g, bool hl, bool dn )
@@ -1369,13 +1493,13 @@ BEGIN_JUCER_METADATA
           textBoxWidth="60" textBoxHeight="15" skewFactor="1.0" needsCallback="0"/>
   <TOGGLEBUTTON name="LPF" id="a76275562ee11c77" memberName="LPFToggle" virtualName=""
                 explicitFocusOrder="0" pos="576 50 56 24" buttonText="LPF" connectedEdges="0"
-                needsCallback="0" radioGroupId="1" state="1"/>
-  <TOGGLEBUTTON name="HPF" id="a475114ff5ac492c" memberName="HPToggle" virtualName=""
+                needsCallback="1" radioGroupId="1" state="1"/>
+  <TOGGLEBUTTON name="HPF" id="a475114ff5ac492c" memberName="HPFToggle" virtualName=""
                 explicitFocusOrder="0" pos="576 71 56 24" buttonText="HPF" connectedEdges="0"
-                needsCallback="0" radioGroupId="1" state="0"/>
-  <TOGGLEBUTTON name="BPF" id="87defba6f79e9432" memberName="BPFTogle" virtualName=""
+                needsCallback="1" radioGroupId="1" state="0"/>
+  <TOGGLEBUTTON name="BPF" id="87defba6f79e9432" memberName="BPFToggle" virtualName=""
                 explicitFocusOrder="0" pos="576 93 56 24" buttonText="BPF" connectedEdges="0"
-                needsCallback="0" radioGroupId="1" state="0"/>
+                needsCallback="1" radioGroupId="1" state="0"/>
   <GROUPCOMPONENT name="new group" id="643f7ea232ea9de9" memberName="groupComponent5"
                   virtualName="" explicitFocusOrder="0" pos="632 224 144 96" title="Master"/>
   <SLIDER name="master_sat" id="71bfa7556a0d4988" memberName="master_sat"
@@ -1518,6 +1642,9 @@ BEGIN_JUCER_METADATA
                     params=""/>
   <GROUPCOMPONENT name="new group" id="b05188e3af5159ec" memberName="groupComponent6"
                   virtualName="" explicitFocusOrder="0" pos="504 128 120 96" title="Bend"/>
+  <GENERICCOMPONENT name="new component" id="f6b98ff890ab9c00" memberName="FilterPower"
+                    virtualName="" explicitFocusOrder="0" pos="744 32 16 16" class="TWSPowerToggle"
+                    params=""/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
