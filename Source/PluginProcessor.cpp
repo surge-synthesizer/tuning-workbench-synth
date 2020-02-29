@@ -140,7 +140,20 @@ TuningworkbenchsynthAudioProcessor::TuningworkbenchsynthAudioProcessor()
                                                              0.0, 1.0, 0.0 ),
                       std::make_unique<AudioParameterFloat>( "lfo_filter",
                                                              "LFO Filter",
-                                                             0.0, 10.0, 0.0 )
+                                                             0.0, 10.0, 0.0 ),
+
+                      std::make_unique<AudioParameterInt>( "vco_on",
+                                                           "VCO On",
+                                                           0, 1.0, 1.0 ),
+                      std::make_unique<AudioParameterInt>( "sub_on",
+                                                           "SUB On",
+                                                           0, 1.0, 0.0 ),
+                      std::make_unique<AudioParameterInt>( "pluck_on",
+                                                           "PLUCK On",
+                                                           0, 1.0, 0.0 ),
+                      std::make_unique<AudioParameterInt>( "delay_on",
+                                                           "Delay On",
+                                                           0, 1.0, 1.0 ),
 
                   } )
 {
@@ -195,6 +208,11 @@ TuningworkbenchsynthAudioProcessor::TuningworkbenchsynthAudioProcessor()
     SP(lfo_attack);
     SP(lfo_pitch);
     SP(lfo_filter);
+
+    SP(vco_on);
+    SP(sub_on);
+    SP(pluck_on);
+    SP(delay_on);
     
     auto initS = Tunings::evenTemperament12NoteScale();
     setSCL( initS.rawText, false );

@@ -24,6 +24,12 @@
 
 class TWSTextAndControls;
 class TWSTuningGrid;
+
+class TWSPowerToggle : public virtual ToggleButton {
+public:
+    TWSPowerToggle() : ToggleButton() { };
+    virtual void paintButton( Graphics &g, bool hl, bool dn );
+};
 //[/Headers]
 
 
@@ -74,6 +80,7 @@ private:
     //[/UserVariables]
 
     //==============================================================================
+    std::unique_ptr<GroupComponent> groupComponent8;
     std::unique_ptr<TWSTuningGrid> tuningGrid;
     std::unique_ptr<GroupComponent> groupComponent7;
     std::unique_ptr<GroupComponent> groupComponent3;
@@ -104,12 +111,10 @@ private:
     std::unique_ptr<Slider> FEG_depth;
     std::unique_ptr<Slider> uni_spread;
     std::unique_ptr<Slider> uni_count;
-    std::unique_ptr<GroupComponent> groupComponent6;
     std::unique_ptr<Slider> pb_up;
     std::unique_ptr<Slider> pb_down;
     std::unique_ptr<Label> version;
     std::unique_ptr<TextButton> aboutButton;
-    std::unique_ptr<GroupComponent> groupComponent8;
     std::unique_ptr<Slider> lfo_rate;
     std::unique_ptr<Slider> lfo_delay;
     std::unique_ptr<Slider> lfo_attack;
@@ -130,6 +135,13 @@ private:
     std::unique_ptr<Slider> pluck_flt;
     std::unique_ptr<Slider> pluck_init;
     std::unique_ptr<Slider> pluck_lev;
+    std::unique_ptr<TWSPowerToggle> SubPower;
+    std::unique_ptr<TWSPowerToggle> PluckPower;
+    std::unique_ptr<TWSPowerToggle> DelayPower;
+    std::unique_ptr<TWSPowerToggle> VCOPower;
+    std::unique_ptr<Label> wheelLab;
+    std::unique_ptr<TWSPowerToggle> ModWheelPower;
+    std::unique_ptr<GroupComponent> groupComponent6;
 
 
     //==============================================================================

@@ -107,6 +107,8 @@ private:
     std::atomic<float> *delay_time, *delay_fb;
 
     std::atomic<float> *lfo_type, *lfo_rate, *lfo_delay, *lfo_attack, *lfo_pitch, *lfo_filter;
+
+    std::atomic<float> *vco_on, *sub_on, *pluck_on, *delay_on;
     
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TuningworkbenchsynthAudioProcessor)
