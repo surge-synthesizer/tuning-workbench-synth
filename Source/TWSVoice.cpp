@@ -24,15 +24,17 @@ TWSVoice::TWSVoice(TuningworkbenchsynthAudioProcessor *i) : p(i) {
 void TWSVoice::startNote (int midiNoteNumber, float velocity,
                           SynthesiserSound*, int currentPitchWheelPosition) 
 {
+    setPitchWheel( currentPitchWheelPosition );
+    noteNum = midiNoteNumber;
+    
     level = ( velocity + 64 ) / 192.0 * 0.15; // cramp up the velosity sens a bit
 
     nunison = std::max( 1, (int)( *(p->uni_count) ) );
-    // Here is where we apply the tuning
-    auto cyclesPerSecond = p->tuning.frequencyForMidiNote(midiNoteNumber);
 
+    
     if( nunison == 1 )
     {
-        auto cyclesPerSample = cyclesPerSecond / getSampleRate();
+        auto cyclesPerSample = frequencyForFractionalNote( midiNoteNumber + pitchWheelNoteShift() ) / getSampleRate();
         currentAngle[0] = 0;
         angleDelta[0] = cyclesPerSample;
         pan[0] = 0;
@@ -40,9 +42,6 @@ void TWSVoice::startNote (int midiNoteNumber, float velocity,
     }
     else
     {
-        auto noteDown = p->tuning.frequencyForMidiNote( midiNoteNumber - 1 );
-        auto noteUp   = p->tuning.frequencyForMidiNote( midiNoteNumber + 1 );
-
         double uso = *( p->uni_spread ) / 100.0 * 2.0; // the 2.0 is for up and down
         double duso = uso / (nunison - 1);
         double sso = -uso / 2;
@@ -52,23 +51,14 @@ void TWSVoice::startNote (int midiNoteNumber, float velocity,
         for( int i=0; i<nunison; ++i )
         {
             double frc = duso * i + sso;
-            auto cyc = cyclesPerSecond;
-            if( frc < 0 )
-            {
-                // between down and center
-                cyc = -frc * noteDown + ( 1 + frc ) * cyclesPerSecond;
-            }
-            else
-            {
-                cyc = frc * noteUp + ( 1 - frc ) * cyclesPerSecond;
-            }
-
+            auto cyc = frequencyForFractionalNote( midiNoteNumber + frc + pitchWheelNoteShift() );
             auto cyclesPerSample = cyc / getSampleRate();
 
             currentAngle[i] = 1.0 * rand() / RAND_MAX;
             angleDelta[i] = cyclesPerSample;
             pan[i] = 2.0 * i / ( nunison - 1 ) - 1.0;
-            dDelta[i] = 0;
+            dDelta[i] = duso * i + sso;
+     ;
 #if DEBUG_UNISON            
             std::cout << "UNISON i=" << i
                       << " frc=" << frc 
@@ -76,7 +66,8 @@ void TWSVoice::startNote (int midiNoteNumber, float velocity,
 #endif            
         }
     }
-
+    priorRenderedPW = pwAmount;
+    
     ampenv.setSampleRate( getSampleRate() );
     auto ap = ampenv.getParameters();
     ap.attack = *( p->amp_attack );
@@ -176,6 +167,7 @@ inline double analogishSaw( double x )
 void TWSVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample, int numSamples) 
 {
     if( ! isVoiceActive() ) return;
+    const int resetFilterEvery = 4;
 
     sinLevel.setTargetValue( *( p->sinLevel ) );
     squareLevel.setTargetValue( *( p->squareLevel ) );
@@ -186,6 +178,14 @@ void TWSVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample
     filterRes.setTargetValue( *( p->filter_resonance ) );
     filterDepth.setTargetValue( *( p->filter_depth ) );
 
+    bool recalcCycle = false;
+    if( priorRenderedPW != pwAmount )
+    {
+        priorRenderedPW = pwAmount;
+        recalcCycle = true;
+    }
+
+    int sc = 0;
     while (--numSamples >= 0)
     {
         // doto - lose the current
@@ -205,14 +205,17 @@ void TWSVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample
         auto filtr = filterRes.getNextValue();
 
         // This is overkill but for now just hammer it
-        auto c = IIRCoefficients::makeLowPass( getSampleRate(), filtc, filtr );
-        filterL.setCoefficients( c );
-        filterR.setCoefficients( c );
+        if( sc % resetFilterEvery == 0 )
+        {
+            auto c = IIRCoefficients::makeLowPass( getSampleRate(), filtc, filtr );
+            filterL.setCoefficients( c );
+            filterR.setCoefficients( c );
+        }
+        sc++;
         
         for( int i=0; i<nunison; ++i )
         {
             auto ca = currentAngle[i];
-            
 
             // Obviously these waveforms suck
             auto oscSin = (float) std::sin ( 2.0 * MathConstants<double>::pi * ca) * sinlv;
@@ -233,6 +236,13 @@ void TWSVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample
             // std::cout << "lW/rW=" << lW << " " << rW << " " << panAngle << std::endl;
             sampleL += lW * currentVoice;
             sampleR += rW * currentVoice;
+
+            if( recalcCycle )
+            {
+                auto cyc = frequencyForFractionalNote( noteNum + dDelta[i] + pitchWheelNoteShift() );
+                auto cyclesPerSample = cyc / getSampleRate();
+                angleDelta[i] = cyclesPerSample;
+            }
             
             currentAngle[i] += angleDelta[i];
             if( currentAngle[i] > 1.0 )
@@ -265,3 +275,28 @@ void TWSVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample
 }
 
 
+double TWSVoice::frequencyForFractionalNote( double fnote )
+{
+    /*
+     * TODO: We know frequency is actually exponential in note so should we interp differently?
+     * If so - push that answer to the library not here.
+     */
+    int bn = std::floor( fnote );
+    double frac = fnote - bn;
+
+    auto noteDown = p->tuning.frequencyForMidiNote( bn );
+    auto noteUp   = p->tuning.frequencyForMidiNote( bn + 1 );
+
+    auto res = noteDown * ( 1 - frac ) + noteUp * frac;
+    
+    return res;
+}
+
+double TWSVoice::pitchWheelNoteShift() {
+    if( pwAmount == 0 )
+        return 0;
+    else if( pwAmount < 0 )
+        return pwAmount * ( *(p->pb_down ));
+    else
+        return pwAmount * ( *(p->pb_up ));
+}
