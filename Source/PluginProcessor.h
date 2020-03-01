@@ -13,6 +13,7 @@
 #include <JuceHeader.h>
 #include "Tunings.h"
 #include <set>
+#include "TuningListener.h"
 
 //==============================================================================
 /**
@@ -21,11 +22,6 @@
 class TWSVoice;
 class TWSMainPanel;
 
-class TuningUpdatedListener {
-public:
-    virtual ~TuningUpdatedListener() { }
-    virtual void tuningUpdated(const Tunings::Tuning &newTuning) = 0;
-};
 
 class TuningworkbenchsynthAudioProcessor  : public AudioProcessor
 {

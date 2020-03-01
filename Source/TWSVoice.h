@@ -4,6 +4,8 @@
 #include <JuceHeader.h>
 #include <iostream>
 #include "Constants.h"
+#include "Tunings.h"
+#include "TuningListener.h"
 
 class TuningworkbenchsynthAudioProcessor;
 
@@ -20,7 +22,7 @@ public:
 };
 
 //==============================================================================
-class TWSVoice   : public SynthesiserVoice
+class TWSVoice   : public SynthesiserVoice, public TuningUpdatedListener
 {
 public:
     TWSVoice(TuningworkbenchsynthAudioProcessor *i);
@@ -43,6 +45,7 @@ public:
     void controllerMoved (int, int) override {}
 
     void renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample, int numSamples) override;
+    virtual void tuningUpdated( const Tunings::Tuning &newTuning ) override;
 
 private:
     void setPitchWheel( int pw ) {
@@ -72,6 +75,8 @@ private:
     SmoothedValue<float> filterCut, filterRes, filterDepth;
     IIRFilter filterL, filterR;
     int filterTypeAtOutset;
+
+    std::atomic<bool> needsRetune;
     
     ADSR ampenv, filtenv;
 };

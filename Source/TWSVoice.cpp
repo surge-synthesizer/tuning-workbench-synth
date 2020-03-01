@@ -7,7 +7,7 @@
 #include "TWSVoice.h"
 #include "PluginProcessor.h"
 
-TWSVoice::TWSVoice(TuningworkbenchsynthAudioProcessor *i) : p(i) {
+TWSVoice::TWSVoice(TuningworkbenchsynthAudioProcessor *i) : p(i), needsRetune(false) {
     // http://www.cs.cmu.edu/~music/icm-online/readings/panlaws/
     // FIXME - make this more efficient by using a lookup table obvs
     for( int i=0; i<N_PAN; ++i )
@@ -187,6 +187,11 @@ void TWSVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample
         recalcCycle = true;
     }
 
+    if( needsRetune.exchange(false) )
+    {
+        recalcCycle = true;
+    }
+    
     int sc = 0;
     while (--numSamples >= 0)
     {
@@ -330,4 +335,8 @@ double TWSVoice::pitchWheelNoteShift() {
         return pwAmount * ( *(p->pb_down ));
     else
         return pwAmount * ( *(p->pb_up ));
+}
+
+void TWSVoice::tuningUpdated( const Tunings::Tuning &newTuning ) {
+    needsRetune = true;
 }
