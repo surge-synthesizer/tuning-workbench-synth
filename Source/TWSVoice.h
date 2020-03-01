@@ -64,6 +64,8 @@ private:
     TuningworkbenchsynthAudioProcessor *p;
 
     double currentAngle[MAX_UNISON], angleDelta[MAX_UNISON], level = 0.0;
+    double subAngle, subAngleDelta;
+    
     int nunison;
     double dDelta[MAX_UNISON], pan[MAX_UNISON];
 
@@ -71,7 +73,8 @@ private:
     double panBufferL[N_PAN], panBufferR[N_PAN];
     
     SmoothedValue<float> sinLevel, squareLevel, sawLevel, triLevel;
-
+    SmoothedValue<float> subLevel;
+    
     SmoothedValue<float> filterCut, filterRes, filterDepth;
     IIRFilter filterL, filterR;
     int filterTypeAtOutset;
