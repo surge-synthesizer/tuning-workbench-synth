@@ -79,7 +79,16 @@ private:
     IIRFilter filterL, filterR;
     int filterTypeAtOutset;
 
+    // Pluck oscillator
+    std::vector<float> pluckDelayLine;
+    size_t pluckDelayLineSize;
+    float pluckSampleDelay, fracPluckSampleDelay;
+    int iPluckSampleDelay;
+    size_t pluckDelayPos;
+    SmoothedValue<float> pluckWeight, pluckAtten, pluckLevel;
+    float pluckAttenNorm;
+    
     std::atomic<bool> needsRetune;
     
-    ADSR ampenv, filtenv;
+    ADSR ampenv, filtenv, pluckenv; // pluck env has no user parameters
 };

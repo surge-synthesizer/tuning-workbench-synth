@@ -76,6 +76,79 @@ void TWSVoice::startNote (int midiNoteNumber, float velocity,
         subAngle = 0;
         subAngleDelta = cyclesPerSample;
     }
+
+
+    {
+#define _D(x) " " << #x << "=" << x
+
+        // Set up the pluck
+        if( pluckDelayLine.size() != getSampleRate() )
+        {
+            pluckDelayLine.resize(getSampleRate());
+            pluckDelayLineSize = getSampleRate();
+        }
+        pluckSampleDelay = 1.0 / ( frequencyForFractionalNote( midiNoteNumber + pitchWheelNoteShift() ) / getSampleRate() );
+        iPluckSampleDelay = std::floor(pluckSampleDelay);
+        fracPluckSampleDelay = pluckSampleDelay - iPluckSampleDelay;
+        pluckAttenNorm = 44100 / getSampleRate() / 10.0;
+        
+        pluckDelayPos = iPluckSampleDelay + 10; // enough room for the filter
+
+        int ft = *( p->pluck_init );
+        switch( ft )
+        {
+        case 1:
+        {
+            // square
+            for( int i=0; i<pluckDelayPos; ++i )
+                pluckDelayLine[i] = ( i < pluckDelayPos / 2 ? 1.0 : -1.0 );
+            break;
+        }
+        case 2:
+        {
+            // saw 
+            for( int i=0; i<pluckDelayPos; ++i )
+                pluckDelayLine[i] = ( i * 2.0f / pluckDelayPos ) - 1.0;
+            break;
+        }
+        case 3:
+        {
+            // noisy saw
+            for( int i=0; i<pluckDelayPos; ++i )
+                pluckDelayLine[i] = 0.5 * ( ( i * 2.0f / pluckDelayPos ) - 1.0 ) + 0.5 * ( 2.0 * rand() / RAND_MAX - 1.0 );
+            break;
+        }
+        case 4:
+        {
+            // Sin
+            float scale = 2.0 * MathConstants<double>::pi / iPluckSampleDelay;
+            for( int i=0; i<pluckDelayPos; ++i )
+                pluckDelayLine[i] = std::sin( i * scale );
+            break;
+        }
+        case 5:
+        {
+            // Chirp
+            for (int i = 0; i < pluckDelayPos; ++i) {
+                float ls = 1.0f * i / pluckDelayPos;
+                float lse = exp(ls * 2) * 3;
+                pluckDelayLine[i] = sin(lse * 2 * MathConstants<double>::pi);
+            }
+            break;
+
+        }
+            
+        case 0:
+        default:
+        {
+            for( int i=0; i<pluckDelayPos; ++i )
+                pluckDelayLine[i] = rand() * 2.0 / RAND_MAX - 1.0;
+            break;
+        }
+
+        }
+
+    }
     priorRenderedPW = pwAmount;
     
     ampenv.setSampleRate( getSampleRate() );
@@ -86,6 +159,14 @@ void TWSVoice::startNote (int midiNoteNumber, float velocity,
     ap.release = *( p->amp_release );
     ap.release = std::max( ap.release, 0.01f );
     ampenv.setParameters(ap);
+
+    pluckenv.setSampleRate( getSampleRate() );
+    auto pp = pluckenv.getParameters();
+    pp.attack = 0.0;
+    pp.decay = 0.0;
+    pp.sustain = 1.0;
+    pp.release = 0.1;
+    pluckenv.setParameters(pp);
 
     filtenv.setSampleRate( getSampleRate() );
     auto fp = filtenv.getParameters();
@@ -120,13 +201,24 @@ void TWSVoice::startNote (int midiNoteNumber, float velocity,
     subLevel.reset(32);
     subLevel.setCurrentAndTargetValue( *(p->subosc_level) );
 
+    pluckWeight.reset(32);
+    pluckWeight.setCurrentAndTargetValue( *(p->pluck_flt) );
+
+    pluckAtten.reset(32);
+    pluckAtten.setCurrentAndTargetValue( *(p->pluck_atn) * pluckAttenNorm );
+
+    pluckLevel.reset(32);
+    pluckLevel.setCurrentAndTargetValue( *(p->pluck_lev ) );
+
     ampenv.noteOn();
+    pluckenv.noteOn();
     filtenv.noteOn();
 }
 
 void TWSVoice::stopNote (float velocity, bool allowTailOff) 
 {
     ampenv.noteOff();
+    pluckenv.noteOff();
     filtenv.noteOff();
 }
 
@@ -179,7 +271,7 @@ inline double analogishSaw( double x )
 void TWSVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample, int numSamples) 
 {
     if( ! isVoiceActive() ) return;
-    const int resetFilterEvery = 4;
+    const int resetFilterEvery = 8;
 
     bool usef = *(p->filter_on) != 0 ? true : false;
     
@@ -193,6 +285,10 @@ void TWSVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample
     filterRes.setTargetValue( *( p->filter_resonance ) );
     filterDepth.setTargetValue( *( p->filter_depth ) );
 
+    pluckWeight.setTargetValue( *( p->pluck_flt ) );
+    pluckAtten.setTargetValue( *(p->pluck_atn) * pluckAttenNorm );
+    pluckLevel.setTargetValue( *( p->pluck_lev ) );
+    
     bool recalcCycle = false;
     if( priorRenderedPW != pwAmount )
     {
@@ -213,6 +309,7 @@ void TWSVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample
         auto sampleR = 0.0f;
 
         auto AEG = ampenv.getNextSample() * level;
+        auto PEG = pluckenv.getNextSample() * level * pluckLevel.getNextValue();
         auto FEG = filtenv.getNextSample();
         
         auto sinlv = sinLevel.getNextValue();
@@ -258,31 +355,33 @@ void TWSVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample
             }
         }
         sc++;
-        
+
         for( int i=0; i<nunison; ++i )
         {
             auto ca = currentAngle[i];
 
-            // Obviously these waveforms suck
-            auto oscSin = (float) std::sin ( 2.0 * MathConstants<double>::pi * ca) * sinlv;
-            auto oscSqr = analogishSquare(ca + 0.05) * sqrlv;
-            auto oscSaw = analogishSaw(ca + 0.07) * sawlv;
-            auto oscTri = analogishTri(ca + 0.03) * trilv;
+            if( *( p->vco_on) )
+            {
+                auto oscSin = (float) std::sin ( 2.0 * MathConstants<double>::pi * ca) * sinlv;
+                auto oscSqr = analogishSquare(ca + 0.05) * sqrlv;
+                auto oscSaw = analogishSaw(ca + 0.07) * sawlv;
+                auto oscTri = analogishTri(ca + 0.03) * trilv;
+                
+                auto currentVoice = AEG * ( oscSqr + oscSin + oscSaw + oscTri );
+                
+                int panIdx = ( pan[i] + 1 ) * N_PAN / 2;
+                if( panIdx < 0 ) panIdx = 0;
+                if( panIdx >= N_PAN ) panIdx = N_PAN - 1;
+                
+                // This isn't precise enough to bother interpolating
+                auto lW = panBufferL[panIdx];
+                auto rW = panBufferR[panIdx];
 
-            auto currentVoice = AEG * ( oscSqr + oscSin + oscSaw + oscTri );
-
-            int panIdx = ( pan[i] + 1 ) * N_PAN / 2;
-            if( panIdx < 0 ) panIdx = 0;
-            if( panIdx >= N_PAN ) panIdx = N_PAN - 1;
-
-            // This isn't precise enough to bother interpolating
-            auto lW = panBufferL[panIdx];
-            auto rW = panBufferR[panIdx];
-
-            // std::cout << "lW/rW=" << lW << " " << rW << " " << panAngle << std::endl;
-            sampleL += lW * currentVoice;
-            sampleR += rW * currentVoice;
-
+                // std::cout << "lW/rW=" << lW << " " << rW << " " << panAngle << std::endl;
+                sampleL += lW * currentVoice;
+                sampleR += rW * currentVoice;
+            }
+            
             if( recalcCycle )
             {
                 auto cyc = frequencyForFractionalNote( noteNum + dDelta[i] + pitchWheelNoteShift() );
@@ -294,7 +393,7 @@ void TWSVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample
             if( currentAngle[i] > 1.0 )
                 currentAngle[i] -= 1.0;
         }
-
+        
         if( recalcCycle )
         {
             auto cyclesPerSample = frequencyForFractionalNote( noteNum + pitchWheelNoteShift() ) / getSampleRate();
@@ -312,6 +411,40 @@ void TWSVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample
                 subAngle -= 1;
             sampleL += oscSqr;
             sampleR += oscSqr;
+        }
+
+        
+        if( *(p->pluck_on) )
+        {
+            // Filter the signal and write it into the delay line
+            size_t priorPos;
+            if( pluckDelayPos != 0 )
+                priorPos = pluckDelayPos - 1;
+            else
+                priorPos = pluckDelayLineSize - 1;
+
+            long ago = pluckDelayPos - iPluckSampleDelay;
+            long agop1 = ago + 1;
+            if( ago < 0 ) ago += pluckDelayLineSize;
+            if( agop1 < 0 ) agop1 += pluckDelayLineSize;
+            // for now - interp this
+            float mixvalue = (1.0 - fracPluckSampleDelay ) * pluckDelayLine[ago] + fracPluckSampleDelay * pluckDelayLine[agop1];
+
+            auto pw = pluckWeight.getNextValue();
+            auto pa = pluckAtten.getNextValue();
+            auto filtval = ( pw * mixvalue + ( 1 - pw ) * pluckDelayLine[priorPos] ) * ( 1.0 - pa );
+            pluckDelayPos ++;
+            if( pluckDelayPos >= pluckDelayLineSize ) pluckDelayPos = 0;
+            pluckDelayLine[pluckDelayPos] = filtval;
+            sampleL += filtval * PEG;
+            sampleR += filtval * PEG;
+
+            if( recalcCycle )
+            {
+                pluckSampleDelay = 1.0 / ( frequencyForFractionalNote( noteNum + pitchWheelNoteShift() ) / getSampleRate() );
+                iPluckSampleDelay = std::floor(pluckSampleDelay);
+                fracPluckSampleDelay = pluckSampleDelay - iPluckSampleDelay;
+            }
         }
 
         if( usef )
@@ -334,7 +467,7 @@ void TWSVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample
     }
     
     // TODO: If the AEG is over kill the note
-    if( ! ampenv.isActive() && isVoiceActive() )
+    if( ! ampenv.isActive() && !pluckenv.isActive() && isVoiceActive() )
     {
         clearCurrentNote();
     }
@@ -406,7 +539,7 @@ void TWSSynthesiser::renderVoices( AudioBuffer<float> &b, int s, int n )
         
         for( int i=0; i<n; ++i )
         {
-            int p = delayPos - ago;
+            long p = delayPos - ago;
             if( p < 0 ) p += delaySize;
             
             float sL = b.getSample(0,s+i);
