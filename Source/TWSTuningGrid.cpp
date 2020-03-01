@@ -51,6 +51,10 @@ TWSTuningGrid::TWSTuningGrid ()
     table->setModel( this );
 
     table->getViewport()->setScrollBarsShown(true,false);
+    table->getViewport()->setViewPositionProportionately( 55.0 / 127.0, 0.0 );
+
+    for( int i=0; i<128; ++i )
+        notesOn[i] = false;
     //[/Constructor]
 }
 
@@ -86,6 +90,7 @@ void TWSTuningGrid::resized()
     table->setBounds (0, 0, proportionOfWidth (1.0000f), proportionOfHeight (1.0000f));
     //[UserResized] Add your own custom resize handling here..
     table->getViewport()->setScrollBarsShown(true,false);
+    table->getViewport()->setViewPositionProportionately( 55.0 / 127.0, 0.0 );
     //[/UserResized]
 }
 
@@ -107,7 +112,6 @@ void TWSTuningGrid::paintRowBackground (Graphics& g, int rowNumber, int /*width*
 
 void TWSTuningGrid::paintCell (Graphics& g, int rowNumber, int columnID, int width, int height, bool rowIsSelected)
 {
-
     int noteInScale = rowNumber % 12;
     bool whitekey = true;
     bool noblack = false;
@@ -126,10 +130,24 @@ void TWSTuningGrid::paintCell (Graphics& g, int rowNumber, int columnID, int wid
     auto kbdColour = getLookAndFeel().findColour( ListBox::backgroundColourId );
     if( whitekey )
         kbdColour = kbdColour.interpolatedWith( getLookAndFeel().findColour( ListBox::textColourId ), 0.3f );
-    if( rowIsSelected )
-        kbdColour = Colours::lightblue;
+
+    bool no = true;
+    auto pressedColour = Colour( 0xFFaaaa50 );
+
+    if( notesOn[rowNumber] )
+    {
+        no = true;
+        kbdColour = pressedColour;
+    }
 
     g.fillAll( kbdColour );
+    if( ! whitekey && columnID != 0 && no )
+    {
+        g.setColour (getLookAndFeel().findColour (ListBox::backgroundColourId));
+        // draw an inset top and bottom
+        g.fillRect (0, 0, width - 1, 1 );
+        g.fillRect (0, height-1, width - 1, 1 );
+    }
 
     int txtOff = 0;
     if( columnID == 0 )
@@ -139,19 +157,36 @@ void TWSTuningGrid::paintCell (Graphics& g, int rowNumber, int columnID, int wid
         {
             txtOff = 10;
             // "Black Key"
+            auto kbdColour = getLookAndFeel().findColour( ListBox::backgroundColourId );
             auto kbc = kbdColour.interpolatedWith( getLookAndFeel().findColour( ListBox::textColourId ), 0.3f );
             g.setColour(kbc);
             g.fillRect(0,0,txtOff, height );
 
+            // OK so now check neighbors
+            if( rowNumber > 0 && notesOn[rowNumber - 1] )
+            {
+                g.setColour(pressedColour);
+                g.fillRect (0, 0, txtOff, height / 2 );
+            }
+            if( rowNumber < 127 && notesOn[rowNumber + 1] )
+            {
+                g.setColour(pressedColour);
+                g.fillRect (0, height / 2, txtOff, height / 2 );
+            }
             g.setColour (getLookAndFeel().findColour (ListBox::backgroundColourId));
             g.fillRect (0, height / 2, txtOff, 1 );
 
+            if( no )
+            {
+                g.fillRect (txtOff, 0, width - 1 - txtOff, 1 );
+                g.fillRect (txtOff, height-1, width - 1 - txtOff, 1 );
+                g.fillRect (txtOff, 0, 1, height - 1 );
+            }
         }
     }
 
-    g.setColour (rowIsSelected ? Colours::darkblue : getLookAndFeel().findColour (ListBox::textColourId)); // [5]
+    g.setColour ( getLookAndFeel().findColour (ListBox::textColourId ) );
 
-    // FixMe - replace this with the proper tuning of course
     auto mn = rowNumber;
     double lmn = tuning.logScaledFrequencyForMidiNote( mn );
     double fr  = tuning.frequencyForMidiNote( mn );
@@ -202,7 +237,7 @@ void TWSTuningGrid::paintCell (Graphics& g, int rowNumber, int columnID, int wid
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="TWSTuningGrid" componentName=""
-                 parentClasses="public Component, public TableListBoxModel, public TuningUpdatedListener"
+                 parentClasses="public Component, public TableListBoxModel, public TuningUpdatedListener, public NotesOnChangedListener, public AsyncUpdater"
                  constructorParams="" variableInitialisers="" snapPixels="8" snapActive="1"
                  snapShown="1" overlayOpacity="0.330" fixedSize="0" initialWidth="300"
                  initialHeight="300">

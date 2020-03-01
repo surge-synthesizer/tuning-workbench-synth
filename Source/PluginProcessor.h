@@ -91,6 +91,11 @@ public:
     void retune();
 
     std::set< TuningUpdatedListener * > tuningListeners;
+
+    void addNotesOnChangedListener( NotesOnChangedListener *l ) { noteListeners.insert( l ); }
+    void removeNotesOnChangedListener( NotesOnChangedListener *l ) { noteListeners.erase( l ); }
+    std::set< NotesOnChangedListener * > noteListeners;
+
     Tunings::Tuning tuning;
     String currentSCLString = "", currentKBMString = "";
     
@@ -100,6 +105,7 @@ public:
     
 private:
     TWSSynthesiser synth;
+
     AudioProcessorValueTreeState parameters;
 
     std::atomic<float> *sinLevel, *squareLevel, *sawLevel, *triLevel;

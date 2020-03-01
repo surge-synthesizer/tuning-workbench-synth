@@ -324,6 +324,42 @@ bool TuningworkbenchsynthAudioProcessor::isBusesLayoutSupported (const BusesLayo
 void TuningworkbenchsynthAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
 {
     synth.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples() );
+    if( noteListeners.size() > 0 )
+    {
+        bool noteTog = false;
+        MidiBuffer::Iterator midiIterator (midiMessages);
+        midiIterator.setNextSamplePosition (0);
+        int midiEventPos;
+        MidiMessage m;
+
+        int ons[127], offs[127];
+        int onp=0, offp=0;
+
+        while( midiIterator.getNextEvent(m, midiEventPos ) )
+        {
+            if( m.isNoteOn() )
+            {
+                ons[onp++] = m.getNoteNumber();
+                noteTog = true;
+            }
+            else if( m.isNoteOff() )
+            {
+                offs[offp++] = m.getNoteNumber();
+                noteTog = true;
+            }
+        }
+
+        if( noteTog )
+        {
+            for( auto l : noteListeners )
+            {
+                for( int i=0; i<onp; ++i )
+                    l->noteOn( ons[i] );
+                for( int i=0; i<offp; ++i )
+                    l->noteOff( offs[i] );
+            }
+        }
+    }
 }
 
 //==============================================================================
