@@ -39,6 +39,7 @@ void TWSVoice::startNote (int midiNoteNumber, float velocity,
         angleDelta[0] = cyclesPerSample;
         pan[0] = 0;
         dDelta[0] = 0;
+
     }
     else
     {
@@ -65,6 +66,15 @@ void TWSVoice::startNote (int midiNoteNumber, float velocity,
                       << " angleDelta[i] = " << angleDelta[i] * getSampleRate() << " pan[i] = " << pan[i] << std::endl;
 #endif            
         }
+    }
+
+    {
+        // Setup the sub-oscillattr
+        auto cyclesPerSample = frequencyForFractionalNote( midiNoteNumber + pitchWheelNoteShift() ) / getSampleRate();
+        for( int i=0; i< -*(p->subosc_oct); ++i )
+            cyclesPerSample /= 2.0;
+        subAngle = 0;
+        subAngleDelta = cyclesPerSample;
     }
     priorRenderedPW = pwAmount;
     
@@ -107,6 +117,8 @@ void TWSVoice::startNote (int midiNoteNumber, float velocity,
     filterDepth.reset(32);
     filterDepth.setCurrentAndTargetValue( *( p->filter_depth ) );
 
+    subLevel.reset(32);
+    subLevel.setCurrentAndTargetValue( *(p->subosc_level) );
 
     ampenv.noteOn();
     filtenv.noteOn();
@@ -175,7 +187,8 @@ void TWSVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample
     squareLevel.setTargetValue( *( p->squareLevel ) );
     sawLevel.setTargetValue( *( p->sawLevel ) );
     triLevel.setTargetValue( *( p->triLevel ) );
-
+    subLevel.setTargetValue( *( p->subosc_level ) );
+    
     filterCut.setTargetValue( *( p->filter_cutoff ) );
     filterRes.setTargetValue( *( p->filter_resonance ) );
     filterDepth.setTargetValue( *( p->filter_depth ) );
@@ -280,6 +293,25 @@ void TWSVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample
             currentAngle[i] += angleDelta[i];
             if( currentAngle[i] > 1.0 )
                 currentAngle[i] -= 1.0;
+        }
+
+        if( recalcCycle )
+        {
+            auto cyclesPerSample = frequencyForFractionalNote( noteNum + pitchWheelNoteShift() ) / getSampleRate();
+            for( int i=0; i< -*(p->subosc_oct); ++i )
+                cyclesPerSample /= 2.0;
+            subAngleDelta = cyclesPerSample;
+        }
+
+        if( *(p->sub_on) )
+        {
+            auto subl = subLevel.getNextValue();
+            auto oscSqr = analogishSquare(subAngle) * subl * AEG;
+            subAngle += subAngleDelta;
+            if( subAngle > 1 )
+                subAngle -= 1;
+            sampleL += oscSqr;
+            sampleR += oscSqr;
         }
 
         if( usef )

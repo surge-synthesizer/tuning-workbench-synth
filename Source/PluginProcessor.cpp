@@ -101,7 +101,7 @@ TuningworkbenchsynthAudioProcessor::TuningworkbenchsynthAudioProcessor()
                                                              0, 1.0, 0.0 ),
                       std::make_unique<AudioParameterInt>( "subosc_oct",
                                                            "SubOSC Octave",
-                                                           -3, 0, -1 ),
+                                                           -3, -1, -1 ),
 
                       std::make_unique<AudioParameterFloat>( "pluck_flt",
                                                              "Pluck Flt",
