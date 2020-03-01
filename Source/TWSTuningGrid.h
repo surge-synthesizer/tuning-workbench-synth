@@ -22,6 +22,8 @@
 //[Headers]     -- You can add your own extra header files here --
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
+#include <atomic>
+#include <array>
 class TWSMainPanel;
 //[/Headers]
 
@@ -37,7 +39,9 @@ class TWSMainPanel;
 */
 class TWSTuningGrid  : public Component,
                        public TableListBoxModel,
-                       public TuningUpdatedListener
+                       public TuningUpdatedListener,
+                       public NotesOnChangedListener,
+                       public AsyncUpdater
 {
 public:
     //==============================================================================
@@ -51,7 +55,18 @@ public:
     virtual void paintCell( Graphics &g, int rowNumber, int columnId, int width, int height, bool rowIsSelected ) override;
     virtual void tuningUpdated( const Tunings::Tuning &newTuning ) override {
         tuning = newTuning;
-        // updateContent();
+        triggerAsyncUpdate();
+    }
+    virtual void noteOn( int noteNum ) override {
+        notesOn[noteNum] = true;
+        triggerAsyncUpdate();
+    }
+    virtual void noteOff( int noteNum ) override {
+        notesOn[noteNum] = false;
+        triggerAsyncUpdate();
+    }
+    virtual void handleAsyncUpdate() override {
+        table->repaint();
         repaint();
     }
 
@@ -66,6 +81,7 @@ public:
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     Tunings::Tuning tuning;
+    std::array<std::atomic<bool>, 128> notesOn;
     //[/UserVariables]
 
     //==============================================================================

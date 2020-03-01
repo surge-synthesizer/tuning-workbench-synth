@@ -532,7 +532,8 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     processor.addTuningUpdatedListener( sclTextAndControls );
     processor.addTuningUpdatedListener( kbmTextAndControls );
     processor.addTuningUpdatedListener( tuningGrid.get() );
-
+    processor.addNotesOnChangedListener( tuningGrid.get() );
+    
     wheelLab->setColour (Label::backgroundColourId, getLookAndFeel().findColour (ResizableWindow::backgroundColourId));
 
     VCOPower->setToggleState( true, dontSendNotification );
@@ -559,7 +560,8 @@ TWSMainPanel::~TWSMainPanel()
     processor.removeTuningUpdatedListener( sclTextAndControls );
     processor.removeTuningUpdatedListener( kbmTextAndControls );
     processor.removeTuningUpdatedListener( tuningGrid.get() );
-
+    processor.removeNotesOnChangedListener( tuningGrid.get() );
+    
     sliderAttachments.clear();
     buttonAttachments.clear();
     lambdaAtttachments.clear();
