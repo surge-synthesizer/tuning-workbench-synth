@@ -34,6 +34,8 @@ protected:
     size_t delayPos;
     size_t delaySize;
     bool lastDelayOn = true;
+
+    SmoothedValue<float> delayT, delayFB;
 };
 
 
@@ -108,6 +110,68 @@ private:
 
     AudioProcessorValueTreeState parameters;
 
+
+    std::unique_ptr<AudioParameterFloat> envelopeTimeParam( String tag, String name, float init, float min = 0, float max = 10 )
+        {
+            return std::make_unique<AudioParameterFloat>( tag, name,
+                                                          NormalisableRange<float>(
+                                                              0, 10,
+                                                              [](float start, float end, float value ) -> float {
+                                                                  // basically we want ( e^v/e^1 ) * end
+                                                                  auto r = ( exp( value ) - 1 ) / ( exp(1) - 1 )  * end;
+                                                                  return r;
+                                                              },
+                                                              [](float start, float end, float value ) -> float {
+                                                                  // r = (e^v-1)/(e^1-1)*end
+                                                                  // r / end * (e^1-1) + 1 = e^v;
+                                                                  auto r = log( value / end * ( exp(1) - 1 ) + 1 );
+                                                                  return r;
+                                                              } ),
+                                                             init,
+                                                             "", AudioProcessorParameter::genericParameter,
+                                                             [](float v, int length) -> String
+                                                                 {
+                                                                     String asText(v,2);
+                                                                     return ( length > 0 ? asText.substring( 0, length ) : asText );
+                                                                 },
+                                                             [](const String& text ) -> float { return text.getFloatValue(); }
+                );
+        }
+    std::unique_ptr<AudioParameterFloat> expRangeParam( String tag, String name, float low, float high, float init )
+        {
+            return std::make_unique<AudioParameterFloat>( tag, name,
+                                                          NormalisableRange<float>(
+                                                              low, high,
+                                                              [](float start, float end, float value ) -> float {
+                                                                     // So we want 2^x flavor here
+                                                                     // 2^0 + b = 10 -> b = 10
+                                                                     // 2^a + b = 20000 - a = log_2( 19000 )
+                                                                     auto b = start;
+                                                                     auto a = log(end-start)/log(2);
+                                                                     auto r = pow( 2.0, a * value ) + b;
+                                                                     
+                                                                     return r;
+                                                                 },
+                                                                 [](float start, float end, float value ) -> float {
+                                                                     // 2^ar + b = v
+                                                                     // 2^ar = v - b;
+                                                                     // r = log2(v-b)/a
+                                                                     // a = log2(end-start)
+                                                                     // r = log2(v-start)/log2(end-start)
+                                                                     auto r = log(value - start)/log(end - start);
+                                                                     return r;
+                                                                 } ),
+                                                             init,
+                                                             "", AudioProcessorParameter::genericParameter,
+                                                             [](float v, int length) -> String
+                                                                 {
+                                                                     String asText(v,2);
+                                                                     return ( length > 0 ? asText.substring( 0, length ) : asText );
+                                                                 },
+                                                             [](const String& text ) -> float { return text.getFloatValue(); }
+                );
+        }
+    
     std::atomic<float> *sinLevel, *squareLevel, *sawLevel, *triLevel;
     std::atomic<float> *uni_count; // as float
     std::atomic<float> *uni_spread;

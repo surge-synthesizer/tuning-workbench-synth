@@ -51,7 +51,7 @@ TWSTuningGrid::TWSTuningGrid ()
     table->setModel( this );
 
     table->getViewport()->setScrollBarsShown(true,false);
-    table->getViewport()->setViewPositionProportionately( 55.0 / 127.0, 0.0 );
+    table->getViewport()->setViewPositionProportionately( 0.0,  60.0 / 127.0 );
 
     for( int i=0; i<128; ++i )
         notesOn[i] = false;
@@ -90,7 +90,7 @@ void TWSTuningGrid::resized()
     table->setBounds (0, 0, proportionOfWidth (1.0000f), proportionOfHeight (1.0000f));
     //[UserResized] Add your own custom resize handling here..
     table->getViewport()->setScrollBarsShown(true,false);
-    table->getViewport()->setViewPositionProportionately( 55.0 / 127.0, 0.0 );
+    table->getViewport()->setViewPositionProportionately( 0.0, 60.0 / 127.0 );
     //[/UserResized]
 }
 

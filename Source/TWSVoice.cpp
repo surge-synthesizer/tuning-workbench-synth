@@ -507,7 +507,11 @@ void TWSVoice::tuningUpdated( const Tunings::Tuning &newTuning ) {
 }
 
 
-TWSSynthesiser::TWSSynthesiser(TuningworkbenchsynthAudioProcessor &p) : processor( p ) { }
+TWSSynthesiser::TWSSynthesiser(TuningworkbenchsynthAudioProcessor &p) : processor( p )
+{
+    delayT.reset(512);
+    delayFB.reset(32);
+}
 
 /*
 ** This is where we can place per-synth as opposed to per-voice things
@@ -531,14 +535,18 @@ void TWSSynthesiser::renderVoices( AudioBuffer<float> &b, int s, int n )
 
     if( *(processor.delay_on) != 0 )
     {
+        delayT.setTargetValue( *(processor.delay_time) );
+        delayFB.setTargetValue( *(processor.delay_fb ) );
+
         lastDelayOn = true;
-        long ago = getSampleRate() * ( *(processor.delay_time ) ); // should really interp
-        if( ago >= delaySize ) ago=delaySize-1;
-        if( ago < 1 ) ago = 1;
-        float fb = *(processor.delay_fb);
         
         for( int i=0; i<n; ++i )
         {
+            long ago = getSampleRate() * ( delayT.getNextValue() ); // should really interp
+            if( ago >= delaySize ) ago=delaySize-1;
+            if( ago < 1 ) ago = 1;
+            float fb = delayFB.getNextValue();
+            
             long p = delayPos - ago;
             if( p < 0 ) p += delaySize;
             
