@@ -340,3 +340,72 @@ double TWSVoice::pitchWheelNoteShift() {
 void TWSVoice::tuningUpdated( const Tunings::Tuning &newTuning ) {
     needsRetune = true;
 }
+
+
+TWSSynthesiser::TWSSynthesiser(TuningworkbenchsynthAudioProcessor &p) : processor( p ) { }
+
+/*
+** This is where we can place per-synth as opposed to per-voice things
+** in our case: a delay line and a saturator and a master gain
+*/
+void TWSSynthesiser::renderVoices( AudioBuffer<float> &b, int s, int n )
+{
+    if( lineL.size() < getSampleRate() * MAX_DELAY_TIME + 100 )
+    {
+        lineL.resize( getSampleRate() * MAX_DELAY_TIME + 100 );
+        lineR.resize( getSampleRate() * MAX_DELAY_TIME + 100 );
+        for( int i=0; i<lineL.size(); ++i )
+        {
+            lineL[i] = 0;
+            lineR[i] = 0;
+        }
+        delayPos = 0;
+        delaySize = lineL.size();
+    }
+    Synthesiser::renderVoices(b,s,n);
+
+    if( *(processor.delay_on) != 0 )
+    {
+        lastDelayOn = true;
+        long ago = getSampleRate() * ( *(processor.delay_time ) ); // should really interp
+        if( ago >= delaySize ) ago=delaySize-1;
+        if( ago < 1 ) ago = 1;
+        float fb = *(processor.delay_fb);
+        
+        for( int i=0; i<n; ++i )
+        {
+            int p = delayPos - ago;
+            if( p < 0 ) p += delaySize;
+            
+            float sL = b.getSample(0,s+i);
+            float sR = b.getSample(1,s+i);
+            
+            sL += fb * lineL[p];
+            sR += fb * lineR[p];
+            
+            b.setSample(0,s+i,sL);
+            b.setSample(1,s+i,sR);
+            
+            lineL[delayPos] = sL;
+            lineR[delayPos] = sR;
+            
+            delayPos ++;
+            if( delayPos >= delaySize)
+                delayPos = 0;
+        }
+    }
+    else
+    {
+        if( lastDelayOn )
+        {
+            for( int i=0; i<lineL.size(); ++i )
+            {
+                lineL[i] = 0;
+                lineR[i] = 0;
+            }
+            delayPos = 0;
+            delaySize = lineL.size();
+        }
+        lastDelayOn = false;
+    }
+}

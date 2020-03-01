@@ -21,6 +21,20 @@
 
 class TWSVoice;
 class TWSMainPanel;
+class TuningworkbenchsynthAudioProcessor;
+
+class TWSSynthesiser : public Synthesiser {
+public:
+    TWSSynthesiser(TuningworkbenchsynthAudioProcessor &p);
+protected:
+    TuningworkbenchsynthAudioProcessor &processor;
+    virtual void renderVoices( AudioBuffer<float> &b, int s, int n ) override;
+
+    std::vector<float> lineL, lineR;
+    size_t delayPos;
+    size_t delaySize;
+    bool lastDelayOn = true;
+};
 
 
 class TuningworkbenchsynthAudioProcessor  : public AudioProcessor
@@ -82,8 +96,10 @@ public:
     
     friend class TWSVoice;
     friend class TWSMainPanel;
+    friend class TWSSynthesiser;
+    
 private:
-    Synthesiser synth;
+    TWSSynthesiser synth;
     AudioProcessorValueTreeState parameters;
 
     std::atomic<float> *sinLevel, *squareLevel, *sawLevel, *triLevel;
