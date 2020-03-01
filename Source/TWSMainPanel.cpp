@@ -330,7 +330,8 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     lfotritog.reset (new ToggleButton ("lfotri"));
     addAndMakeVisible (lfotritog.get());
     lfotritog->setButtonText (TRANS("TRI"));
-    lfotritog->setRadioGroupId (1);
+    lfotritog->setRadioGroupId (2);
+    lfotritog->addListener (this);
     lfotritog->setToggleState (true, dontSendNotification);
 
     lfotritog->setBounds (237, 242, 56, 24);
@@ -338,14 +339,16 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     lfosqrtog.reset (new ToggleButton ("lfosq"));
     addAndMakeVisible (lfosqrtog.get());
     lfosqrtog->setButtonText (TRANS("SQR"));
-    lfosqrtog->setRadioGroupId (1);
+    lfosqrtog->setRadioGroupId (2);
+    lfosqrtog->addListener (this);
 
     lfosqrtog->setBounds (237, 263, 56, 24);
 
     lforndtog.reset (new ToggleButton ("lfornd"));
     addAndMakeVisible (lforndtog.get());
     lforndtog->setButtonText (TRANS("RND"));
-    lforndtog->setRadioGroupId (1);
+    lforndtog->setRadioGroupId (2);
+    lforndtog->addListener (this);
 
     lforndtog->setBounds (237, 285, 56, 24);
 
@@ -1104,6 +1107,21 @@ void TWSMainPanel::buttonClicked (Button* buttonThatWasClicked)
         auto dialogwindow = options.launchAsync();
         //[/UserButtonCode_aboutButton]
     }
+    else if (buttonThatWasClicked == lfotritog.get())
+    {
+        //[UserButtonCode_lfotritog] -- add your button handler code here..
+        //[/UserButtonCode_lfotritog]
+    }
+    else if (buttonThatWasClicked == lfosqrtog.get())
+    {
+        //[UserButtonCode_lfosqrtog] -- add your button handler code here..
+        //[/UserButtonCode_lfosqrtog]
+    }
+    else if (buttonThatWasClicked == lforndtog.get())
+    {
+        //[UserButtonCode_lforndtog] -- add your button handler code here..
+        //[/UserButtonCode_lforndtog]
+    }
 
     //[UserbuttonClicked_Post]
     auto stv = [this, &buttonThatWasClicked](const char* lb) {
@@ -1559,13 +1577,13 @@ BEGIN_JUCER_METADATA
           needsCallback="0"/>
   <TOGGLEBUTTON name="lfotri" id="4854b4183a8e0826" memberName="lfotritog" virtualName=""
                 explicitFocusOrder="0" pos="237 242 56 24" buttonText="TRI" connectedEdges="0"
-                needsCallback="0" radioGroupId="1" state="1"/>
+                needsCallback="1" radioGroupId="2" state="1"/>
   <TOGGLEBUTTON name="lfosq" id="9096bc04f359db3a" memberName="lfosqrtog" virtualName=""
                 explicitFocusOrder="0" pos="237 263 56 24" buttonText="SQR" connectedEdges="0"
-                needsCallback="0" radioGroupId="1" state="0"/>
+                needsCallback="1" radioGroupId="2" state="0"/>
   <TOGGLEBUTTON name="lfornd" id="3007921d4cb0e134" memberName="lforndtog" virtualName=""
                 explicitFocusOrder="0" pos="237 285 56 24" buttonText="RND" connectedEdges="0"
-                needsCallback="0" radioGroupId="1" state="0"/>
+                needsCallback="1" radioGroupId="2" state="0"/>
   <SLIDER name="lfo_to_pitch" id="6102623ee8a927fd" memberName="lfo_to_pitch"
           virtualName="" explicitFocusOrder="0" pos="496 238 63 72" min="0.0"
           max="10.0" int="0.0" style="Rotary" textBoxPos="TextBoxBelow"
