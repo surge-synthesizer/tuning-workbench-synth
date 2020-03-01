@@ -164,7 +164,11 @@ TuningworkbenchsynthAudioProcessor::TuningworkbenchsynthAudioProcessor()
                   } )
 {
     for( int i=0; i<32; ++i )
-        synth.addVoice( new TWSVoice(this) );
+    {
+        auto v = new TWSVoice(this);
+        addTuningUpdatedListener( v );
+        synth.addVoice( v );
+    }
 
     synth.addSound( new TWSSound( this ) );
 
@@ -231,6 +235,12 @@ TuningworkbenchsynthAudioProcessor::TuningworkbenchsynthAudioProcessor()
 
 TuningworkbenchsynthAudioProcessor::~TuningworkbenchsynthAudioProcessor()
 {
+    for( int i=0; i<synth.getNumVoices(); ++i )
+    {
+        auto tl = dynamic_cast<TuningUpdatedListener*>( synth.getVoice(i) );
+        if( tl )
+            removeTuningUpdatedListener( tl );
+    }
 }
 
 //==============================================================================
