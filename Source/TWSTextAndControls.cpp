@@ -48,7 +48,6 @@ TWSTextAndControls::TWSTextAndControls (bool isSCL, TuningworkbenchsynthAudioPro
     applyButton.reset (new TextButton ("new button"));
     addAndMakeVisible (applyButton.get());
     applyButton->setButtonText (TRANS("Apply"));
-    applyButton->setConnectedEdges (Button::ConnectedOnRight | Button::ConnectedOnBottom);
     applyButton->addListener (this);
 
     applyButton->setBounds (346, 298, 78, 24);
@@ -85,7 +84,7 @@ TWSTextAndControls::TWSTextAndControls (bool isSCL, TuningworkbenchsynthAudioPro
     //[UserPreSize]
     //[/UserPreSize]
 
-    setSize (432, 334);
+    setSize (432, 328);
 
 
     //[Constructor] You can add your own custom stuff here..
@@ -96,13 +95,13 @@ TWSTextAndControls::TWSTextAndControls (bool isSCL, TuningworkbenchsynthAudioPro
 
     if( isSCL )
     {
-        applyButton->setButtonText( TRANS( "Apply SCL" ) );
-        openButton->setButtonText( TRANS( "Load SCL" ) );
+        applyButton->setButtonText( TRANS( "Apply" ) );
+        openButton->setButtonText( TRANS( "Load" ) );
     }
     else
     {
-        applyButton->setButtonText( TRANS( "Apply KBM" ) );
-        openButton->setButtonText( TRANS( "Load SCL" ) );
+        applyButton->setButtonText( TRANS( "Apply" ) );
+        openButton->setButtonText( TRANS( "Load" ) );
     }
     applyButton->setEnabled( false );
     textEditor->addListener( this );
@@ -143,7 +142,7 @@ void TWSTextAndControls::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    textEditor->setBounds (0, 0, proportionOfWidth (1.0000f), getHeight() - 38);
+    textEditor->setBounds (0, 0, proportionOfWidth (1.0000f), 288);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -165,11 +164,30 @@ void TWSTextAndControls::buttonClicked (Button* buttonThatWasClicked)
     else if (buttonThatWasClicked == openButton.get())
     {
         //[UserButtonCode_openButton] -- add your button handler code here..
+        FileChooser fc( isSCL ? "Open SCL File" : "Open KBM File", File(), isSCL ? "*.scl" : "*.kbm" );
+        if( fc.browseForFileToOpen() )
+        {
+            auto s = fc.getResult().loadFileAsString();
+            processor.setSCL(s);
+        }
         //[/UserButtonCode_openButton]
     }
     else if (buttonThatWasClicked == exportButton.get())
     {
         //[UserButtonCode_exportButton] -- add your button handler code here..
+        FileChooser fc( isSCL ? "Export SCL File" : "Export KBM File" );
+        if( fc.browseForFileToSave(true) )
+        {
+            auto f = fc.getResult();
+            if( ! f.replaceWithText( textEditor->getText() ) )
+            {
+                AlertWindow::showMessageBoxAsync( AlertWindow::AlertIconType::WarningIcon,
+                                                  "Error exporting file",
+                                                  "An unknown error occured streaming data to file",
+                                                  "OK" );
+
+            }
+        }
         //[/UserButtonCode_exportButton]
     }
     else if (buttonThatWasClicked == resetButton.get())
@@ -227,15 +245,15 @@ BEGIN_JUCER_METADATA
                  constructorParams="bool isSCL, TuningworkbenchsynthAudioProcessor &amp;p"
                  variableInitialisers="processor(p)" snapPixels="8" snapActive="1"
                  snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="432"
-                 initialHeight="334">
+                 initialHeight="328">
   <BACKGROUND backgroundColour="ff323e44"/>
   <TEXTEDITOR name="new text editor" id="3ad00fda4fd6209c" memberName="textEditor"
-              virtualName="" explicitFocusOrder="0" pos="0 0 100% 38M" initialText=""
+              virtualName="" explicitFocusOrder="0" pos="0 0 100% 288" initialText=""
               multiline="1" retKeyStartsLine="1" readonly="0" scrollbars="1"
               caret="1" popupmenu="1"/>
   <TEXTBUTTON name="new button" id="1e4d84268b671e98" memberName="applyButton"
               virtualName="" explicitFocusOrder="0" pos="346 298 78 24" buttonText="Apply"
-              connectedEdges="10" needsCallback="1" radioGroupId="0"/>
+              connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <TEXTBUTTON name="open file" id="ba3c0d0c50f8320e" memberName="openButton"
               virtualName="" explicitFocusOrder="0" pos="94 298 78 24" buttonText="Open"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
