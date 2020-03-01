@@ -8,10 +8,10 @@
   ==============================================================================
 */
 
+#include "TWSVoice.h"
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
-#include "TWSVoice.h"
 
 
 //==============================================================================
@@ -19,6 +19,7 @@ TuningworkbenchsynthAudioProcessor::TuningworkbenchsynthAudioProcessor()
     : AudioProcessor (BusesProperties()
                       .withOutput ("Output", AudioChannelSet::stereo(), true)
         ),
+      synth( *this ),
       parameters( *this,
                   nullptr,
                   Identifier( "tuning-workbench-synthesiser" ),
@@ -117,7 +118,7 @@ TuningworkbenchsynthAudioProcessor::TuningworkbenchsynthAudioProcessor()
 
                       std::make_unique<AudioParameterFloat>( "delay_time",
                                                              "Delay Time",
-                                                             0.05, 3.0, 0.5 ),
+                                                             0.05, MAX_DELAY_TIME, 0.5 ),
                       std::make_unique<AudioParameterFloat>( "delay_fb",
                                                              "Delay Feedback",
                                                              0., 1.0, 0.1 ),
