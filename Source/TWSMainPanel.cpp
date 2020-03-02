@@ -527,7 +527,7 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     sclTextAndControls->applyButton->setEnabled( false ); // bit of a hack
     kbmTextAndControls->applyButton->setEnabled( false ); // bit of a hack
 
-    tuningGrid->tuning = processor.tuning;
+    tuningGrid->mod->tuningUpdated( processor.tuning );
 
     processor.addTuningUpdatedListener( sclTextAndControls );
     processor.addTuningUpdatedListener( kbmTextAndControls );

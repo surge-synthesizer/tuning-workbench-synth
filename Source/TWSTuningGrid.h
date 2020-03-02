@@ -24,6 +24,7 @@
 #include "PluginProcessor.h"
 #include <atomic>
 #include <array>
+#include <surgesynthteam_tuningui/surgesynthteam_tuningui.h>
 class TWSMainPanel;
 //[/Headers]
 
@@ -38,10 +39,8 @@ class TWSMainPanel;
                                                                     //[/Comments]
 */
 class TWSTuningGrid  : public Component,
-                       public TableListBoxModel,
                        public TuningUpdatedListener,
-                       public NotesOnChangedListener,
-                       public AsyncUpdater
+                       public NotesOnChangedListener
 {
 public:
     //==============================================================================
@@ -50,24 +49,14 @@ public:
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
-    virtual int getNumRows() override { return 128; }
-    virtual void paintRowBackground( Graphics &g, int rowNumber, int width, int height, bool rowIsSelected ) override;
-    virtual void paintCell( Graphics &g, int rowNumber, int columnId, int width, int height, bool rowIsSelected ) override;
     virtual void tuningUpdated( const Tunings::Tuning &newTuning ) override {
-        tuning = newTuning;
-        triggerAsyncUpdate();
+        mod->tuningUpdated(newTuning);
     }
     virtual void noteOn( int noteNum ) override {
-        notesOn[noteNum] = true;
-        triggerAsyncUpdate();
+        mod->noteOn(noteNum);
     }
     virtual void noteOff( int noteNum ) override {
-        notesOn[noteNum] = false;
-        triggerAsyncUpdate();
-    }
-    virtual void handleAsyncUpdate() override {
-        table->repaint();
-        repaint();
+        mod->noteOff(noteNum);
     }
 
     friend class TWSMainPanel;
@@ -80,8 +69,7 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
-    Tunings::Tuning tuning;
-    std::array<std::atomic<bool>, 128> notesOn;
+    std::unique_ptr<surgesynthteam_TuningTableListBoxModel> mod;
     //[/UserVariables]
 
     //==============================================================================

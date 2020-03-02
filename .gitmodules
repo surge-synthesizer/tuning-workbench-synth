@@ -4,3 +4,6 @@
 [submodule "lib/tuning-library"]
 	path = lib/tuning-library
 	url = https://github.com/surge-synthesizer/tuning-library.git
+[submodule "lib/surgesynthteam_tuningui"]
+	path = lib/surgesynthteam_tuningui
+	url = https://github.com/surge-synthesizer/surgesynthteam_tuningui

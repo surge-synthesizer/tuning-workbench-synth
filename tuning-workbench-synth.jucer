@@ -59,6 +59,7 @@
         <MODULEPATH id="juce_gui_basics" path="./assets/JUCE/modules"/>
         <MODULEPATH id="juce_gui_extra" path="./assets/JUCE/modules"/>
         <MODULEPATH id="juce_opengl" path="./assets/JUCE/modules"/>
+        <MODULEPATH id="surgesynthteam_tuningui" path="lib"/>
       </MODULEPATHS>
     </XCODE_MAC>
     <VS2017 targetFolder="Builds/VisualStudio2017" vst3Folder="./lib/vst3sdk"
@@ -82,6 +83,7 @@
         <MODULEPATH id="juce_gui_basics" path="./assets/JUCE/modules"/>
         <MODULEPATH id="juce_gui_extra" path="./assets/JUCE/modules"/>
         <MODULEPATH id="juce_opengl" path="./assets/JUCE/modules"/>
+        <MODULEPATH id="surgesynthteam_tuningui" path="lib"/>
       </MODULEPATHS>
     </VS2017>
     <LINUX_MAKE targetFolder="Builds/Linux" vstLegacyFolder="VST2SDK_DIR" extraCompilerFlags="-DJUCE_DISPLAY_SPLASH_SCREEN=0 -DJUCE_REPORT_APP_USAGE=0 -I../../lib/tuning-library/include"
@@ -105,6 +107,7 @@
         <MODULEPATH id="juce_gui_basics" path="./assets/JUCE/modules"/>
         <MODULEPATH id="juce_gui_extra" path="./assets/JUCE/modules"/>
         <MODULEPATH id="juce_opengl" path="./assets/JUCE/modules"/>
+        <MODULEPATH id="surgesynthteam_tuningui" path="lib"/>
       </MODULEPATHS>
     </LINUX_MAKE>
   </EXPORTFORMATS>
@@ -124,6 +127,8 @@
     <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="juce_opengl" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="surgesynthteam_tuningui" showAllCode="1" useLocalCopy="0"
+            useGlobalPath="0"/>
   </MODULES>
   <LIVE_SETTINGS>
     <OSX/>
