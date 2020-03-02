@@ -50,31 +50,19 @@ TuningworkbenchsynthAudioProcessor::TuningworkbenchsynthAudioProcessor()
                                                            "Pitch Bend",
                                                            1, 12, 2 ),
 
-                      std::make_unique<AudioParameterFloat>( "amp_attack",
-                                                            "Amp Attack",
-                                                            0, 10.0, 0.1 ),
-                      std::make_unique<AudioParameterFloat>( "amp_decay",
-                                                            "Amp Decay",
-                                                            0, 10.0, 0.1 ),
+                      envelopeTimeParam( "amp_attack", "Amp Attack", 0.1 ),
+                      envelopeTimeParam( "amp_decay", "Amp Decay", 0.1 ),
                       std::make_unique<AudioParameterFloat>( "amp_sustain",
                                                             "Amp Sustain",
                                                             0, 1.0, 0.5 ),
-                      std::make_unique<AudioParameterFloat>( "amp_release",
-                                                            "Amp Release",
-                                                            0, 10.0, 0.1 ),
+                      envelopeTimeParam( "amp_release", "Amp Release", 0.1 ),
 
-                      std::make_unique<AudioParameterFloat>( "filter_attack",
-                                                            "Filter Attack",
-                                                            0, 10.0, 0.1 ),
-                      std::make_unique<AudioParameterFloat>( "filter_decay",
-                                                            "Filter Decay",
-                                                            0, 10.0, 0.1 ),
+                      envelopeTimeParam( "filter_attack", "Filter Attack", 0.1 ),
+                      envelopeTimeParam( "filter_decay", "Filter Decay", 0.1 ),
                       std::make_unique<AudioParameterFloat>( "filter_sustain",
                                                             "Filter Sustain",
                                                             0, 1.0, 0.5 ),
-                      std::make_unique<AudioParameterFloat>( "filter_release",
-                                                            "Filter Release",
-                                                            0, 10.0, 0.1 ),
+                      envelopeTimeParam( "filter_release", "Filter Release", 0.1 ),
                       std::make_unique<AudioParameterFloat>( "filter_depth",
                                                             "Filter ModulationDepth",
                                                             0, 1.0, 0.0 ),
@@ -82,9 +70,7 @@ TuningworkbenchsynthAudioProcessor::TuningworkbenchsynthAudioProcessor()
                       std::make_unique<AudioParameterInt>( "filter_type",
                                                            "Filter Type",
                                                            1,3,1 ),
-                      std::make_unique<AudioParameterFloat>( "filter_cutoff",
-                                                             "Filter Cutoff",
-                                                             10.0, 20000.0, 880 ),
+                      expRangeParam( "filter_cutoff", "Filter Cutoff", 40, 18000, 880 ),
                       std::make_unique<AudioParameterFloat>( "filter_resonance",
                                                              "Filter Resonance",
                                                              0, 1.0, 0.7 ),
@@ -116,9 +102,7 @@ TuningworkbenchsynthAudioProcessor::TuningworkbenchsynthAudioProcessor()
                                                              "Pluck Level",
                                                              0, 1.0, 0.0 ),
 
-                      std::make_unique<AudioParameterFloat>( "delay_time",
-                                                             "Delay Time",
-                                                             0.05, MAX_DELAY_TIME, 0.5 ),
+                      envelopeTimeParam( "delay_time", "Delay Time", 0.5, 0.05, MAX_DELAY_TIME ),
                       std::make_unique<AudioParameterFloat>( "delay_fb",
                                                              "Delay Feedback",
                                                              0., 1.0, 0.1 ),
@@ -130,12 +114,8 @@ TuningworkbenchsynthAudioProcessor::TuningworkbenchsynthAudioProcessor()
                       std::make_unique<AudioParameterFloat>( "lfo_rate",
                                                              "LFO Rate",
                                                              0.1, 100.0, 5.0 ),
-                      std::make_unique<AudioParameterFloat>( "lfo_delay",
-                                                             "LFO Delay",
-                                                             0.0, 10.0, 0.0 ),
-                      std::make_unique<AudioParameterFloat>( "lfo_attack",
-                                                             "LFO Attack",
-                                                             0., 10.0, 0.0 ),
+                      envelopeTimeParam( "lfo_delay", "LFO Delay", 0.0 ),
+                      envelopeTimeParam( "lfo_attack", "LFO Attack", 0.0 ),
                       std::make_unique<AudioParameterFloat>( "lfo_pitch",
                                                              "LFO Pitch",
                                                              0.0, 1.0, 0.0 ),
@@ -323,7 +303,6 @@ bool TuningworkbenchsynthAudioProcessor::isBusesLayoutSupported (const BusesLayo
 
 void TuningworkbenchsynthAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
 {
-    synth.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples() );
     if( noteListeners.size() > 0 )
     {
         bool noteTog = false;
@@ -351,6 +330,17 @@ void TuningworkbenchsynthAudioProcessor::processBlock (AudioBuffer<float>& buffe
 
         if( noteTog )
         {
+            /*
+            ** We have to have at least one oscillator on (although this is a rare case)
+            */
+            if( ! ( *vco_on || *pluck_on || *sub_on ) )
+            {
+                *vco_on = 1.0; // this will get re-written in the async update
+                auto vo = parameters.getParameter( "vco_on" );
+                vo->beginChangeGesture();
+                vo->setValueNotifyingHost( 1.0 );
+                vo->endChangeGesture();
+            }
             for( auto l : noteListeners )
             {
                 for( int i=0; i<onp; ++i )
@@ -360,6 +350,8 @@ void TuningworkbenchsynthAudioProcessor::processBlock (AudioBuffer<float>& buffe
             }
         }
     }
+
+    synth.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples() );
 }
 
 //==============================================================================

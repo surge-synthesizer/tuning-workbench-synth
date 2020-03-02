@@ -543,6 +543,22 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     DelayPower->addListener(this);
     ModWheelPower->addListener(this);
     FilterPower->addListener(this);
+
+    /*
+    ** set up the range functions
+    */
+    auto freqMapTop01 = [](double start, double end, double value ) {
+                            std::cout << "TO: " << start << " " << end << " " << value << std::endl;
+                            return value;
+                        };
+    auto freqMapFrom01 = [](double start, double end, double value ) {
+                            std::cout << "FR: " << start << " " << end << " " << value << std::endl;
+                            return value;
+                        };
+    NormalisableRange<double> filtfrange( 10, 20000, freqMapFrom01, freqMapTop01 );
+    Filt_Cutoff->setNormalisableRange( filtfrange );
+
+    
     //[/UserPreSize]
 
     setSize (784, 730);
