@@ -1179,22 +1179,44 @@ void TWSMainPanel::buttonClicked (Button* buttonThatWasClicked)
         options.useNativeTitleBar = false;
         options.resizable = false;
 
-        auto dialogwindow = options.launchAsync();
+        /* auto dialogwindow = */ options.launchAsync();
         //[/UserButtonCode_aboutButton]
     }
     else if (buttonThatWasClicked == lfotritog.get())
     {
         //[UserButtonCode_lfotritog] -- add your button handler code here..
+        if( buttonThatWasClicked->getToggleState() )
+        {
+            auto ft = processor.parameters.getParameter("lfo_type");
+            ft->beginChangeGesture();
+            ft->setValueNotifyingHost( 0.0 );
+            ft->endChangeGesture();
+        }
+
         //[/UserButtonCode_lfotritog]
     }
     else if (buttonThatWasClicked == lfosqrtog.get())
     {
         //[UserButtonCode_lfosqrtog] -- add your button handler code here..
+        if( buttonThatWasClicked->getToggleState() )
+        {
+            auto ft = processor.parameters.getParameter("lfo_type");
+            ft->beginChangeGesture();
+            ft->setValueNotifyingHost( 0.5 );
+            ft->endChangeGesture();
+        }
         //[/UserButtonCode_lfosqrtog]
     }
     else if (buttonThatWasClicked == lforndtog.get())
     {
         //[UserButtonCode_lforndtog] -- add your button handler code here..
+        if( buttonThatWasClicked->getToggleState() )
+        {
+            auto ft = processor.parameters.getParameter("lfo_type");
+            ft->beginChangeGesture();
+            ft->setValueNotifyingHost( 1.0 );
+            ft->endChangeGesture();
+        }
         //[/UserButtonCode_lforndtog]
     }
 
@@ -1373,7 +1395,7 @@ void TWSMainPanel::connectValueTreeState(AudioProcessorValueTreeState &t )
     pb( "filter_on", FilterPower );
 
     /*
-    ** Hook up the filter tri-state
+    ** Hook up the filter tri-state and LFO tri-state
     */
     {
         // FIXME - don't leak this listener
@@ -1386,6 +1408,19 @@ void TWSMainPanel::connectValueTreeState(AudioProcessorValueTreeState &t )
                        };
         t.getParameter("filter_type")->addListener(l);
         l->lfunc(0,t.getParameter("filter_type")->getValue());
+        lambdaAtttachments.push_back(l);
+    }
+    {
+        // FIXME - don't leak this listener
+        auto l = new TWSLambdaParamListener();
+        l->lfunc = [this](int i, float v)
+                       {
+                           this->lfotritog->setToggleState( v == 0, dontSendNotification );
+                           this->lfosqrtog->setToggleState( v == 0.5, dontSendNotification );
+                           this->lforndtog->setToggleState( v == 1, dontSendNotification );
+                       };
+        t.getParameter("lfo_type")->addListener(l);
+        l->lfunc(0,t.getParameter("lfo_type")->getValue());
         lambdaAtttachments.push_back(l);
     }
 }
