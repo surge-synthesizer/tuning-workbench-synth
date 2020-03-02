@@ -49,9 +49,9 @@ jobs:
       win:
         imageName: 'vs2017-win2016'
         isWindows: True
-      #lin:
-      #  imageName: 'ubuntu-18.04'
-      #  isLinux: True
+      lin:
+        imageName: 'ubuntu-18.04'
+        isLinux: True
 
   pool:
     vmImage: $(imageName)
@@ -124,7 +124,9 @@ jobs:
     condition: variables.isWindows
 
   - bash: |
+      sudo apt-get install -y libgtk-3-dev
       sudo apt-get install -y libwebkit2gtk-4.0
+      sudo apt-get install -y libwebkit2gtk-4.0-dev
       sudo apt-get install -y libcurl4-openssl-dev
       sudo apt-get install -y alsa-base
       sudo apt-get install -y libasound2-dev
@@ -182,10 +184,10 @@ jobs:
       artifactName: 'WINDOWS_BUILD'
       targetPath: $(Build.ArtifactStagingDirectory)
 
-  # - task: DownloadPipelineArtifact@0
-  #   inputs:
-  #     artifactName: 'LINUX_BUILD'
-  #     targetPath: $(Build.ArtifactStagingDirectory)
+  - task: DownloadPipelineArtifact@0
+    inputs:
+      artifactName: 'LINUX_BUILD'
+      targetPath: $(Build.ArtifactStagingDirectory)
 
   - bash: |
      scripts/release-notes.sh > $(Build.ArtifactStagingDirectory)/ReleaseNotes.md
