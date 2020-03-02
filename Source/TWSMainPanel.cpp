@@ -37,6 +37,12 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
 
+    groupComponent7.reset (new GroupComponent ("new group",
+                                               TRANS("Tuning")));
+    addAndMakeVisible (groupComponent7.get());
+
+    groupComponent7->setBounds (8, 320, 768, 400);
+
     groupComponent8.reset (new GroupComponent ("new group",
                                                TRANS("LFO")));
     addAndMakeVisible (groupComponent8.get());
@@ -48,12 +54,6 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     tuningGrid->setName ("tuningGrid");
 
     tuningGrid->setBounds (24, 344, 296, 360);
-
-    groupComponent7.reset (new GroupComponent ("new group",
-                                               TRANS("Tuning")));
-    addAndMakeVisible (groupComponent7.get());
-
-    groupComponent7->setBounds (8, 320, 768, 400);
 
     groupComponent3.reset (new GroupComponent ("new group",
                                                TRANS("Filter Envelope")));
@@ -602,9 +602,9 @@ TWSMainPanel::~TWSMainPanel()
     lambdaAtttachments.clear();
     //[/Destructor_pre]
 
+    groupComponent7 = nullptr;
     groupComponent8 = nullptr;
     tuningGrid = nullptr;
-    groupComponent7 = nullptr;
     groupComponent3 = nullptr;
     groupComponent2 = nullptr;
     groupComponent = nullptr;
@@ -1539,13 +1539,13 @@ BEGIN_JUCER_METADATA
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="0"
           italic="0" justification="36"/>
   </BACKGROUND>
+  <GROUPCOMPONENT name="new group" id="2fbebfe69a2a9d0" memberName="groupComponent7"
+                  virtualName="" explicitFocusOrder="0" pos="8 320 768 400" title="Tuning"/>
   <GROUPCOMPONENT name="new group" id="fbbdde6af60bfa90" memberName="groupComponent8"
                   virtualName="" explicitFocusOrder="0" pos="224 224 400 96" title="LFO"/>
   <GENERICCOMPONENT name="tuningGrid" id="8857390d3f7a2a0b" memberName="tuningGrid"
                     virtualName="" explicitFocusOrder="0" pos="24 344 296 360" class="TWSTuningGrid"
                     params=""/>
-  <GROUPCOMPONENT name="new group" id="2fbebfe69a2a9d0" memberName="groupComponent7"
-                  virtualName="" explicitFocusOrder="0" pos="8 320 768 400" title="Tuning"/>
   <GROUPCOMPONENT name="new group" id="d1ab89cbe04d6843" memberName="groupComponent3"
                   virtualName="" explicitFocusOrder="0" pos="224 32 336 96" title="Filter Envelope"/>
   <GROUPCOMPONENT name="new group" id="d2339ec442610ced" memberName="groupComponent2"

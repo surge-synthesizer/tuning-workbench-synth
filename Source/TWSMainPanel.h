@@ -92,9 +92,9 @@ private:
     //[/UserVariables]
 
     //==============================================================================
+    std::unique_ptr<GroupComponent> groupComponent7;
     std::unique_ptr<GroupComponent> groupComponent8;
     std::unique_ptr<TWSTuningGrid> tuningGrid;
-    std::unique_ptr<GroupComponent> groupComponent7;
     std::unique_ptr<GroupComponent> groupComponent3;
     std::unique_ptr<GroupComponent> groupComponent2;
     std::unique_ptr<GroupComponent> groupComponent;
