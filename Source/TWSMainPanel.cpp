@@ -258,7 +258,7 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     uni_spread->setSliderStyle (Slider::LinearHorizontal);
     uni_spread->setTextBoxStyle (Slider::TextBoxBelow, false, 60, 15);
 
-    uni_spread->setBounds (152, 96, 56, 56);
+    uni_spread->setBounds (152, 112, 56, 40);
 
     uni_count.reset (new Slider ("Uni Count"));
     addAndMakeVisible (uni_count.get());
@@ -266,7 +266,7 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     uni_count->setSliderStyle (Slider::IncDecButtons);
     uni_count->setTextBoxStyle (Slider::TextBoxBelow, false, 60, 15);
 
-    uni_count->setBounds (152, 70, 56, 32);
+    uni_count->setBounds (152, 64, 56, 32);
 
     pb_up.reset (new Slider ("PB UP"));
     addAndMakeVisible (pb_up.get());
@@ -412,14 +412,6 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
 
     comboBox->setBounds (8, 3, 168, 24);
 
-    delay_fb.reset (new Slider ("delay_fb"));
-    addAndMakeVisible (delay_fb.get());
-    delay_fb->setRange (0, 10, 0);
-    delay_fb->setSliderStyle (Slider::Rotary);
-    delay_fb->setTextBoxStyle (Slider::TextBoxBelow, false, 60, 15);
-
-    delay_fb->setBounds (712, 144, 63, 72);
-
     delay_time.reset (new Slider ("delay_time"));
     addAndMakeVisible (delay_time.get());
     delay_time->setRange (0, 10, 0);
@@ -514,6 +506,33 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
 
     FilterPower->setBounds (744, 32, 16, 16);
 
+    delay_fb.reset (new Slider ("new slider"));
+    addAndMakeVisible (delay_fb.get());
+    delay_fb->setRange (0, 10, 0);
+    delay_fb->setSliderStyle (Slider::LinearVertical);
+    delay_fb->setTextBoxStyle (Slider::NoTextBox, false, 80, 20);
+    delay_fb->addListener (this);
+
+    delay_fb->setBounds (702, 151, 24, 68);
+
+    delay_dry.reset (new Slider ("new slider"));
+    addAndMakeVisible (delay_dry.get());
+    delay_dry->setRange (0, 10, 0);
+    delay_dry->setSliderStyle (Slider::LinearVertical);
+    delay_dry->setTextBoxStyle (Slider::NoTextBox, false, 80, 20);
+    delay_dry->addListener (this);
+
+    delay_dry->setBounds (748, 151, 24, 68);
+
+    delay_wet.reset (new Slider ("new slider"));
+    addAndMakeVisible (delay_wet.get());
+    delay_wet->setRange (0, 10, 0);
+    delay_wet->setSliderStyle (Slider::LinearVertical);
+    delay_wet->setTextBoxStyle (Slider::NoTextBox, false, 80, 20);
+    delay_wet->addListener (this);
+
+    delay_wet->setBounds (724, 151, 24, 68);
+
 
     //[UserPreSize]
     version->setText( TWS_VERSION, dontSendNotification );
@@ -533,7 +552,7 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     processor.addTuningUpdatedListener( kbmTextAndControls );
     processor.addTuningUpdatedListener( tuningGrid.get() );
     processor.addNotesOnChangedListener( tuningGrid.get() );
-    
+
     wheelLab->setColour (Label::backgroundColourId, getLookAndFeel().findColour (ResizableWindow::backgroundColourId));
 
     VCOPower->setToggleState( true, dontSendNotification );
@@ -558,7 +577,7 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     NormalisableRange<double> filtfrange( 10, 20000, freqMapFrom01, freqMapTop01 );
     Filt_Cutoff->setNormalisableRange( filtfrange );
 
-    
+
     //[/UserPreSize]
 
     setSize (784, 730);
@@ -577,7 +596,7 @@ TWSMainPanel::~TWSMainPanel()
     processor.removeTuningUpdatedListener( kbmTextAndControls );
     processor.removeTuningUpdatedListener( tuningGrid.get() );
     processor.removeNotesOnChangedListener( tuningGrid.get() );
-    
+
     sliderAttachments.clear();
     buttonAttachments.clear();
     lambdaAtttachments.clear();
@@ -632,7 +651,6 @@ TWSMainPanel::~TWSMainPanel()
     groupComponent10 = nullptr;
     groupComponent11 = nullptr;
     comboBox = nullptr;
-    delay_fb = nullptr;
     delay_time = nullptr;
     pluck_atn = nullptr;
     pluck_flt = nullptr;
@@ -646,6 +664,9 @@ TWSMainPanel::~TWSMainPanel()
     ModWheelPower = nullptr;
     groupComponent6 = nullptr;
     FilterPower = nullptr;
+    delay_fb = nullptr;
+    delay_dry = nullptr;
+    delay_wet = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -901,18 +922,6 @@ void TWSMainPanel::paint (Graphics& g)
     }
 
     {
-        int x = 151, y = 44, width = 56, height = 30;
-        String text (TRANS("Unison"));
-        Colour fillColour = Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Regular"));
-        g.drawText (text, x, y, width, height,
-                    Justification::centred, true);
-    }
-
-    {
         int x = 116, y = 185, width = 22, height = 21;
         String text (TRANS("oct"));
         Colour fillColour = Colours::white;
@@ -997,7 +1006,7 @@ void TWSMainPanel::paint (Graphics& g)
     }
 
     {
-        int x = 712, y = 141, width = 22, height = 21;
+        int x = 704, y = 141, width = 22, height = 21;
         String text (TRANS("fb"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -1052,6 +1061,54 @@ void TWSMainPanel::paint (Graphics& g)
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
         g.setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Regular"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centred, true);
+    }
+
+    {
+        int x = 726, y = 141, width = 22, height = 21;
+        String text (TRANS("wet"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Regular"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centred, true);
+    }
+
+    {
+        int x = 750, y = 141, width = 22, height = 21;
+        String text (TRANS("dry"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Regular"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centred, true);
+    }
+
+    {
+        int x = 152, y = 40, width = 56, height = 30;
+        String text (TRANS("Unison"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Regular"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centred, true);
+    }
+
+    {
+        int x = 152, y = 93, width = 56, height = 30;
+        String text (TRANS("Spread"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Regular"));
         g.drawText (text, x, y, width, height,
                     Justification::centred, true);
     }
@@ -1191,6 +1248,31 @@ void TWSMainPanel::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     //[/UsercomboBoxChanged_Post]
 }
 
+void TWSMainPanel::sliderValueChanged (Slider* sliderThatWasMoved)
+{
+    //[UsersliderValueChanged_Pre]
+    //[/UsersliderValueChanged_Pre]
+
+    if (sliderThatWasMoved == delay_fb.get())
+    {
+        //[UserSliderCode_delay_fb] -- add your slider handling code here..
+        //[/UserSliderCode_delay_fb]
+    }
+    else if (sliderThatWasMoved == delay_dry.get())
+    {
+        //[UserSliderCode_delay_dry] -- add your slider handling code here..
+        //[/UserSliderCode_delay_dry]
+    }
+    else if (sliderThatWasMoved == delay_wet.get())
+    {
+        //[UserSliderCode_delay_wet] -- add your slider handling code here..
+        //[/UserSliderCode_delay_wet]
+    }
+
+    //[UsersliderValueChanged_Post]
+    //[/UsersliderValueChanged_Post]
+}
+
 void TWSMainPanel::filesDropped (const StringArray& filenames, int mouseX, int mouseY)
 {
     //[UserCode_filesDropped] -- Add your code here...
@@ -1279,6 +1361,8 @@ void TWSMainPanel::connectValueTreeState(AudioProcessorValueTreeState &t )
     s( "lfo_filter", lfo_to_cutoff );
 
     s( "delay_fb", delay_fb );
+    s( "delay_wet", delay_wet );
+    s( "delay_dry", delay_dry );
     s( "delay_time", delay_time );
 
     pb( "vco_on", VCOPower );
@@ -1406,9 +1490,6 @@ BEGIN_JUCER_METADATA
     <TEXT pos="516 149 31 30" fill="solid: ffffffff" hasStroke="0" text="Up"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="0"
           italic="0" justification="33"/>
-    <TEXT pos="151 44 56 30" fill="solid: ffffffff" hasStroke="0" text="Unison"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="0"
-          italic="0" justification="36"/>
     <TEXT pos="116 185 22 21" fill="solid: ffffffff" hasStroke="0" text="oct"
           fontname="Default font" fontsize="12.0" kerning="0.0" bold="0"
           italic="0" justification="36"/>
@@ -1430,7 +1511,7 @@ BEGIN_JUCER_METADATA
     <TEXT pos="640 141 22 21" fill="solid: ffffffff" hasStroke="0" text="time"
           fontname="Default font" fontsize="12.0" kerning="0.0" bold="0"
           italic="0" justification="36"/>
-    <TEXT pos="712 141 22 21" fill="solid: ffffffff" hasStroke="0" text="fb"
+    <TEXT pos="704 141 22 21" fill="solid: ffffffff" hasStroke="0" text="fb"
           fontname="Default font" fontsize="12.0" kerning="0.0" bold="0"
           italic="0" justification="36"/>
     <TEXT pos="21 236 31 30" fill="solid: ffffffff" hasStroke="0" text="Flt"
@@ -1444,6 +1525,18 @@ BEGIN_JUCER_METADATA
           italic="0" justification="33"/>
     <TEXT pos="144 237 22 21" fill="solid: ffffffff" hasStroke="0" text="lev"
           fontname="Default font" fontsize="12.0" kerning="0.0" bold="0"
+          italic="0" justification="36"/>
+    <TEXT pos="726 141 22 21" fill="solid: ffffffff" hasStroke="0" text="wet"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="0"
+          italic="0" justification="36"/>
+    <TEXT pos="750 141 22 21" fill="solid: ffffffff" hasStroke="0" text="dry"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="0"
+          italic="0" justification="36"/>
+    <TEXT pos="152 40 56 30" fill="solid: ffffffff" hasStroke="0" text="Unison"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="0"
+          italic="0" justification="36"/>
+    <TEXT pos="152 93 56 30" fill="solid: ffffffff" hasStroke="0" text="Spread"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="0"
           italic="0" justification="36"/>
   </BACKGROUND>
   <GROUPCOMPONENT name="new group" id="fbbdde6af60bfa90" memberName="groupComponent8"
@@ -1554,12 +1647,12 @@ BEGIN_JUCER_METADATA
           textBoxEditable="1" textBoxWidth="60" textBoxHeight="15" skewFactor="1.0"
           needsCallback="0"/>
   <SLIDER name="Uni_Spread" id="b13048de96bc2e15" memberName="uni_spread"
-          virtualName="" explicitFocusOrder="0" pos="152 96 56 56" min="0.0"
+          virtualName="" explicitFocusOrder="0" pos="152 112 56 40" min="0.0"
           max="10.0" int="0.0" style="LinearHorizontal" textBoxPos="TextBoxBelow"
           textBoxEditable="1" textBoxWidth="60" textBoxHeight="15" skewFactor="1.0"
           needsCallback="0"/>
   <SLIDER name="Uni Count" id="671852c0dcb9a6cd" memberName="uni_count"
-          virtualName="" explicitFocusOrder="0" pos="152 70 56 32" min="0.0"
+          virtualName="" explicitFocusOrder="0" pos="152 64 56 32" min="0.0"
           max="10.0" int="0.0" style="IncDecButtons" textBoxPos="TextBoxBelow"
           textBoxEditable="1" textBoxWidth="60" textBoxHeight="15" skewFactor="1.0"
           needsCallback="0"/>
@@ -1629,10 +1722,6 @@ BEGIN_JUCER_METADATA
   <COMBOBOX name="new combo box" id="970d30d04b5c167c" memberName="comboBox"
             virtualName="" explicitFocusOrder="0" pos="8 3 168 24" editable="0"
             layout="33" items="" textWhenNonSelected="" textWhenNoItems="(no choices)"/>
-  <SLIDER name="delay_fb" id="e034138b2cf38cda" memberName="delay_fb" virtualName=""
-          explicitFocusOrder="0" pos="712 144 63 72" min="0.0" max="10.0"
-          int="0.0" style="Rotary" textBoxPos="TextBoxBelow" textBoxEditable="1"
-          textBoxWidth="60" textBoxHeight="15" skewFactor="1.0" needsCallback="0"/>
   <SLIDER name="delay_time" id="83f72f5048c8af2d" memberName="delay_time"
           virtualName="" explicitFocusOrder="0" pos="640 144 63 72" min="0.0"
           max="10.0" int="0.0" style="Rotary" textBoxPos="TextBoxBelow"
@@ -1681,6 +1770,21 @@ BEGIN_JUCER_METADATA
   <GENERICCOMPONENT name="new component" id="f6b98ff890ab9c00" memberName="FilterPower"
                     virtualName="" explicitFocusOrder="0" pos="744 32 16 16" class="TWSPowerToggle"
                     params=""/>
+  <SLIDER name="new slider" id="cbc517d7e682513a" memberName="delay_fb"
+          virtualName="" explicitFocusOrder="0" pos="702 151 24 68" min="0.0"
+          max="10.0" int="0.0" style="LinearVertical" textBoxPos="NoTextBox"
+          textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
+          needsCallback="1"/>
+  <SLIDER name="new slider" id="ab65fae43903f271" memberName="delay_dry"
+          virtualName="" explicitFocusOrder="0" pos="748 151 24 68" min="0.0"
+          max="10.0" int="0.0" style="LinearVertical" textBoxPos="NoTextBox"
+          textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
+          needsCallback="1"/>
+  <SLIDER name="new slider" id="fc3191b5e3aed740" memberName="delay_wet"
+          virtualName="" explicitFocusOrder="0" pos="724 151 24 68" min="0.0"
+          max="10.0" int="0.0" style="LinearVertical" textBoxPos="NoTextBox"
+          textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
+          needsCallback="1"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

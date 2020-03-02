@@ -64,6 +64,7 @@ private:
     std::unique_ptr<TextButton> githubButton;
     std::unique_ptr<TextButton> licenseButton;
     std::unique_ptr<TextButton> teamButton;
+    std::unique_ptr<Drawable> drawable1;
 
 
     //==============================================================================

@@ -58,7 +58,7 @@ private:
         
     int noteNum;
     double pwAmount;
-    double priorRenderedPW = 0;
+    double priorRenderedPW = 0, priorRenderedUniSpread = 0;
     
     
     TuningworkbenchsynthAudioProcessor *p;
