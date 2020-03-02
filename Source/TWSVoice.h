@@ -76,7 +76,7 @@ private:
     SmoothedValue<float> subLevel;
     
     SmoothedValue<float> filterCut, filterRes, filterDepth;
-    IIRFilter filterL, filterR;
+    dsp::StateVariableFilter::Filter<float> filterL, filterR;
     int filterTypeAtOutset;
 
     // Pluck oscillator
