@@ -27,11 +27,37 @@ void TWSVoice::startNote (int midiNoteNumber, float velocity,
     setPitchWheel( currentPitchWheelPosition );
     noteNum = midiNoteNumber;
 
-    level = ( velocity + 64 ) / 192.0 * 0.15; // cramp up the velosity sens a bit
+    level = ( velocity + 64 ) / 192.0 * 0.7; // cramp up the velosity sens a bit
 
     nunison = std::max( 1, (int)( *(p->uni_count) ) );
     filterTypeAtOutset = *( p->filter_type );
+
+    switch( filterTypeAtOutset )
+    {
+    case 2: // HPF
+    {
+        filterL.parameters->type = dsp::StateVariableFilter::Parameters<float>::Type::highPass;
+        filterR.parameters->type = dsp::StateVariableFilter::Parameters<float>::Type::highPass;
+    }
+    break;
+    case 3: // HPF
+    {
+        filterL.parameters->type = dsp::StateVariableFilter::Parameters<float>::Type::bandPass;
+        filterR.parameters->type = dsp::StateVariableFilter::Parameters<float>::Type::bandPass;
+    }
+    break;
     
+    default: // LPF
+    {
+        filterL.parameters->type = dsp::StateVariableFilter::Parameters<float>::Type::lowPass;
+        filterR.parameters->type = dsp::StateVariableFilter::Parameters<float>::Type::lowPass;
+        
+    }
+    break;
+    }
+    filterL.reset();
+    filterR.reset();
+
     if( nunison == 1 )
     {
         auto cyclesPerSample = frequencyForFractionalNote( midiNoteNumber + pitchWheelNoteShift() ) / getSampleRate();
@@ -335,37 +361,18 @@ void TWSVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample
         if( usef )
         {
             auto filtd = filterDepth.getNextValue();
-            auto filtc = std::max( 10.0, std::min( filterCut.getNextValue() * ( 1 + FEG * FEG * filtd * 64.0 ), getSampleRate() / 2 ) );
+            auto filtc = std::max( 10.0, std::min( filterCut.getNextValue() * ( 1 + FEG * FEG * filtd * 64.0 ), getSampleRate() / 4 ) );
             auto filtr = filterRes.getNextValue();
             
             // This is overkill but for now just hammer it
             if( sc % resetFilterEvery == 0 )
             {
-                switch( filterTypeAtOutset )
-                {
-                case 2: // HPF
-                {
-                    auto c = IIRCoefficients::makeHighPass( getSampleRate(), filtc, filtr );
-                    filterL.setCoefficients( c );
-                    filterR.setCoefficients( c );
-                    break;
-                }
-                case 3: // BPF
-                {
-                    auto c = IIRCoefficients::makeBandPass( getSampleRate(), filtc, filtr );
-                    filterL.setCoefficients( c );
-                    filterR.setCoefficients( c );
-                    break;
-                }
-                default: // LPF
-                {
-                    auto c = IIRCoefficients::makeLowPass( getSampleRate(), filtc, filtr );
-                    filterL.setCoefficients( c );
-                    filterR.setCoefficients( c );
-                    break;
-                }
-                    
-                }
+                filterL.parameters->setCutOffFrequency( getSampleRate(), filtc, filtr );
+                filterR.parameters->setCutOffFrequency( getSampleRate(), filtc, filtr );
+
+                // handle denomrals
+                filterL.snapToZero();
+                filterR.snapToZero();
             }
         }
         sc++;
@@ -450,8 +457,8 @@ void TWSVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample
             pluckDelayPos ++;
             if( pluckDelayPos >= pluckDelayLineSize ) pluckDelayPos = 0;
             pluckDelayLine[pluckDelayPos] = filtval;
-            sampleL += filtval * PEG;
-            sampleR += filtval * PEG;
+            sampleL += filtval * PEG * 2.2;
+            sampleR += filtval * PEG * 2.2; // amplify the pluck max level a bit
 
             if( recalcCycle )
             {
@@ -463,8 +470,8 @@ void TWSVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample
 
         if( usef )
         {
-            sampleL = filterL.processSingleSampleRaw( sampleL );
-            sampleR = filterL.processSingleSampleRaw( sampleR );
+            sampleL = filterL.processSample( sampleL );
+            sampleR = filterR.processSample( sampleR );
         }
         
         if( outputBuffer.getNumChannels() == 1 )
