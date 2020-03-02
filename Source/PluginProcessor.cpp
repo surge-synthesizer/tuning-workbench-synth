@@ -106,6 +106,12 @@ TuningworkbenchsynthAudioProcessor::TuningworkbenchsynthAudioProcessor()
                       std::make_unique<AudioParameterFloat>( "delay_fb",
                                                              "Delay Feedback",
                                                              0., 1.0, 0.1 ),
+                      std::make_unique<AudioParameterFloat>( "delay_wet",
+                                                             "Delay Wet Level",
+                                                             0., 1.0, 0.4 ),
+                      std::make_unique<AudioParameterFloat>( "delay_dry",
+                                                             "Delay Dry Level",
+                                                             0., 1.0, 1.0 ),
 
 
                       std::make_unique<AudioParameterInt>( "lfo_type",
@@ -193,6 +199,8 @@ TuningworkbenchsynthAudioProcessor::TuningworkbenchsynthAudioProcessor()
 
     SP(delay_time);
     SP(delay_fb);
+    SP(delay_wet);
+    SP(delay_dry);
 
     SP(lfo_type);
     SP(lfo_rate);

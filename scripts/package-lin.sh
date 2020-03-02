@@ -11,7 +11,7 @@ mkdir -p Builds/Linux/tuning-workbench-synth-Nightly
 mkdir -p products/
 
 cd Builds/Linux/build/
-cp tuning-workbench-synth tuning-workbench-synth.a ../tuning-workbench-synth-Nightly
+cp tuning-workbench-synth ../tuning-workbench-synth-Nightly
 cd ..
 
 cat <<EOF > tuning-workbench-synth-Nightly/BuildInfo.txt

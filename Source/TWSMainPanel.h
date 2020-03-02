@@ -54,7 +54,8 @@ struct TWSLambdaParamListener : public virtual AudioProcessorParameter::Listener
 class TWSMainPanel  : public Component,
                       public FileDragAndDropTarget,
                       public Button::Listener,
-                      public ComboBox::Listener
+                      public ComboBox::Listener,
+                      public Slider::Listener
 {
 public:
     //==============================================================================
@@ -73,6 +74,7 @@ public:
     void resized() override;
     void buttonClicked (Button* buttonThatWasClicked) override;
     void comboBoxChanged (ComboBox* comboBoxThatHasChanged) override;
+    void sliderValueChanged (Slider* sliderThatWasMoved) override;
     void filesDropped (const StringArray& filenames, int mouseX, int mouseY) override;
 
 
@@ -139,7 +141,6 @@ private:
     std::unique_ptr<GroupComponent> groupComponent10;
     std::unique_ptr<GroupComponent> groupComponent11;
     std::unique_ptr<ComboBox> comboBox;
-    std::unique_ptr<Slider> delay_fb;
     std::unique_ptr<Slider> delay_time;
     std::unique_ptr<Slider> pluck_atn;
     std::unique_ptr<Slider> pluck_flt;
@@ -153,6 +154,9 @@ private:
     std::unique_ptr<TWSPowerToggle> ModWheelPower;
     std::unique_ptr<GroupComponent> groupComponent6;
     std::unique_ptr<TWSPowerToggle> FilterPower;
+    std::unique_ptr<Slider> delay_fb;
+    std::unique_ptr<Slider> delay_dry;
+    std::unique_ptr<Slider> delay_wet;
 
 
     //==============================================================================

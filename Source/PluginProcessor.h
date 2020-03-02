@@ -35,7 +35,7 @@ protected:
     size_t delaySize;
     bool lastDelayOn = true;
 
-    SmoothedValue<float> delayT, delayFB;
+    SmoothedValue<float> delayT, delayFB, delayWet, delayDry;
 };
 
 
@@ -188,7 +188,7 @@ private:
 
     std::atomic<float> *subosc_level, *subosc_oct;
     std::atomic<float> *pluck_flt, *pluck_atn, *pluck_init, *pluck_lev;
-    std::atomic<float> *delay_time, *delay_fb;
+    std::atomic<float> *delay_time, *delay_fb, *delay_wet, *delay_dry;
 
     std::atomic<float> *lfo_type, *lfo_rate, *lfo_delay, *lfo_attack, *lfo_pitch, *lfo_filter;
 

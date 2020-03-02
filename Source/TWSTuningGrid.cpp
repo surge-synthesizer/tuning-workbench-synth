@@ -47,7 +47,7 @@ TWSTuningGrid::TWSTuningGrid ()
     mod = std::make_unique<surgesynthteam_TuningTableListBoxModel>();
     mod->setTableListBox( table.get() );
     mod->setupDefaultHeaders( table.get() );
-    
+
     table->setModel( mod.get() );
 
     table->getViewport()->setScrollBarsShown(true,false);
@@ -125,4 +125,4 @@ END_JUCER_METADATA
 
 //[EndFile] You can add extra defines here...
 //[/EndFile]
-    
+

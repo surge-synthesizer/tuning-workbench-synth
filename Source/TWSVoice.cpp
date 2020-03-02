@@ -46,7 +46,8 @@ void TWSVoice::startNote (int midiNoteNumber, float velocity,
         double uso = *( p->uni_spread ) / 100.0 * 2.0; // the 2.0 is for up and down
         double duso = uso / (nunison - 1);
         double sso = -uso / 2;
-
+        priorRenderedUniSpread = *( p->uni_spread );
+        
         level /= sqrt(nunison - 1);
         
         for( int i=0; i<nunison; ++i )
@@ -296,6 +297,19 @@ void TWSVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample
         recalcCycle = true;
     }
 
+    if( nunison > 1 && priorRenderedUniSpread != *( p->uni_spread ) )
+    {
+        double uso = *( p->uni_spread ) / 100.0 * 2.0; // the 2.0 is for up and down
+        double duso = uso / (nunison - 1);
+        double sso = -uso / 2;
+        priorRenderedUniSpread = *( p->uni_spread );
+        for( int i=0; i<nunison; ++i )
+        {
+            dDelta[i] = duso * i + sso;
+        }
+        recalcCycle = true;
+    }
+
     if( needsRetune.exchange(false) )
     {
         recalcCycle = true;
@@ -511,6 +525,9 @@ TWSSynthesiser::TWSSynthesiser(TuningworkbenchsynthAudioProcessor &p) : processo
 {
     delayT.reset(512);
     delayFB.reset(32);
+
+    delayWet.reset(32);
+    delayDry.reset(32);
 }
 
 /*
@@ -537,6 +554,8 @@ void TWSSynthesiser::renderVoices( AudioBuffer<float> &b, int s, int n )
     {
         delayT.setTargetValue( *(processor.delay_time) );
         delayFB.setTargetValue( *(processor.delay_fb ) );
+        delayWet.setTargetValue( *(processor.delay_wet ) );
+        delayDry.setTargetValue( *(processor.delay_dry ) );
 
         lastDelayOn = true;
         
@@ -552,16 +571,23 @@ void TWSSynthesiser::renderVoices( AudioBuffer<float> &b, int s, int n )
             
             float sL = b.getSample(0,s+i);
             float sR = b.getSample(1,s+i);
+
+            auto delL = lineL[p]; // INTERP
+            auto delR = lineR[p]; // INTERP
             
-            sL += fb * lineL[p];
-            sR += fb * lineR[p];
-            
-            b.setSample(0,s+i,sL);
-            b.setSample(1,s+i,sR);
-            
-            lineL[delayPos] = sL;
-            lineR[delayPos] = sR;
-            
+            lineL[delayPos] = sL + fb * delL;
+            lineR[delayPos] = sR + fb * delR;
+
+            // Now sample is wet + dry
+            auto wm = delayWet.getNextValue();
+            auto dm = delayDry.getNextValue();
+
+            auto newL = dm * sL + wm * delL;
+            auto newR = dm * sR + wm * delR;
+
+            b.setSample(0,s+i,newL);
+            b.setSample(1,s+i,newR);
+
             delayPos ++;
             if( delayPos >= delaySize)
                 delayPos = 0;
