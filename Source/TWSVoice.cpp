@@ -614,4 +614,26 @@ void TWSSynthesiser::renderVoices( AudioBuffer<float> &b, int s, int n )
         }
         lastDelayOn = false;
     }
+
+    float ml = *(processor.master_level);
+    float ms = *(processor.master_sat);
+    
+    for( int i=0; i<n; ++i )
+    {
+        // FIXME - there must be a vectorized way to do this
+        float sL = b.getSample(0,s+i);
+        float sR = b.getSample(1,s+i);
+        // overdrive into a cubic soft clipper
+        sL *= ( 1.0 + ms );
+        sL = std::min( 1.f, std::max( -1.f, sL ) );
+        sL = 1.5 * sL - 0.5 * sL * sL * sL;
+
+        sR *= ( 1.0 + ms );
+        sR = std::min( 1.f, std::max( -1.f, sR ) );
+        sL = 1.5 * sR - 0.5 * sR * sR * sR;
+        
+        b.setSample(0,s+i,sL * ml);
+        b.setSample(1,s+i,sR * ml);
+    }
+
 }

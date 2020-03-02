@@ -77,7 +77,7 @@ TuningworkbenchsynthAudioProcessor::TuningworkbenchsynthAudioProcessor()
 
                       std::make_unique<AudioParameterFloat>( "master_sat",
                                                              "Master Saturation",
-                                                             0, 5, 0 ),
+                                                             0, 7.0, 0 ),
                       std::make_unique<AudioParameterFloat>( "master_level",
                                                              "Master Level",
                                                              0, 1.0, 1.0 ),
