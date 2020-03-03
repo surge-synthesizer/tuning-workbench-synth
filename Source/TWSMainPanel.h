@@ -54,7 +54,6 @@ struct TWSLambdaParamListener : public virtual AudioProcessorParameter::Listener
 class TWSMainPanel  : public Component,
                       public FileDragAndDropTarget,
                       public Button::Listener,
-                      public ComboBox::Listener,
                       public Slider::Listener
 {
 public:
@@ -68,12 +67,12 @@ public:
     virtual bool isInterestedInFileDrag (const StringArray& files) override {
         return true; // FIXME
     }
+    virtual void doPresetMenu();
     //[/UserMethods]
 
     void paint (Graphics& g) override;
     void resized() override;
     void buttonClicked (Button* buttonThatWasClicked) override;
-    void comboBoxChanged (ComboBox* comboBoxThatHasChanged) override;
     void sliderValueChanged (Slider* sliderThatWasMoved) override;
     void filesDropped (const StringArray& filenames, int mouseX, int mouseY) override;
 
@@ -89,9 +88,12 @@ private:
     typedef AudioProcessorValueTreeState::ButtonAttachment ButtonAttachment;
     std::vector<std::unique_ptr<ButtonAttachment>> buttonAttachments;
     std::vector<TWSLambdaParamListener*> lambdaAtttachments;
+    std::unique_ptr<PopupMenu> presetMenu;
+
     //[/UserVariables]
 
     //==============================================================================
+    std::unique_ptr<Label> version3;
     std::unique_ptr<GroupComponent> groupComponent7;
     std::unique_ptr<GroupComponent> groupComponent8;
     std::unique_ptr<TWSTuningGrid> tuningGrid;
@@ -133,14 +135,11 @@ private:
     std::unique_ptr<ToggleButton> lfotritog;
     std::unique_ptr<ToggleButton> lfosqrtog;
     std::unique_ptr<ToggleButton> lforndtog;
-    std::unique_ptr<Slider> lfo_to_pitch;
-    std::unique_ptr<Slider> lfo_to_cutoff;
     std::unique_ptr<GroupComponent> groupComponent9;
     std::unique_ptr<Slider> sublevel;
     std::unique_ptr<Slider> sub_oct;
     std::unique_ptr<GroupComponent> groupComponent10;
     std::unique_ptr<GroupComponent> groupComponent11;
-    std::unique_ptr<ComboBox> comboBox;
     std::unique_ptr<Slider> delay_time;
     std::unique_ptr<Slider> pluck_atn;
     std::unique_ptr<Slider> pluck_flt;
@@ -157,6 +156,14 @@ private:
     std::unique_ptr<Slider> delay_fb;
     std::unique_ptr<Slider> delay_dry;
     std::unique_ptr<Slider> delay_wet;
+    std::unique_ptr<Slider> lfo_pitch;
+    std::unique_ptr<Slider> lfo_sublev;
+    std::unique_ptr<Slider> lfo_vcolev;
+    std::unique_ptr<Slider> lfo_plucklev;
+    std::unique_ptr<Slider> lfo_filter;
+    std::unique_ptr<Label> version2;
+    std::unique_ptr<TextButton> helpButton;
+    std::unique_ptr<TextButton> presetButton;
 
 
     //==============================================================================

@@ -175,7 +175,7 @@ void TWSTextAndControls::buttonClicked (Button* buttonThatWasClicked)
     else if (buttonThatWasClicked == exportButton.get())
     {
         //[UserButtonCode_exportButton] -- add your button handler code here..
-        FileChooser fc( isSCL ? "Export SCL File" : "Export KBM File" );
+        FileChooser fc( isSCL ? "Export SCL File" : "Export KBM File", File(), isSCL ? "*.scl" : "*.kbm" );
         if( fc.browseForFileToSave(true) )
         {
             auto f = fc.getResult();
@@ -202,6 +202,18 @@ void TWSTextAndControls::buttonClicked (Button* buttonThatWasClicked)
     else if (buttonThatWasClicked == advButton.get())
     {
         //[UserButtonCode_advButton] -- add your button handler code here..
+        if( isSCL )
+        {
+            auto ed = new surgesynthteam_ScaleEditor();
+            DialogWindow::LaunchOptions options;
+            options.content.setOwned(ed);
+            options.dialogTitle = "tuning-workbench-synth Advanced Scale Editor";
+            options.escapeKeyTriggersCloseButton = false;
+            options.useNativeTitleBar = false;
+            options.resizable = false;
+            
+            options.launchAsync();
+        }
         //[/UserButtonCode_advButton]
     }
 

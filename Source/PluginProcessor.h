@@ -29,7 +29,8 @@ public:
 protected:
     TuningworkbenchsynthAudioProcessor &processor;
     virtual void renderVoices( AudioBuffer<float> &b, int s, int n ) override;
-
+    virtual void handleController( int chan, int cont, int val ) override;
+    
     std::vector<float> lineL, lineR;
     size_t delayPos;
     size_t delaySize;
@@ -190,9 +191,11 @@ private:
     std::atomic<float> *pluck_flt, *pluck_atn, *pluck_init, *pluck_lev;
     std::atomic<float> *delay_time, *delay_fb, *delay_wet, *delay_dry;
 
-    std::atomic<float> *lfo_type, *lfo_rate, *lfo_delay, *lfo_attack, *lfo_pitch, *lfo_filter;
+    std::atomic<float> *lfo_type, *lfo_rate, *lfo_delay, *lfo_attack, *lfo_pitch, *lfo_filter, *lfo_vcolev, *lfo_sublev, *lfo_plucklev;
 
     std::atomic<float> *vco_on, *sub_on, *pluck_on, *delay_on, *modwheel_on, *filter_on;
+
+    std::vector<std::tuple<std::string, const char*, size_t>> factoryPresets;
     
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TuningworkbenchsynthAudioProcessor)
