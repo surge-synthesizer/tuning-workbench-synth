@@ -64,8 +64,8 @@ TuningworkbenchsynthAudioProcessor::TuningworkbenchsynthAudioProcessor()
                                                             0, 1.0, 0.5 ),
                       envelopeTimeParam( "filter_release", "Filter Release", 0.1 ),
                       std::make_unique<AudioParameterFloat>( "filter_depth",
-                                                            "Filter ModulationDepth",
-                                                            0, 1.0, 0.0 ),
+                                                             "Filter ModulationDepth",
+                                                             -1.0, 1.0, 0.0 ),
 
                       std::make_unique<AudioParameterInt>( "filter_type",
                                                            "Filter Type",

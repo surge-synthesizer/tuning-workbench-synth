@@ -425,8 +425,11 @@ void TWSVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample
         {
             auto lfof = lfoVal * *( p->lfo_filter ) * 0.2; // These are all callibrations from just playing with the sliders
             auto filtd = filterDepth.getNextValue();
+            auto filtf = FEG * FEG * filtd * 64.0;
+            if( filtd < 0 )
+                filtf = FEG * FEG * filtd * 0.95;
             auto filtc = std::max( 10.0, std::min(
-                                       filterCut.getNextValue() * ( 1 + FEG * FEG * filtd * 64.0 + lfof ),
+                                       filterCut.getNextValue() * ( 1 + filtf + lfof ),
                                        getSampleRate() / 4 ) );
             auto filtr = filterRes.getNextValue();
             
