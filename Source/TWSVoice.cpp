@@ -431,7 +431,7 @@ void TWSVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample
             auto filtc = std::max( 10.0, std::min(
                                        filterCut.getNextValue() * ( 1 + filtf + lfof ),
                                        getSampleRate() / 4 ) );
-            auto filtr = filterRes.getNextValue();
+            auto filtr = std::min( std::max( 0.05f, filterRes.getNextValue() ), 0.99f );
             
             // This is overkill but for now just hammer it
             if( sc % resetFilterEvery == 0 )
