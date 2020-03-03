@@ -8,6 +8,12 @@
               pluginFormats="buildVST3,buildAU,buildStandalone">
   <MAINGROUP id="Wx8OVz" name="tuning-workbench-synth">
     <GROUP id="{CA268845-16D3-86C8-8B06-4671890A089B}" name="Resources">
+      <GROUP id="{87647819-483F-55E4-D7A2-227D730F4A73}" name="factory_patches">
+        <FILE id="tHFSjQ" name="Struck String.twsxml" compile="0" resource="1"
+              file="Resources/factory_patches/Struck String.twsxml"/>
+        <FILE id="vUrXbZ" name="SwellPulsePad.twsxml" compile="0" resource="1"
+              file="Resources/factory_patches/SwellPulsePad.twsxml"/>
+      </GROUP>
       <FILE id="jgsaHz" name="TWSLogo_Inverted_NoBG_120.png" compile="0"
             resource="1" file="Resources/TWSLogo_Inverted_NoBG_120.png"/>
       <FILE id="trzx3e" name="FiraCode-Regular.ttf" compile="0" resource="1"

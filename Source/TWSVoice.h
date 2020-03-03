@@ -42,10 +42,14 @@ public:
         setPitchWheel( pw );
     }
 
-    void controllerMoved (int, int) override {}
+    void controllerMoved (int ct, int val) override {
+        modwheelLevel = val;
+    }
 
     void renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample, int numSamples) override;
     virtual void tuningUpdated( const Tunings::Tuning &newTuning ) override;
+
+    std::atomic<int> synthModWheel;
 
 private:
     void setPitchWheel( int pw ) {
@@ -87,8 +91,12 @@ private:
     size_t pluckDelayPos;
     SmoothedValue<float> pluckWeight, pluckAtten, pluckLevel;
     float pluckAttenNorm;
+
+    float lfoTime, lfoDTime, lfoAngle;
+    SmoothedValue<float> lfoLastRand, lfoLastSquare;
     
     std::atomic<bool> needsRetune;
+    std::atomic<int> modwheelLevel;
     
     ADSR ampenv, filtenv, pluckenv; // pluck env has no user parameters
 };

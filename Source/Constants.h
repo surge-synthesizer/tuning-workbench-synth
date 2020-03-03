@@ -1,6 +1,6 @@
 #pragma once
 
-#define TWS_VERSION "local-build"
+#define TWS_VERSION "alpha-a25d302-20200303"
 
 // voices
 #define MAX_UNISON 10

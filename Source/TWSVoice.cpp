@@ -19,6 +19,7 @@ TWSVoice::TWSVoice(TuningworkbenchsynthAudioProcessor *i) : p(i), needsRetune(fa
         panBufferL[i] = lW;
         panBufferR[i] = rW;
     }
+    synthModWheel = 0;
 }
 
 void TWSVoice::startNote (int midiNoteNumber, float velocity,
@@ -26,8 +27,16 @@ void TWSVoice::startNote (int midiNoteNumber, float velocity,
 {
     setPitchWheel( currentPitchWheelPosition );
     noteNum = midiNoteNumber;
-
+    modwheelLevel = synthModWheel.load();
+    
     level = ( velocity + 64 ) / 192.0 * 0.7; // cramp up the velosity sens a bit
+    lfoTime = 0;
+    lfoDTime = 1.0 / getSampleRate();
+    lfoAngle = 0;
+    lfoLastRand.reset( 128 );
+    lfoLastSquare.reset( 128 );
+    lfoLastRand.setCurrentAndTargetValue( 2.0 * rand() / RAND_MAX - 1.0 );
+    lfoLastSquare.setCurrentAndTargetValue( -1.0 );
 
     nunison = std::max( 1, (int)( *(p->uni_count) ) );
     filterTypeAtOutset = *( p->filter_type );
@@ -342,9 +351,63 @@ void TWSVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample
     }
     
     int sc = 0;
+    float lfoDAngle = *( p->lfo_rate ) * lfoDTime;
     while (--numSamples >= 0)
     {
-        // doto - lose the current
+        // First calculate the LFO
+        float lfoMul = 1.f;
+        if( lfoTime < *( p->lfo_delay ) )
+            lfoMul = 0;
+        else if( lfoTime < *( p->lfo_delay ) + *( p->lfo_attack ) )
+        {
+            lfoMul = ( lfoTime - *( p->lfo_delay ) ) / *( p->lfo_attack );
+        }
+
+        float lfoVal;
+        if( *( p->lfo_rate ) == 0 )
+            lfoVal = lfoMul;
+        else
+        {
+            int t = *(p->lfo_type);
+            switch( t )
+            {
+            case 1: // square
+            {
+                if( lfoAngle > 0.5 && lfoAngle - lfoDAngle <= 0.5 )
+                    lfoLastSquare.setTargetValue( 1.0 );
+                if( lfoAngle + lfoDAngle >= 1.0 )
+                    lfoLastSquare.setTargetValue( -1.0 );
+                lfoVal = lfoMul * lfoLastSquare.getNextValue();
+                break;
+            }
+            case 2: // rand
+            {
+                if( lfoAngle + lfoDAngle >= 1 )
+                    lfoLastRand.setTargetValue( 2.0 * rand() / RAND_MAX - 1.0 );
+                lfoVal = lfoMul * lfoLastRand.getNextValue();
+                break;
+            }
+            default:
+            case 0: // tri
+            {
+                lfoVal = lfoMul * ( ( lfoAngle > 0.5 ? ( 1.0 - lfoAngle ) : lfoAngle ) * 4.0 - 1.0 );
+                break;
+            }
+
+            }
+        }
+
+        if( *(p->modwheel_on) )
+            lfoVal *= modwheelLevel / 127.0;
+        
+        lfoTime += lfoDTime;
+        lfoAngle += lfoDAngle;
+        if( lfoAngle >= 1 )
+            lfoAngle -= 1;
+
+        if( sc % resetFilterEvery == 0 && *( p->lfo_pitch ) != 0 )
+            recalcCycle = true;
+        
         auto sampleL = 0.0f;
         auto sampleR = 0.0f;
 
@@ -360,8 +423,11 @@ void TWSVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample
         
         if( usef )
         {
+            auto lfof = lfoVal * *( p->lfo_filter ) * 0.2; // These are all callibrations from just playing with the sliders
             auto filtd = filterDepth.getNextValue();
-            auto filtc = std::max( 10.0, std::min( filterCut.getNextValue() * ( 1 + FEG * FEG * filtd * 64.0 ), getSampleRate() / 4 ) );
+            auto filtc = std::max( 10.0, std::min(
+                                       filterCut.getNextValue() * ( 1 + FEG * FEG * filtd * 64.0 + lfof ),
+                                       getSampleRate() / 4 ) );
             auto filtr = filterRes.getNextValue();
             
             // This is overkill but for now just hammer it
@@ -398,6 +464,14 @@ void TWSVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample
                 auto lW = panBufferL[panIdx];
                 auto rW = panBufferR[panIdx];
 
+                // Apply the volume LFO
+                if( *( p->lfo_vcolev ) != 0 )
+                {
+                    float fac = std::max( 0.f, 1.f + *( p->lfo_vcolev ) * lfoVal );
+                    lW *= fac;
+                    rW *= fac;
+                }
+                
                 // std::cout << "lW/rW=" << lW << " " << rW << " " << panAngle << std::endl;
                 sampleL += lW * currentVoice;
                 sampleR += rW * currentVoice;
@@ -405,7 +479,7 @@ void TWSVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample
             
             if( recalcCycle )
             {
-                auto cyc = frequencyForFractionalNote( noteNum + dDelta[i] + pitchWheelNoteShift() );
+                auto cyc = frequencyForFractionalNote( noteNum + dDelta[i] + pitchWheelNoteShift() + *(p->lfo_pitch) * lfoVal );
                 auto cyclesPerSample = cyc / getSampleRate();
                 angleDelta[i] = cyclesPerSample;
             }
@@ -417,7 +491,7 @@ void TWSVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample
         
         if( recalcCycle )
         {
-            auto cyclesPerSample = frequencyForFractionalNote( noteNum + pitchWheelNoteShift() ) / getSampleRate();
+            auto cyclesPerSample = frequencyForFractionalNote( noteNum + pitchWheelNoteShift()  + *(p->lfo_pitch) * lfoVal ) / getSampleRate();
             for( int i=0; i< -*(p->subosc_oct); ++i )
                 cyclesPerSample /= 2.0;
             subAngleDelta = cyclesPerSample;
@@ -427,6 +501,13 @@ void TWSVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample
         {
             auto subl = subLevel.getNextValue();
             auto oscSqr = analogishSquare(subAngle) * subl * AEG;
+
+            if( *( p->lfo_sublev ) != 0 )
+            {
+                float fac = std::max( 0.f, 1.f + *( p->lfo_sublev ) * lfoVal );
+                oscSqr *= fac;
+            }
+
             subAngle += subAngleDelta;
             if( subAngle > 1 )
                 subAngle -= 1;
@@ -457,12 +538,20 @@ void TWSVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample
             pluckDelayPos ++;
             if( pluckDelayPos >= pluckDelayLineSize ) pluckDelayPos = 0;
             pluckDelayLine[pluckDelayPos] = filtval;
+
+            if( *( p->lfo_plucklev ) != 0 )
+            {
+                float fac = std::max( 0.f, 1.f + *( p->lfo_plucklev ) * lfoVal );
+                filtval *= fac;
+            }
+
             sampleL += filtval * PEG * 2.2;
             sampleR += filtval * PEG * 2.2; // amplify the pluck max level a bit
 
             if( recalcCycle )
             {
-                pluckSampleDelay = 1.0 / ( frequencyForFractionalNote( noteNum + pitchWheelNoteShift() ) / getSampleRate() );
+                pluckSampleDelay = 1.0 / ( frequencyForFractionalNote( noteNum + pitchWheelNoteShift()  + *(p->lfo_pitch) * lfoVal )
+                                           / getSampleRate() );
                 iPluckSampleDelay = std::floor(pluckSampleDelay);
                 fracPluckSampleDelay = pluckSampleDelay - iPluckSampleDelay;
             }
@@ -535,6 +624,19 @@ TWSSynthesiser::TWSSynthesiser(TuningworkbenchsynthAudioProcessor &p) : processo
 
     delayWet.reset(32);
     delayDry.reset(32);
+}
+
+
+void TWSSynthesiser::handleController( int chan, int cont, int val )
+{
+    if( cont == 1 )
+    {
+        for( int i=0; i<getNumVoices(); ++i )
+        {
+            ((TWSVoice *)getVoice(i))->synthModWheel = val;
+        }
+    }
+    Synthesiser::handleController(chan, cont, val);
 }
 
 /*

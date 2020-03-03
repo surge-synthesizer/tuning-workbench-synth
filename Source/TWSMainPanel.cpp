@@ -37,6 +37,18 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
 
+    version3.reset (new Label ("Version Label",
+                               TRANS("https://surge-synth-team.org/")));
+    addAndMakeVisible (version3.get());
+    version3->setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Regular"));
+    version3->setJustificationType (Justification::centred);
+    version3->setEditable (false, false, false);
+    version3->setColour (Label::textColourId, Colours::white);
+    version3->setColour (TextEditor::textColourId, Colours::black);
+    version3->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
+
+    version3->setBounds (0, 721, 784, 16);
+
     groupComponent7.reset (new GroupComponent ("new group",
                                                TRANS("Tuning")));
     addAndMakeVisible (groupComponent7.get());
@@ -294,14 +306,14 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     version->setColour (TextEditor::textColourId, Colours::black);
     version->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
-    version->setBounds (490, 9, 190, 16);
+    version->setBounds (592, 721, 190, 16);
 
     aboutButton.reset (new TextButton ("aboutButton"));
     addAndMakeVisible (aboutButton.get());
     aboutButton->setButtonText (TRANS("About"));
     aboutButton->addListener (this);
 
-    aboutButton->setBounds (688, 3, 79, 24);
+    aboutButton->setBounds (716, 3, 55, 24);
 
     lfo_rate.reset (new Slider ("lfo_rate"));
     addAndMakeVisible (lfo_rate.get());
@@ -352,22 +364,6 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
 
     lforndtog->setBounds (237, 285, 56, 24);
 
-    lfo_to_pitch.reset (new Slider ("lfo_to_pitch"));
-    addAndMakeVisible (lfo_to_pitch.get());
-    lfo_to_pitch->setRange (0, 10, 0);
-    lfo_to_pitch->setSliderStyle (Slider::Rotary);
-    lfo_to_pitch->setTextBoxStyle (Slider::TextBoxBelow, false, 60, 15);
-
-    lfo_to_pitch->setBounds (496, 238, 63, 72);
-
-    lfo_to_cutoff.reset (new Slider ("lfo_to_cutoff"));
-    addAndMakeVisible (lfo_to_cutoff.get());
-    lfo_to_cutoff->setRange (0, 10, 0);
-    lfo_to_cutoff->setSliderStyle (Slider::Rotary);
-    lfo_to_cutoff->setTextBoxStyle (Slider::TextBoxBelow, false, 60, 15);
-
-    lfo_to_cutoff->setBounds (560, 238, 63, 72);
-
     groupComponent9.reset (new GroupComponent ("new group",
                                                TRANS("Sub")));
     addAndMakeVisible (groupComponent9.get());
@@ -401,16 +397,6 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     addAndMakeVisible (groupComponent11.get());
 
     groupComponent11->setBounds (632, 128, 144, 96);
-
-    comboBox.reset (new ComboBox ("new combo box"));
-    addAndMakeVisible (comboBox.get());
-    comboBox->setEditableText (false);
-    comboBox->setJustificationType (Justification::centredLeft);
-    comboBox->setTextWhenNothingSelected (String());
-    comboBox->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
-    comboBox->addListener (this);
-
-    comboBox->setBounds (8, 3, 168, 24);
 
     delay_time.reset (new Slider ("delay_time"));
     addAndMakeVisible (delay_time.get());
@@ -531,7 +517,78 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     delay_wet->setTextBoxStyle (Slider::NoTextBox, false, 80, 20);
     delay_wet->addListener (this);
 
-    delay_wet->setBounds (724, 151, 24, 68);
+    delay_wet->setBounds (725, 151, 24, 68);
+
+    lfo_pitch.reset (new Slider ("new slider"));
+    addAndMakeVisible (lfo_pitch.get());
+    lfo_pitch->setRange (0, 10, 0);
+    lfo_pitch->setSliderStyle (Slider::LinearVertical);
+    lfo_pitch->setTextBoxStyle (Slider::NoTextBox, false, 80, 20);
+    lfo_pitch->addListener (this);
+
+    lfo_pitch->setBounds (496, 247, 24, 68);
+
+    lfo_sublev.reset (new Slider ("new slider"));
+    addAndMakeVisible (lfo_sublev.get());
+    lfo_sublev->setRange (0, 10, 0);
+    lfo_sublev->setSliderStyle (Slider::LinearVertical);
+    lfo_sublev->setTextBoxStyle (Slider::NoTextBox, false, 80, 20);
+    lfo_sublev->addListener (this);
+
+    lfo_sublev->setBounds (544, 247, 24, 68);
+
+    lfo_vcolev.reset (new Slider ("new slider"));
+    addAndMakeVisible (lfo_vcolev.get());
+    lfo_vcolev->setRange (0, 10, 0);
+    lfo_vcolev->setSliderStyle (Slider::LinearVertical);
+    lfo_vcolev->setTextBoxStyle (Slider::NoTextBox, false, 80, 20);
+    lfo_vcolev->addListener (this);
+
+    lfo_vcolev->setBounds (520, 247, 24, 68);
+
+    lfo_plucklev.reset (new Slider ("new slider"));
+    addAndMakeVisible (lfo_plucklev.get());
+    lfo_plucklev->setRange (0, 10, 0);
+    lfo_plucklev->setSliderStyle (Slider::LinearVertical);
+    lfo_plucklev->setTextBoxStyle (Slider::NoTextBox, false, 80, 20);
+    lfo_plucklev->addListener (this);
+
+    lfo_plucklev->setBounds (568, 247, 24, 68);
+
+    lfo_filter.reset (new Slider ("new slider"));
+    addAndMakeVisible (lfo_filter.get());
+    lfo_filter->setRange (0, 10, 0);
+    lfo_filter->setSliderStyle (Slider::LinearVertical);
+    lfo_filter->setTextBoxStyle (Slider::NoTextBox, false, 80, 20);
+    lfo_filter->addListener (this);
+
+    lfo_filter->setBounds (592, 247, 24, 68);
+
+    version2.reset (new Label ("Version Label",
+                               TRANS("Released under GNU General Public License v3\n")));
+    addAndMakeVisible (version2.get());
+    version2->setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Regular"));
+    version2->setJustificationType (Justification::centredLeft);
+    version2->setEditable (false, false, false);
+    version2->setColour (Label::textColourId, Colour (0xffa6a6a6));
+    version2->setColour (TextEditor::textColourId, Colours::black);
+    version2->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
+
+    version2->setBounds (0, 721, 312, 16);
+
+    helpButton.reset (new TextButton ("helpButton"));
+    addAndMakeVisible (helpButton.get());
+    helpButton->setButtonText (TRANS("Help"));
+    helpButton->addListener (this);
+
+    helpButton->setBounds (655, 3, 55, 24);
+
+    presetButton.reset (new TextButton ("helpButton"));
+    addAndMakeVisible (presetButton.get());
+    presetButton->setButtonText (TRANS("Presets"));
+    presetButton->addListener (this);
+
+    presetButton->setBounds (8, 3, 55, 24);
 
 
     //[UserPreSize]
@@ -563,24 +620,10 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     ModWheelPower->addListener(this);
     FilterPower->addListener(this);
 
-    /*
-    ** set up the range functions
-    */
-    auto freqMapTop01 = [](double start, double end, double value ) {
-                            std::cout << "TO: " << start << " " << end << " " << value << std::endl;
-                            return value;
-                        };
-    auto freqMapFrom01 = [](double start, double end, double value ) {
-                            std::cout << "FR: " << start << " " << end << " " << value << std::endl;
-                            return value;
-                        };
-    NormalisableRange<double> filtfrange( 10, 20000, freqMapFrom01, freqMapTop01 );
-    Filt_Cutoff->setNormalisableRange( filtfrange );
-
-
+    presetMenu = std::make_unique<PopupMenu>();
     //[/UserPreSize]
 
-    setSize (784, 730);
+    setSize (784, 742);
 
 
     //[Constructor] You can add your own custom stuff here..
@@ -602,6 +645,7 @@ TWSMainPanel::~TWSMainPanel()
     lambdaAtttachments.clear();
     //[/Destructor_pre]
 
+    version3 = nullptr;
     groupComponent7 = nullptr;
     groupComponent8 = nullptr;
     tuningGrid = nullptr;
@@ -643,14 +687,11 @@ TWSMainPanel::~TWSMainPanel()
     lfotritog = nullptr;
     lfosqrtog = nullptr;
     lforndtog = nullptr;
-    lfo_to_pitch = nullptr;
-    lfo_to_cutoff = nullptr;
     groupComponent9 = nullptr;
     sublevel = nullptr;
     sub_oct = nullptr;
     groupComponent10 = nullptr;
     groupComponent11 = nullptr;
-    comboBox = nullptr;
     delay_time = nullptr;
     pluck_atn = nullptr;
     pluck_flt = nullptr;
@@ -667,6 +708,14 @@ TWSMainPanel::~TWSMainPanel()
     delay_fb = nullptr;
     delay_dry = nullptr;
     delay_wet = nullptr;
+    lfo_pitch = nullptr;
+    lfo_sublev = nullptr;
+    lfo_vcolev = nullptr;
+    lfo_plucklev = nullptr;
+    lfo_filter = nullptr;
+    version2 = nullptr;
+    helpButton = nullptr;
+    presetButton = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -982,8 +1031,8 @@ void TWSMainPanel::paint (Graphics& g)
     }
 
     {
-        int x = 552, y = 237, width = 22, height = 21;
-        String text (TRANS("flt"));
+        int x = 520, y = 237, width = 22, height = 21;
+        String text (TRANS("vco"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -1113,6 +1162,42 @@ void TWSMainPanel::paint (Graphics& g)
                     Justification::centred, true);
     }
 
+    {
+        int x = 544, y = 237, width = 22, height = 21;
+        String text (TRANS("sub"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Regular"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centred, true);
+    }
+
+    {
+        int x = 568, y = 237, width = 22, height = 21;
+        String text (TRANS("plk"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Regular"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centred, true);
+    }
+
+    {
+        int x = 592, y = 237, width = 22, height = 21;
+        String text (TRANS("f"));
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Regular"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centred, true);
+    }
+
     //[UserPaint] Add your own custom painting code here..
     //[/UserPaint]
 }
@@ -1179,7 +1264,7 @@ void TWSMainPanel::buttonClicked (Button* buttonThatWasClicked)
         options.useNativeTitleBar = false;
         options.resizable = false;
 
-        /* auto dialogwindow = */ options.launchAsync();
+        options.launchAsync();
         //[/UserButtonCode_aboutButton]
     }
     else if (buttonThatWasClicked == lfotritog.get())
@@ -1219,6 +1304,17 @@ void TWSMainPanel::buttonClicked (Button* buttonThatWasClicked)
         }
         //[/UserButtonCode_lforndtog]
     }
+    else if (buttonThatWasClicked == helpButton.get())
+    {
+        //[UserButtonCode_helpButton] -- add your button handler code here..
+        //[/UserButtonCode_helpButton]
+    }
+    else if (buttonThatWasClicked == presetButton.get())
+    {
+        //[UserButtonCode_presetButton] -- add your button handler code here..
+        doPresetMenu();
+        //[/UserButtonCode_presetButton]
+    }
 
     //[UserbuttonClicked_Post]
     auto stv = [this, &buttonThatWasClicked](const char* lb) {
@@ -1255,21 +1351,6 @@ void TWSMainPanel::buttonClicked (Button* buttonThatWasClicked)
     //[/UserbuttonClicked_Post]
 }
 
-void TWSMainPanel::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
-{
-    //[UsercomboBoxChanged_Pre]
-    //[/UsercomboBoxChanged_Pre]
-
-    if (comboBoxThatHasChanged == comboBox.get())
-    {
-        //[UserComboBoxCode_comboBox] -- add your combo box handling code here..
-        //[/UserComboBoxCode_comboBox]
-    }
-
-    //[UsercomboBoxChanged_Post]
-    //[/UsercomboBoxChanged_Post]
-}
-
 void TWSMainPanel::sliderValueChanged (Slider* sliderThatWasMoved)
 {
     //[UsersliderValueChanged_Pre]
@@ -1289,6 +1370,31 @@ void TWSMainPanel::sliderValueChanged (Slider* sliderThatWasMoved)
     {
         //[UserSliderCode_delay_wet] -- add your slider handling code here..
         //[/UserSliderCode_delay_wet]
+    }
+    else if (sliderThatWasMoved == lfo_pitch.get())
+    {
+        //[UserSliderCode_lfo_pitch] -- add your slider handling code here..
+        //[/UserSliderCode_lfo_pitch]
+    }
+    else if (sliderThatWasMoved == lfo_sublev.get())
+    {
+        //[UserSliderCode_lfo_sublev] -- add your slider handling code here..
+        //[/UserSliderCode_lfo_sublev]
+    }
+    else if (sliderThatWasMoved == lfo_vcolev.get())
+    {
+        //[UserSliderCode_lfo_vcolev] -- add your slider handling code here..
+        //[/UserSliderCode_lfo_vcolev]
+    }
+    else if (sliderThatWasMoved == lfo_plucklev.get())
+    {
+        //[UserSliderCode_lfo_plucklev] -- add your slider handling code here..
+        //[/UserSliderCode_lfo_plucklev]
+    }
+    else if (sliderThatWasMoved == lfo_filter.get())
+    {
+        //[UserSliderCode_lfo_filter] -- add your slider handling code here..
+        //[/UserSliderCode_lfo_filter]
     }
 
     //[UsersliderValueChanged_Post]
@@ -1379,8 +1485,11 @@ void TWSMainPanel::connectValueTreeState(AudioProcessorValueTreeState &t )
     s( "lfo_rate", lfo_rate );
     s( "lfo_delay", lfo_delay );
     s( "lfo_attack", lfo_attack );
-    s( "lfo_pitch", lfo_to_pitch );
-    s( "lfo_filter", lfo_to_cutoff );
+    s( "lfo_pitch", lfo_pitch );
+    s( "lfo_filter", lfo_filter );
+    s( "lfo_plucklev", lfo_plucklev );
+    s( "lfo_sublev", lfo_sublev );
+    s( "lfo_vcolev", lfo_vcolev );
 
     s( "delay_fb", delay_fb );
     s( "delay_wet", delay_wet );
@@ -1443,6 +1552,74 @@ void TWSPowerToggle::paintButton( Graphics &g, bool hl, bool dn )
         g.fillRect( 7, 3, 2, 6 );
     }
 }
+
+void TWSMainPanel::doPresetMenu()
+{
+    presetMenu->clear();
+    for( int i=0; i<processor.factoryPresets.size(); ++i )
+    {
+        auto t = processor.factoryPresets[i];
+        auto n = std::get<0>(t);
+        auto b = std::get<1>(t);
+        auto s = std::get<2>(t);
+        if( b == 0 || s == 0 )
+            presetMenu->addSectionHeader( n );
+        else
+            presetMenu->addItem( i, n );
+    }
+    presetMenu->addSeparator();
+
+    presetMenu->addItem( 10000, "Save Preset As..." );
+    presetMenu->addItem( 10001, "Load Preset From..." );
+
+    auto ri = presetButton->getScreenBounds();
+    // ri.setY( ri.getY() + presetButton->getHeight() );
+
+    auto res = presetMenu->showAt( ri );
+    switch( res )
+    {
+    case 10000:
+    {
+        FileChooser fc( "Save Preset As..", File(), "*.twsxml" );
+        if( fc.browseForFileToSave(true) )
+        {
+            auto f = fc.getResult();
+            MemoryBlock b;
+            processor.getStateInformation(b);
+            if( ! f.replaceWithData( b.getData(),b.getSize() ) )
+            {
+                AlertWindow::showMessageBoxAsync( AlertWindow::AlertIconType::WarningIcon,
+                                                  "Error saving preset",
+                                                  "An unknown error occured streaming data to file",
+                                                  "OK" );
+            }
+        }
+        break;
+    }
+    case 10001:
+    {
+        FileChooser fc( "Load Preset From...", File(), "*.twsxml" );
+        if( fc.browseForFileToOpen() )
+        {
+            auto f = fc.getResult();
+            MemoryBlock b;
+            f.loadFileAsData( b );
+            processor.setStateInformation( b.getData(), (int)b.getSize() );
+        }
+        break;
+    }
+    default:
+    {
+        auto t = processor.factoryPresets[res];
+        auto b = std::get<1>(t);
+        auto s = std::get<2>(t);
+        processor.setStateInformation( b, (int)s );
+
+        break;
+    }
+    }
+}
+
 //[/MiscUserCode]
 
 
@@ -1460,7 +1637,7 @@ BEGIN_JUCER_METADATA
                  constructorParams="TuningworkbenchsynthAudioProcessor &amp;p"
                  variableInitialisers="processor(p)" snapPixels="8" snapActive="1"
                  snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="784"
-                 initialHeight="730">
+                 initialHeight="742">
   <METHODS>
     <METHOD name="filesDropped (const StringArray&amp; filenames, int mouseX, int mouseY)"/>
   </METHODS>
@@ -1540,7 +1717,7 @@ BEGIN_JUCER_METADATA
     <TEXT pos="496 237 22 21" fill="solid: ffffffff" hasStroke="0" text="ptc"
           fontname="Default font" fontsize="12.0" kerning="0.0" bold="0"
           italic="0" justification="36"/>
-    <TEXT pos="552 237 22 21" fill="solid: ffffffff" hasStroke="0" text="flt"
+    <TEXT pos="520 237 22 21" fill="solid: ffffffff" hasStroke="0" text="vco"
           fontname="Default font" fontsize="12.0" kerning="0.0" bold="0"
           italic="0" justification="36"/>
     <TEXT pos="640 141 22 21" fill="solid: ffffffff" hasStroke="0" text="time"
@@ -1573,7 +1750,22 @@ BEGIN_JUCER_METADATA
     <TEXT pos="152 93 56 30" fill="solid: ffffffff" hasStroke="0" text="Spread"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="0"
           italic="0" justification="36"/>
+    <TEXT pos="544 237 22 21" fill="solid: ffffffff" hasStroke="0" text="sub"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="0"
+          italic="0" justification="36"/>
+    <TEXT pos="568 237 22 21" fill="solid: ffffffff" hasStroke="0" text="plk"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="0"
+          italic="0" justification="36"/>
+    <TEXT pos="592 237 22 21" fill="solid: ffffffff" hasStroke="0" text="f"
+          fontname="Default font" fontsize="12.0" kerning="0.0" bold="0"
+          italic="0" justification="36"/>
   </BACKGROUND>
+  <LABEL name="Version Label" id="d55a14560dfb93a" memberName="version3"
+         virtualName="" explicitFocusOrder="0" pos="0 721 784 16" textCol="ffffffff"
+         edTextCol="ff000000" edBkgCol="0" labelText="https://surge-synth-team.org/"
+         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
+         fontname="Default font" fontsize="12.0" kerning="0.0" bold="0"
+         italic="0" justification="36"/>
   <GROUPCOMPONENT name="new group" id="2fbebfe69a2a9d0" memberName="groupComponent7"
                   virtualName="" explicitFocusOrder="0" pos="8 320 768 400" title="Tuning"/>
   <GROUPCOMPONENT name="new group" id="fbbdde6af60bfa90" memberName="groupComponent8"
@@ -1700,12 +1892,12 @@ BEGIN_JUCER_METADATA
           int="0.0" style="IncDecButtons" textBoxPos="TextBoxBelow" textBoxEditable="1"
           textBoxWidth="60" textBoxHeight="15" skewFactor="1.0" needsCallback="0"/>
   <LABEL name="Version Label" id="f03eb6156ac44877" memberName="version"
-         virtualName="" explicitFocusOrder="0" pos="490 9 190 16" textCol="ffa6a6a6"
+         virtualName="" explicitFocusOrder="0" pos="592 721 190 16" textCol="ffa6a6a6"
          edTextCol="ff000000" edBkgCol="0" labelText="set-this" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="12.0" kerning="0.0" bold="0" italic="0" justification="34"/>
   <TEXTBUTTON name="aboutButton" id="611931d47a95eacb" memberName="aboutButton"
-              virtualName="" explicitFocusOrder="0" pos="688 3 79 24" buttonText="About"
+              virtualName="" explicitFocusOrder="0" pos="716 3 55 24" buttonText="About"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <SLIDER name="lfo_rate" id="6a9193d7258c1681" memberName="lfo_rate" virtualName=""
           explicitFocusOrder="0" pos="304 238 63 72" min="0.0" max="10.0"
@@ -1730,16 +1922,6 @@ BEGIN_JUCER_METADATA
   <TOGGLEBUTTON name="lfornd" id="3007921d4cb0e134" memberName="lforndtog" virtualName=""
                 explicitFocusOrder="0" pos="237 285 56 24" buttonText="RND" connectedEdges="0"
                 needsCallback="1" radioGroupId="2" state="0"/>
-  <SLIDER name="lfo_to_pitch" id="6102623ee8a927fd" memberName="lfo_to_pitch"
-          virtualName="" explicitFocusOrder="0" pos="496 238 63 72" min="0.0"
-          max="10.0" int="0.0" style="Rotary" textBoxPos="TextBoxBelow"
-          textBoxEditable="1" textBoxWidth="60" textBoxHeight="15" skewFactor="1.0"
-          needsCallback="0"/>
-  <SLIDER name="lfo_to_cutoff" id="74ecf6b446a99ae5" memberName="lfo_to_cutoff"
-          virtualName="" explicitFocusOrder="0" pos="560 238 63 72" min="0.0"
-          max="10.0" int="0.0" style="Rotary" textBoxPos="TextBoxBelow"
-          textBoxEditable="1" textBoxWidth="60" textBoxHeight="15" skewFactor="1.0"
-          needsCallback="0"/>
   <GROUPCOMPONENT name="new group" id="1a6ff50d70c6708f" memberName="groupComponent9"
                   virtualName="" explicitFocusOrder="0" pos="8 160 208 64" title="Sub"/>
   <SLIDER name="sineMix" id="7c74ce40dda4a6af" memberName="sublevel" virtualName=""
@@ -1754,9 +1936,6 @@ BEGIN_JUCER_METADATA
                   virtualName="" explicitFocusOrder="0" pos="8 224 208 96" title="Pluck"/>
   <GROUPCOMPONENT name="new group" id="8ef713d8bfa0a07b" memberName="groupComponent11"
                   virtualName="" explicitFocusOrder="0" pos="632 128 144 96" title="Delay"/>
-  <COMBOBOX name="new combo box" id="970d30d04b5c167c" memberName="comboBox"
-            virtualName="" explicitFocusOrder="0" pos="8 3 168 24" editable="0"
-            layout="33" items="" textWhenNonSelected="" textWhenNoItems="(no choices)"/>
   <SLIDER name="delay_time" id="83f72f5048c8af2d" memberName="delay_time"
           virtualName="" explicitFocusOrder="0" pos="640 144 63 72" min="0.0"
           max="10.0" int="0.0" style="Rotary" textBoxPos="TextBoxBelow"
@@ -1816,10 +1995,47 @@ BEGIN_JUCER_METADATA
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
   <SLIDER name="new slider" id="fc3191b5e3aed740" memberName="delay_wet"
-          virtualName="" explicitFocusOrder="0" pos="724 151 24 68" min="0.0"
+          virtualName="" explicitFocusOrder="0" pos="725 151 24 68" min="0.0"
           max="10.0" int="0.0" style="LinearVertical" textBoxPos="NoTextBox"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
+  <SLIDER name="new slider" id="1d4d6ebea78d727e" memberName="lfo_pitch"
+          virtualName="" explicitFocusOrder="0" pos="496 247 24 68" min="0.0"
+          max="10.0" int="0.0" style="LinearVertical" textBoxPos="NoTextBox"
+          textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
+          needsCallback="1"/>
+  <SLIDER name="new slider" id="6290d41d04902ca5" memberName="lfo_sublev"
+          virtualName="" explicitFocusOrder="0" pos="544 247 24 68" min="0.0"
+          max="10.0" int="0.0" style="LinearVertical" textBoxPos="NoTextBox"
+          textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
+          needsCallback="1"/>
+  <SLIDER name="new slider" id="5d73f53dcb4e4e98" memberName="lfo_vcolev"
+          virtualName="" explicitFocusOrder="0" pos="520 247 24 68" min="0.0"
+          max="10.0" int="0.0" style="LinearVertical" textBoxPos="NoTextBox"
+          textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
+          needsCallback="1"/>
+  <SLIDER name="new slider" id="b31e5f053f4b7be1" memberName="lfo_plucklev"
+          virtualName="" explicitFocusOrder="0" pos="568 247 24 68" min="0.0"
+          max="10.0" int="0.0" style="LinearVertical" textBoxPos="NoTextBox"
+          textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
+          needsCallback="1"/>
+  <SLIDER name="new slider" id="d0b2ae558adcaa68" memberName="lfo_filter"
+          virtualName="" explicitFocusOrder="0" pos="592 247 24 68" min="0.0"
+          max="10.0" int="0.0" style="LinearVertical" textBoxPos="NoTextBox"
+          textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
+          needsCallback="1"/>
+  <LABEL name="Version Label" id="d05faf01cb855cdf" memberName="version2"
+         virtualName="" explicitFocusOrder="0" pos="0 721 312 16" textCol="ffa6a6a6"
+         edTextCol="ff000000" edBkgCol="0" labelText="Released under GNU General Public License v3&#10;"
+         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
+         fontname="Default font" fontsize="12.0" kerning="0.0" bold="0"
+         italic="0" justification="33"/>
+  <TEXTBUTTON name="helpButton" id="29f7b15e1ff1f153" memberName="helpButton"
+              virtualName="" explicitFocusOrder="0" pos="655 3 55 24" buttonText="Help"
+              connectedEdges="0" needsCallback="1" radioGroupId="0"/>
+  <TEXTBUTTON name="helpButton" id="33185602b7f821b6" memberName="presetButton"
+              virtualName="" explicitFocusOrder="0" pos="8 3 55 24" buttonText="Presets"
+              connectedEdges="0" needsCallback="1" radioGroupId="0"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

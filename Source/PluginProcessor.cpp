@@ -119,11 +119,20 @@ TuningworkbenchsynthAudioProcessor::TuningworkbenchsynthAudioProcessor()
                                                           0, 2.0, 0.0 ),
                       std::make_unique<AudioParameterFloat>( "lfo_rate",
                                                              "LFO Rate",
-                                                             0.1, 100.0, 5.0 ),
+                                                             0.0, 12.0, 3.0 ),
                       envelopeTimeParam( "lfo_delay", "LFO Delay", 0.0 ),
                       envelopeTimeParam( "lfo_attack", "LFO Attack", 0.0 ),
                       std::make_unique<AudioParameterFloat>( "lfo_pitch",
                                                              "LFO Pitch",
+                                                             0.0, 1.0, 0.0 ),
+                      std::make_unique<AudioParameterFloat>( "lfo_vcolev",
+                                                             "LFO VCO Level",
+                                                             0.0, 1.0, 0.1 ),
+                      std::make_unique<AudioParameterFloat>( "lfo_sublev",
+                                                             "LFO VCO Level",
+                                                             0.0, 1.0, 0.0 ),
+                      std::make_unique<AudioParameterFloat>( "lfo_plucklev",
+                                                             "LFO VCO Level",
                                                              0.0, 1.0, 0.0 ),
                       std::make_unique<AudioParameterFloat>( "lfo_filter",
                                                              "LFO Filter",
@@ -207,6 +216,9 @@ TuningworkbenchsynthAudioProcessor::TuningworkbenchsynthAudioProcessor()
     SP(lfo_delay);
     SP(lfo_attack);
     SP(lfo_pitch);
+    SP(lfo_vcolev);
+    SP(lfo_sublev);
+    SP(lfo_plucklev);
     SP(lfo_filter);
 
     SP(vco_on);
@@ -220,6 +232,15 @@ TuningworkbenchsynthAudioProcessor::TuningworkbenchsynthAudioProcessor()
     setSCL( initS.rawText, false );
     setKBM( "", false );
     retune();
+
+    // And finally set up the factory patches.
+    auto mt = []( std::string a, const char* b, size_t c ) {
+                  return std::make_tuple(a,b,c);
+              };
+    factoryPresets.push_back( mt( "Pads", 0, 0 ) );
+    factoryPresets.push_back( mt( "Swell Pulse", BinaryData::SwellPulsePad_twsxml, BinaryData::SwellPulsePad_twsxmlSize ) );
+    factoryPresets.push_back( mt( "Keys and Mallets", 0, 0 ) );
+    factoryPresets.push_back( mt( "Struck String", BinaryData::Struck_String_twsxml, BinaryData::Struck_String_twsxmlSize ) );
 }
 
 TuningworkbenchsynthAudioProcessor::~TuningworkbenchsynthAudioProcessor()
