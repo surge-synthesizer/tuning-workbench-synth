@@ -154,8 +154,8 @@ private:
     std::unique_ptr<GroupComponent> groupComponent6;
     std::unique_ptr<TWSPowerToggle> FilterPower;
     std::unique_ptr<Slider> delay_fb;
-    std::unique_ptr<Slider> delay_dry;
     std::unique_ptr<Slider> delay_wet;
+    std::unique_ptr<Slider> delay_dry;
     std::unique_ptr<Slider> lfo_pitch;
     std::unique_ptr<Slider> lfo_sublev;
     std::unique_ptr<Slider> lfo_vcolev;

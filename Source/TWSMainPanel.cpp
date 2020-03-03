@@ -501,15 +501,6 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
 
     delay_fb->setBounds (702, 151, 24, 68);
 
-    delay_dry.reset (new Slider ("new slider"));
-    addAndMakeVisible (delay_dry.get());
-    delay_dry->setRange (0, 10, 0);
-    delay_dry->setSliderStyle (Slider::LinearVertical);
-    delay_dry->setTextBoxStyle (Slider::NoTextBox, false, 80, 20);
-    delay_dry->addListener (this);
-
-    delay_dry->setBounds (748, 151, 24, 68);
-
     delay_wet.reset (new Slider ("new slider"));
     addAndMakeVisible (delay_wet.get());
     delay_wet->setRange (0, 10, 0);
@@ -517,7 +508,16 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     delay_wet->setTextBoxStyle (Slider::NoTextBox, false, 80, 20);
     delay_wet->addListener (this);
 
-    delay_wet->setBounds (725, 151, 24, 68);
+    delay_wet->setBounds (748, 151, 24, 68);
+
+    delay_dry.reset (new Slider ("new slider"));
+    addAndMakeVisible (delay_dry.get());
+    delay_dry->setRange (0, 10, 0);
+    delay_dry->setSliderStyle (Slider::LinearVertical);
+    delay_dry->setTextBoxStyle (Slider::NoTextBox, false, 80, 20);
+    delay_dry->addListener (this);
+
+    delay_dry->setBounds (725, 151, 24, 68);
 
     lfo_pitch.reset (new Slider ("new slider"));
     addAndMakeVisible (lfo_pitch.get());
@@ -706,8 +706,8 @@ TWSMainPanel::~TWSMainPanel()
     groupComponent6 = nullptr;
     FilterPower = nullptr;
     delay_fb = nullptr;
-    delay_dry = nullptr;
     delay_wet = nullptr;
+    delay_dry = nullptr;
     lfo_pitch = nullptr;
     lfo_sublev = nullptr;
     lfo_vcolev = nullptr;
@@ -1116,7 +1116,7 @@ void TWSMainPanel::paint (Graphics& g)
 
     {
         int x = 726, y = 141, width = 22, height = 21;
-        String text (TRANS("wet"));
+        String text (TRANS("dry"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -1128,7 +1128,7 @@ void TWSMainPanel::paint (Graphics& g)
 
     {
         int x = 750, y = 141, width = 22, height = 21;
-        String text (TRANS("dry"));
+        String text (TRANS("wet"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -1361,15 +1361,15 @@ void TWSMainPanel::sliderValueChanged (Slider* sliderThatWasMoved)
         //[UserSliderCode_delay_fb] -- add your slider handling code here..
         //[/UserSliderCode_delay_fb]
     }
-    else if (sliderThatWasMoved == delay_dry.get())
-    {
-        //[UserSliderCode_delay_dry] -- add your slider handling code here..
-        //[/UserSliderCode_delay_dry]
-    }
     else if (sliderThatWasMoved == delay_wet.get())
     {
         //[UserSliderCode_delay_wet] -- add your slider handling code here..
         //[/UserSliderCode_delay_wet]
+    }
+    else if (sliderThatWasMoved == delay_dry.get())
+    {
+        //[UserSliderCode_delay_dry] -- add your slider handling code here..
+        //[/UserSliderCode_delay_dry]
     }
     else if (sliderThatWasMoved == lfo_pitch.get())
     {
@@ -1738,10 +1738,10 @@ BEGIN_JUCER_METADATA
     <TEXT pos="144 237 22 21" fill="solid: ffffffff" hasStroke="0" text="lev"
           fontname="Default font" fontsize="12.0" kerning="0.0" bold="0"
           italic="0" justification="36"/>
-    <TEXT pos="726 141 22 21" fill="solid: ffffffff" hasStroke="0" text="wet"
+    <TEXT pos="726 141 22 21" fill="solid: ffffffff" hasStroke="0" text="dry"
           fontname="Default font" fontsize="12.0" kerning="0.0" bold="0"
           italic="0" justification="36"/>
-    <TEXT pos="750 141 22 21" fill="solid: ffffffff" hasStroke="0" text="dry"
+    <TEXT pos="750 141 22 21" fill="solid: ffffffff" hasStroke="0" text="wet"
           fontname="Default font" fontsize="12.0" kerning="0.0" bold="0"
           italic="0" justification="36"/>
     <TEXT pos="152 40 56 30" fill="solid: ffffffff" hasStroke="0" text="Unison"
@@ -1989,12 +1989,12 @@ BEGIN_JUCER_METADATA
           max="10.0" int="0.0" style="LinearVertical" textBoxPos="NoTextBox"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
-  <SLIDER name="new slider" id="ab65fae43903f271" memberName="delay_dry"
+  <SLIDER name="new slider" id="ab65fae43903f271" memberName="delay_wet"
           virtualName="" explicitFocusOrder="0" pos="748 151 24 68" min="0.0"
           max="10.0" int="0.0" style="LinearVertical" textBoxPos="NoTextBox"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
           needsCallback="1"/>
-  <SLIDER name="new slider" id="fc3191b5e3aed740" memberName="delay_wet"
+  <SLIDER name="new slider" id="fc3191b5e3aed740" memberName="delay_dry"
           virtualName="" explicitFocusOrder="0" pos="725 151 24 68" min="0.0"
           max="10.0" int="0.0" style="LinearVertical" textBoxPos="NoTextBox"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
