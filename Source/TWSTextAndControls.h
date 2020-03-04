@@ -61,6 +61,7 @@ public:
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     bool isSCL;
+    bool supressFirstTextChange;
     TuningworkbenchsynthAudioProcessor &processor;
     //[/UserVariables]
 
