@@ -19,6 +19,7 @@
 
 //[Headers] You can add your own extra header files here...
 #include "Tunings.h"
+#include "TWSKBMGenerator.h"
 //[/Headers]
 
 #include "TWSTextAndControls.h"
@@ -102,6 +103,7 @@ TWSTextAndControls::TWSTextAndControls (bool isSCL, TuningworkbenchsynthAudioPro
     {
         applyButton->setButtonText( TRANS( "Apply" ) );
         openButton->setButtonText( TRANS( "Load" ) );
+        advButton->setButtonText( TRANS( "Generate" ) );
     }
     applyButton->setEnabled( false );
     textEditor->addListener( this );
@@ -209,6 +211,18 @@ void TWSTextAndControls::buttonClicked (Button* buttonThatWasClicked)
             options.content.setOwned(ed);
             options.dialogTitle = "tuning-workbench-synth Advanced Scale Editor";
             options.escapeKeyTriggersCloseButton = false;
+            options.useNativeTitleBar = false;
+            options.resizable = false;
+            
+            options.launchAsync();
+        }
+        else
+        {
+            auto ed = new TWSKBMGenerator(processor);
+            DialogWindow::LaunchOptions options;
+            options.content.setOwned(ed);
+            options.dialogTitle = "tuning-workbench-synth KBM Generatorr";
+            options.escapeKeyTriggersCloseButton = true;
             options.useNativeTitleBar = false;
             options.resizable = false;
             

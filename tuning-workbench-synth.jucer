@@ -25,6 +25,10 @@
             file="Resources/TWSLogo_Inverted.svg"/>
     </GROUP>
     <GROUP id="{6ED763C0-9606-6D7A-5B64-593A63DFD51B}" name="Source">
+      <FILE id="TGpE4k" name="TWSKBMGenerator.cpp" compile="1" resource="0"
+            file="Source/TWSKBMGenerator.cpp"/>
+      <FILE id="kaPnRS" name="TWSKBMGenerator.h" compile="0" resource="0"
+            file="Source/TWSKBMGenerator.h"/>
       <FILE id="cFMgdc" name="TuningListener.h" compile="0" resource="0"
             file="Source/TuningListener.h"/>
       <FILE id="n1ZTwg" name="TWSTextAndControls.cpp" compile="1" resource="0"
