@@ -208,7 +208,7 @@ void TWSTextAndControls::buttonClicked (Button* buttonThatWasClicked)
         //[UserButtonCode_advButton] -- add your button handler code here..
         if( isSCL )
         {
-            auto ed = new surgesynthteam_ScaleEditor();
+            auto ed = new surgesynthteam_ScaleEditor(processor.tuning.scale);
             DialogWindow::LaunchOptions options;
             options.content.setOwned(ed);
             options.dialogTitle = "tuning-workbench-synth Advanced Scale Editor";
@@ -223,7 +223,7 @@ void TWSTextAndControls::buttonClicked (Button* buttonThatWasClicked)
             auto ed = new TWSKBMGenerator(processor);
             DialogWindow::LaunchOptions options;
             options.content.setOwned(ed);
-            options.dialogTitle = "KBM Generatorr";
+            options.dialogTitle = "KBM Generator";
             options.escapeKeyTriggersCloseButton = true;
             options.useNativeTitleBar = false;
             options.resizable = false;
