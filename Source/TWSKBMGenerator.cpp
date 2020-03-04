@@ -37,7 +37,7 @@ TWSKBMGenerator::TWSKBMGenerator (TuningworkbenchsynthAudioProcessor &p)
                                               TRANS("Generate Mapping")));
     addAndMakeVisible (groupComponent.get());
 
-    groupComponent->setBounds (2, 1, 296, 144);
+    groupComponent->setBounds (4, 4, 292, 136);
 
     scaleStart.reset (new TextEditor ("new text editor"));
     addAndMakeVisible (scaleStart.get());
@@ -119,7 +119,7 @@ void TWSKBMGenerator::paint (Graphics& g)
 
     {
         int x = 14, y = 20, width = 200, height = 30;
-        String text (TRANS("Scale starts at note:"));
+        String text (TRANS("Key for Scale 1/1:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -131,7 +131,7 @@ void TWSKBMGenerator::paint (Graphics& g)
 
     {
         int x = 14, y = 60, width = 200, height = 30;
-        String text (TRANS("Tune this midi note:"));
+        String text (TRANS("Reference Key:"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -143,7 +143,7 @@ void TWSKBMGenerator::paint (Graphics& g)
 
     {
         int x = 14, y = 100, width = 200, height = 30;
-        String text (TRANS("To this frequency (hz):"));
+        String text (TRANS("Reference Frequency (hz):"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -215,18 +215,18 @@ BEGIN_JUCER_METADATA
                  snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="300"
                  initialHeight="184">
   <BACKGROUND backgroundColour="ff323e44">
-    <TEXT pos="14 20 200 30" fill="solid: ffffffff" hasStroke="0" text="Scale starts at note:"
+    <TEXT pos="14 20 200 30" fill="solid: ffffffff" hasStroke="0" text="Key for Scale 1/1:"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="0"
           italic="0" justification="33"/>
-    <TEXT pos="14 60 200 30" fill="solid: ffffffff" hasStroke="0" text="Tune this midi note:"
+    <TEXT pos="14 60 200 30" fill="solid: ffffffff" hasStroke="0" text="Reference Key:"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="0"
           italic="0" justification="33"/>
-    <TEXT pos="14 100 200 30" fill="solid: ffffffff" hasStroke="0" text="To this frequency (hz):"
+    <TEXT pos="14 100 200 30" fill="solid: ffffffff" hasStroke="0" text="Reference Frequency (hz):"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="0"
           italic="0" justification="33"/>
   </BACKGROUND>
   <GROUPCOMPONENT name="new group" id="481da90cff4b77d7" memberName="groupComponent"
-                  virtualName="" explicitFocusOrder="0" pos="2 1 296 144" title="Generate Mapping"/>
+                  virtualName="" explicitFocusOrder="0" pos="4 4 292 136" title="Generate Mapping"/>
   <TEXTEDITOR name="new text editor" id="a239267d6217951a" memberName="scaleStart"
               virtualName="" explicitFocusOrder="0" pos="176 24 104 24" initialText="60"
               multiline="0" retKeyStartsLine="0" readonly="0" scrollbars="1"

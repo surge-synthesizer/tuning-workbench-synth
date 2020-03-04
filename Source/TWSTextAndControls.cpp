@@ -83,6 +83,8 @@ TWSTextAndControls::TWSTextAndControls (bool isSCL, TuningworkbenchsynthAudioPro
 
 
     //[UserPreSize]
+    textEditor->setMultiLine (true, false); // turn off word wrap
+    supressFirstTextChange = true;
     //[/UserPreSize]
 
     setSize (432, 328);
@@ -221,7 +223,7 @@ void TWSTextAndControls::buttonClicked (Button* buttonThatWasClicked)
             auto ed = new TWSKBMGenerator(processor);
             DialogWindow::LaunchOptions options;
             options.content.setOwned(ed);
-            options.dialogTitle = "tuning-workbench-synth KBM Generatorr";
+            options.dialogTitle = "KBM Generatorr";
             options.escapeKeyTriggersCloseButton = true;
             options.useNativeTitleBar = false;
             options.resizable = false;
@@ -235,24 +237,28 @@ void TWSTextAndControls::buttonClicked (Button* buttonThatWasClicked)
     //[/UserbuttonClicked_Post]
 }
 
-
-
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
 void TWSTextAndControls::tuningUpdated( const Tunings::Tuning &newTuning )
 {
     if( isSCL )
     {
-        textEditor->setText( newTuning.scale.rawText );
+        textEditor->setText( newTuning.scale.rawText, false );
     }
     else
     {
-        textEditor->setText( newTuning.keyboardMapping.rawText );
+        textEditor->setText( newTuning.keyboardMapping.rawText, false );
     }
     applyButton->setEnabled( false );
 }
 
 void TWSTextAndControls::textEditorTextChanged(TextEditor &t) {
-    applyButton->setEnabled( true );
+    if( supressFirstTextChange )
+    {
+        supressFirstTextChange = false;
+        return;
+    }
+
+    applyButton->setEnabled( true  );
 }
 //[/MiscUserCode]
 
