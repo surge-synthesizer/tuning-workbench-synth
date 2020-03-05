@@ -30,6 +30,8 @@
               file="Resources/factory_patches/On_Whole_Tones.twsxml"/>
         <FILE id="aXgnpT" name="Pluckedelica.twsxml" compile="0" resource="1"
               file="Resources/factory_patches/Pluckedelica.twsxml"/>
+        <FILE id="iDeDRq" name="Space Clav.twsxml" compile="0" resource="1"
+              file="Resources/factory_patches/Space Clav.twsxml"/>
         <FILE id="btsPq1" name="Struck_String.twsxml" compile="0" resource="1"
               file="Resources/factory_patches/Struck_String.twsxml"/>
         <FILE id="pGdqRy" name="Swarm_Andal.twsxml" compile="0" resource="1"
