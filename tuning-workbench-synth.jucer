@@ -32,6 +32,8 @@
               file="Resources/factory_patches/Pluckedelica.twsxml"/>
         <FILE id="btsPq1" name="Struck_String.twsxml" compile="0" resource="1"
               file="Resources/factory_patches/Struck_String.twsxml"/>
+        <FILE id="pGdqRy" name="Swarm_Andal.twsxml" compile="0" resource="1"
+              file="Resources/factory_patches/Swarm_Andal.twsxml"/>
         <FILE id="ysaw30" name="Swell_Pulse_Pad.twsxml" compile="0" resource="1"
               file="Resources/factory_patches/Swell_Pulse_Pad.twsxml"/>
         <FILE id="vCfYto" name="TWS_Init.twsxml" compile="0" resource="1" file="Resources/factory_patches/TWS_Init.twsxml"/>

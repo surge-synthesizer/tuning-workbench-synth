@@ -253,6 +253,7 @@ TuningworkbenchsynthAudioProcessor::TuningworkbenchsynthAudioProcessor()
     factoryPresets.push_back( mt( "Struck String", BinaryData::Struck_String_twsxml, BinaryData::Struck_String_twsxmlSize ) );
     factoryPresets.push_back( mt( "Pluckedelica", BinaryData::Pluckedelica_twsxml, BinaryData::Pluckedelica_twsxmlSize ) );
     factoryPresets.push_back( mt( "Fibonacci Plucks", BinaryData::Fibonacci_Plucks_twsxml, BinaryData::Fibonacci_Plucks_twsxmlSize ) );    
+    factoryPresets.push_back( mt( "Swarm Andal", BinaryData::Swarm_Andal_twsxml, BinaryData::Swarm_Andal_twsxmlSize ) );    
     factoryPresets.push_back( mt( "Winds", 0, 0 ) );
     factoryPresets.push_back( mt( "Lusheng Flute", BinaryData::Lusheng_Flute_twsxml, BinaryData::Lusheng_Flute_twsxmlSize ) );
     factoryPresets.push_back( mt( "Brass Lead", BinaryData::Brass_Lead_twsxml, BinaryData::Brass_Lead_twsxmlSize ) );    
