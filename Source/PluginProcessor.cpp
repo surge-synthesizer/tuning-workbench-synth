@@ -237,10 +237,26 @@ TuningworkbenchsynthAudioProcessor::TuningworkbenchsynthAudioProcessor()
     auto mt = []( std::string a, const char* b, size_t c ) {
                   return std::make_tuple(a,b,c);
               };
-    factoryPresets.push_back( mt( "Pads", 0, 0 ) );
-    factoryPresets.push_back( mt( "Swell Pulse", BinaryData::SwellPulsePad_twsxml, BinaryData::SwellPulsePad_twsxmlSize ) );
+    factoryPresets.push_back( mt( "Init", 0, 0 ) );              
+    factoryPresets.push_back( mt( "Init Sine", BinaryData::INIT_Sine_twsxml, BinaryData::INIT_Sine_twsxmlSize ) );
+    factoryPresets.push_back( mt( "Init Square", BinaryData::INIT_Square_twsxml, BinaryData::INIT_Square_twsxmlSize ) );
+    factoryPresets.push_back( mt( "TWS Init ", BinaryData::TWS_Init_twsxml, BinaryData::TWS_Init_twsxmlSize ) );
+    factoryPresets.push_back( mt( "Pads", 0, 0 ) );             
+    factoryPresets.push_back( mt( "Swell Pulse", BinaryData::Swell_Pulse_Pad_twsxml, BinaryData::Swell_Pulse_Pad_twsxmlSize ) );              
+    factoryPresets.push_back( mt( "Discovery", BinaryData::Discovery_twsxml, BinaryData::Discovery_twsxmlSize ) );              
+    factoryPresets.push_back( mt( "Facets 15", BinaryData::Facets_15_twsxml, BinaryData::Just_Frippertonics_twsxmlSize ) );              
+    factoryPresets.push_back( mt( "On Whole Tones", BinaryData::On_Whole_Tones_twsxml, BinaryData::On_Whole_Tones_twsxmlSize ) );              
+    factoryPresets.push_back( mt( "Xenarctica", BinaryData::Xenarctica_twsxml, BinaryData::Xenarctica_twsxmlSize ) );              
     factoryPresets.push_back( mt( "Keys and Mallets", 0, 0 ) );
+    factoryPresets.push_back( mt( "Marimba", BinaryData::Marimba_twsxml, BinaryData::Marimba_twsxmlSize ) );
+    factoryPresets.push_back( mt( "Strings", 0, 0 ) );
     factoryPresets.push_back( mt( "Struck String", BinaryData::Struck_String_twsxml, BinaryData::Struck_String_twsxmlSize ) );
+    factoryPresets.push_back( mt( "Pluckedelica", BinaryData::Pluckedelica_twsxml, BinaryData::Pluckedelica_twsxmlSize ) );
+    factoryPresets.push_back( mt( "Fibonacci Plucks", BinaryData::Fibonacci_Plucks_twsxml, BinaryData::Fibonacci_Plucks_twsxmlSize ) );    
+    factoryPresets.push_back( mt( "Swarm Andal", BinaryData::Swarm_Andal_twsxml, BinaryData::Swarm_Andal_twsxmlSize ) );    
+    factoryPresets.push_back( mt( "Winds", 0, 0 ) );
+    factoryPresets.push_back( mt( "Lusheng Flute", BinaryData::Lusheng_Flute_twsxml, BinaryData::Lusheng_Flute_twsxmlSize ) );
+    factoryPresets.push_back( mt( "Brass Lead", BinaryData::Brass_Lead_twsxml, BinaryData::Brass_Lead_twsxmlSize ) );    
 }
 
 TuningworkbenchsynthAudioProcessor::~TuningworkbenchsynthAudioProcessor()

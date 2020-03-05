@@ -1418,6 +1418,14 @@ void TWSMainPanel::filesDropped (const StringArray& filenames, int mouseX, int m
         processor.setKBM( s );
         tabbedComponent->setCurrentTabIndex( 1, false );
     }
+    if( f.hasFileExtension( ".twsxml" ) )
+    {
+        auto s = f.loadFileAsString();
+        MemoryBlock b;
+        f.loadFileAsData( b );
+        processor.setStateInformation( b.getData(), (int)b.getSize() );
+    }
+
 
     //[/UserCode_filesDropped]
 }

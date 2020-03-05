@@ -9,10 +9,36 @@
   <MAINGROUP id="Wx8OVz" name="tuning-workbench-synth">
     <GROUP id="{CA268845-16D3-86C8-8B06-4671890A089B}" name="Resources">
       <GROUP id="{87647819-483F-55E4-D7A2-227D730F4A73}" name="factory_patches">
-        <FILE id="tHFSjQ" name="Struck String.twsxml" compile="0" resource="1"
-              file="Resources/factory_patches/Struck String.twsxml"/>
-        <FILE id="vUrXbZ" name="SwellPulsePad.twsxml" compile="0" resource="1"
-              file="Resources/factory_patches/SwellPulsePad.twsxml"/>
+        <FILE id="btX2c0" name="Brass_Lead.twsxml" compile="0" resource="1"
+              file="Resources/factory_patches/Brass_Lead.twsxml"/>
+        <FILE id="Je3k6P" name="Discovery.twsxml" compile="0" resource="1"
+              file="Resources/factory_patches/Discovery.twsxml"/>
+        <FILE id="GaXDIH" name="Facets_15.twsxml" compile="0" resource="1"
+              file="Resources/factory_patches/Facets_15.twsxml"/>
+        <FILE id="LL7Gig" name="Fibonacci_Plucks.twsxml" compile="0" resource="1"
+              file="Resources/factory_patches/Fibonacci_Plucks.twsxml"/>
+        <FILE id="mMsQls" name="INIT_Sine.twsxml" compile="0" resource="1"
+              file="Resources/factory_patches/INIT_Sine.twsxml"/>
+        <FILE id="Dr5Irp" name="INIT_Square.twsxml" compile="0" resource="1"
+              file="Resources/factory_patches/INIT_Square.twsxml"/>
+        <FILE id="UKeyw5" name="Just_Frippertonics.twsxml" compile="0" resource="1"
+              file="Resources/factory_patches/Just_Frippertonics.twsxml"/>
+        <FILE id="wY0DUW" name="Lusheng_Flute.twsxml" compile="0" resource="1"
+              file="Resources/factory_patches/Lusheng_Flute.twsxml"/>
+        <FILE id="dyP21g" name="Marimba.twsxml" compile="0" resource="1" file="Resources/factory_patches/Marimba.twsxml"/>
+        <FILE id="WPb03S" name="On_Whole_Tones.twsxml" compile="0" resource="1"
+              file="Resources/factory_patches/On_Whole_Tones.twsxml"/>
+        <FILE id="aXgnpT" name="Pluckedelica.twsxml" compile="0" resource="1"
+              file="Resources/factory_patches/Pluckedelica.twsxml"/>
+        <FILE id="btsPq1" name="Struck_String.twsxml" compile="0" resource="1"
+              file="Resources/factory_patches/Struck_String.twsxml"/>
+        <FILE id="pGdqRy" name="Swarm_Andal.twsxml" compile="0" resource="1"
+              file="Resources/factory_patches/Swarm_Andal.twsxml"/>
+        <FILE id="ysaw30" name="Swell_Pulse_Pad.twsxml" compile="0" resource="1"
+              file="Resources/factory_patches/Swell_Pulse_Pad.twsxml"/>
+        <FILE id="vCfYto" name="TWS_Init.twsxml" compile="0" resource="1" file="Resources/factory_patches/TWS_Init.twsxml"/>
+        <FILE id="tbKoBB" name="Xenarctica.twsxml" compile="0" resource="1"
+              file="Resources/factory_patches/Xenarctica.twsxml"/>
       </GROUP>
       <FILE id="jgsaHz" name="TWSLogo_Inverted_NoBG_120.png" compile="0"
             resource="1" file="Resources/TWSLogo_Inverted_NoBG_120.png"/>
