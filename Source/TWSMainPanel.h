@@ -31,6 +31,7 @@ public:
     virtual void paintButton( Graphics &g, bool hl, bool dn );
 };
 
+
 struct TWSLambdaParamListener : public virtual AudioProcessorParameter::Listener
 {
     virtual void parameterGestureChanged( int, bool ) { }
@@ -87,7 +88,7 @@ private:
     std::vector<std::unique_ptr<SliderAttachment>> sliderAttachments;
     typedef AudioProcessorValueTreeState::ButtonAttachment ButtonAttachment;
     std::vector<std::unique_ptr<ButtonAttachment>> buttonAttachments;
-    std::vector<TWSLambdaParamListener*> lambdaAtttachments;
+    std::vector<std::pair<std::string,TWSLambdaParamListener*>> lambdaAtttachments;
     std::unique_ptr<PopupMenu> presetMenu;
 
     //[/UserVariables]
