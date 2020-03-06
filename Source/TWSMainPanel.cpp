@@ -642,6 +642,11 @@ TWSMainPanel::~TWSMainPanel()
 
     sliderAttachments.clear();
     buttonAttachments.clear();
+    for( auto &p: lambdaAtttachments )
+    {
+        processor.parameters.getParameter(p.first.c_str())->removeListener(p.second);
+        delete p.second;
+    }
     lambdaAtttachments.clear();
     //[/Destructor_pre]
 
@@ -1440,22 +1445,11 @@ void TWSMainPanel::connectValueTreeState(AudioProcessorValueTreeState &t )
                      sliderAttachments.push_back(std::make_unique<SliderAttachment>( t, lb, *(sll.get() ) ) );
                  };
 
-    auto pb = [this, &t](const char* lb, std::unique_ptr<TWSPowerToggle> &ptg )
+    auto pb = [this, &t](const char *lb, Button *tb )
                   {
-                      // FIXME - don't leak this listener
-                      auto l = new TWSLambdaParamListener();
-                      l->lfunc = [&ptg](int i, float v)
-                                     {
-                                         if( v == 0 )
-                                             ptg->setToggleState( false, dontSendNotification );
-                                         else
-                                             ptg->setToggleState( true, dontSendNotification );
-                                     };
-                      t.getParameter(lb)->addListener(l);
-                      l->lfunc(0,t.getParameter(lb)->getValue());
-                      lambdaAtttachments.push_back(l);
+                      buttonAttachments.push_back(std::make_unique<ButtonAttachment>( t, lb, *( tb ) ) );
                   };
-
+    
     s("sinLevel", sineMix);
     s("squareLevel", squareMix);
     s("sawLevel", sawMix);
@@ -1504,18 +1498,17 @@ void TWSMainPanel::connectValueTreeState(AudioProcessorValueTreeState &t )
     s( "delay_dry", delay_dry );
     s( "delay_time", delay_time );
 
-    pb( "vco_on", VCOPower );
-    pb( "sub_on", SubPower );
-    pb( "pluck_on", PluckPower );
-    pb( "delay_on", DelayPower );
-    pb( "modwheel_on", ModWheelPower );
-    pb( "filter_on", FilterPower );
-
+    pb( "vco_on", VCOPower.get() );
+    pb( "sub_on", SubPower.get() );
+    pb( "pluck_on", PluckPower.get() );
+    pb( "delay_on", DelayPower.get() );
+    pb( "modwheel_on", ModWheelPower.get() );
+    pb( "filter_on", FilterPower.get() );
+    
     /*
     ** Hook up the filter tri-state and LFO tri-state
     */
     {
-        // FIXME - don't leak this listener
         auto l = new TWSLambdaParamListener();
         l->lfunc = [this](int i, float v)
                        {
@@ -1525,10 +1518,9 @@ void TWSMainPanel::connectValueTreeState(AudioProcessorValueTreeState &t )
                        };
         t.getParameter("filter_type")->addListener(l);
         l->lfunc(0,t.getParameter("filter_type")->getValue());
-        lambdaAtttachments.push_back(l);
+        lambdaAtttachments.push_back(std::make_pair(std::string("filter_type"), l));
     }
     {
-        // FIXME - don't leak this listener
         auto l = new TWSLambdaParamListener();
         l->lfunc = [this](int i, float v)
                        {
@@ -1538,7 +1530,7 @@ void TWSMainPanel::connectValueTreeState(AudioProcessorValueTreeState &t )
                        };
         t.getParameter("lfo_type")->addListener(l);
         l->lfunc(0,t.getParameter("lfo_type")->getValue());
-        lambdaAtttachments.push_back(l);
+        lambdaAtttachments.push_back(std::make_pair(std::string("lfo_type"), l));
     }
 }
 
