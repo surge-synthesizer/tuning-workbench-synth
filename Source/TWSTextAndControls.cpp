@@ -209,13 +209,14 @@ void TWSTextAndControls::buttonClicked (Button* buttonThatWasClicked)
         if( isSCL )
         {
             auto ed = new surgesynthteam_ScaleEditor(processor.tuning.scale);
+            ed->addScaleTextEditedListener( this );
             DialogWindow::LaunchOptions options;
             options.content.setOwned(ed);
             options.dialogTitle = "tuning-workbench-synth Advanced Scale Editor";
             options.escapeKeyTriggersCloseButton = false;
             options.useNativeTitleBar = false;
             options.resizable = false;
-            
+
             options.launchAsync();
         }
         else
@@ -227,7 +228,7 @@ void TWSTextAndControls::buttonClicked (Button* buttonThatWasClicked)
             options.escapeKeyTriggersCloseButton = true;
             options.useNativeTitleBar = false;
             options.resizable = false;
-            
+
             options.launchAsync();
         }
         //[/UserButtonCode_advButton]
@@ -236,6 +237,8 @@ void TWSTextAndControls::buttonClicked (Button* buttonThatWasClicked)
     //[UserbuttonClicked_Post]
     //[/UserbuttonClicked_Post]
 }
+
+
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
 void TWSTextAndControls::tuningUpdated( const Tunings::Tuning &newTuning )
@@ -273,7 +276,7 @@ void TWSTextAndControls::textEditorTextChanged(TextEditor &t) {
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="TWSTextAndControls" componentName=""
-                 parentClasses="public Component, public TuningUpdatedListener, public TextEditor::Listener"
+                 parentClasses="public Component, public TuningUpdatedListener, public TextEditor::Listener, public surgesynthteam_ScaleEditor::ScaleTextEditedListener"
                  constructorParams="bool isSCL, TuningworkbenchsynthAudioProcessor &amp;p"
                  variableInitialisers="processor(p)" snapPixels="8" snapActive="1"
                  snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="432"
