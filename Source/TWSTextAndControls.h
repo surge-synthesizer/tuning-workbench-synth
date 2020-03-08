@@ -38,6 +38,7 @@ class TWSMainPanel;
 class TWSTextAndControls  : public Component,
                             public TuningUpdatedListener,
                             public TextEditor::Listener,
+                            public surgesynthteam_ScaleEditor::ScaleTextEditedListener,
                             public Button::Listener
 {
 public:
@@ -50,6 +51,10 @@ public:
     friend class TWSMainPanel;
     void tuningUpdated( const Tunings::Tuning &newTuning ) override;
     virtual void textEditorTextChanged( TextEditor &t ) override;
+    virtual void scaleTextEdited( juce::String newScale ) override {
+        if( isSCL )
+            processor.setSCL( newScale );
+    }
     //[/UserMethods]
 
     void paint (Graphics& g) override;
