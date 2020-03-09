@@ -38,7 +38,7 @@ class TWSMainPanel;
 class TWSTextAndControls  : public Component,
                             public TuningUpdatedListener,
                             public TextEditor::Listener,
-                            public surgesynthteam_ScaleEditor::ScaleTextEditedListener,
+                            public surgesynthteam::ScaleEditor::ScaleTextEditedListener,
                             public Button::Listener
 {
 public:

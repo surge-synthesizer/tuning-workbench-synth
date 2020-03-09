@@ -208,16 +208,10 @@ void TWSTextAndControls::buttonClicked (Button* buttonThatWasClicked)
         //[UserButtonCode_advButton] -- add your button handler code here..
         if( isSCL )
         {
-            auto ed = new surgesynthteam_ScaleEditor(processor.tuning.scale);
+            auto ed = new surgesynthteam::ScaleEditor(processor.tuning.scale);
             ed->addScaleTextEditedListener( this );
-            DialogWindow::LaunchOptions options;
-            options.content.setOwned(ed);
-            options.dialogTitle = "tuning-workbench-synth Advanced Scale Editor";
-            options.escapeKeyTriggersCloseButton = false;
-            options.useNativeTitleBar = false;
-            options.resizable = false;
-
-            options.launchAsync();
+            auto dw = new surgesynthteam::ScaleEditorWindow( ed );
+            dw->setVisible( true );
         }
         else
         {
@@ -276,7 +270,7 @@ void TWSTextAndControls::textEditorTextChanged(TextEditor &t) {
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="TWSTextAndControls" componentName=""
-                 parentClasses="public Component, public TuningUpdatedListener, public TextEditor::Listener, public surgesynthteam_ScaleEditor::ScaleTextEditedListener"
+                 parentClasses="public Component, public TuningUpdatedListener, public TextEditor::Listener, public surgesynthteam::ScaleEditor::ScaleTextEditedListener"
                  constructorParams="bool isSCL, TuningworkbenchsynthAudioProcessor &amp;p"
                  variableInitialisers="processor(p)" snapPixels="8" snapActive="1"
                  snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="432"
