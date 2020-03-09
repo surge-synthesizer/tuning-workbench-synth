@@ -208,10 +208,14 @@ void TWSTextAndControls::buttonClicked (Button* buttonThatWasClicked)
         //[UserButtonCode_advButton] -- add your button handler code here..
         if( isSCL )
         {
-            auto ed = new surgesynthteam::ScaleEditor(processor.tuning.scale);
-            ed->addScaleTextEditedListener( this );
-            auto dw = new surgesynthteam::ScaleEditorWindow( ed );
-            dw->setVisible( true );
+            if( !advancedWindow )
+            {
+                auto ed = new surgesynthteam::ScaleEditor(processor.tuning.scale);
+                ed->addScaleTextEditedListener( this );
+                advancedWindow = new surgesynthteam::ScaleEditorWindow( ed );
+                advancedWindow->onCloseButton = [this](){ this->advancedWindow = nullptr; };
+                advancedWindow->setVisible( true );
+            }
         }
         else
         {
@@ -240,6 +244,10 @@ void TWSTextAndControls::tuningUpdated( const Tunings::Tuning &newTuning )
     if( isSCL )
     {
         textEditor->setText( newTuning.scale.rawText, false );
+        if( advancedWindow )
+        {
+            advancedWindow->editor->resetScale( newTuning.scale );
+        }
     }
     else
     {
@@ -270,7 +278,7 @@ void TWSTextAndControls::textEditorTextChanged(TextEditor &t) {
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="TWSTextAndControls" componentName=""
-                 parentClasses="public Component, public TuningUpdatedListener, public TextEditor::Listener, public surgesynthteam::ScaleEditor::ScaleTextEditedListener"
+                 parentClasses="public Component, public TuningUpdatedListener, public TextEditor::Listener, public surgesynthteam::ScaleEditor::ScaleTextEditedListener, public NotesOnChangedListener"
                  constructorParams="bool isSCL, TuningworkbenchsynthAudioProcessor &amp;p"
                  variableInitialisers="processor(p)" snapPixels="8" snapActive="1"
                  snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="432"
