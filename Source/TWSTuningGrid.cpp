@@ -44,7 +44,7 @@ TWSTuningGrid::TWSTuningGrid ()
 
 
     //[Constructor] You can add your own custom stuff here..
-    mod = std::make_unique<surgesynthteam_TuningTableListBoxModel>();
+    mod = std::make_unique<surgesynthteam::TuningTableListBoxModel>();
     mod->setTableListBox( table.get() );
     mod->setupDefaultHeaders( table.get() );
 
