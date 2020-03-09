@@ -39,6 +39,7 @@ class TWSTextAndControls  : public Component,
                             public TuningUpdatedListener,
                             public TextEditor::Listener,
                             public surgesynthteam::ScaleEditor::ScaleTextEditedListener,
+                            public NotesOnChangedListener,
                             public Button::Listener
 {
 public:
@@ -55,6 +56,21 @@ public:
         if( isSCL )
             processor.setSCL( newScale );
     }
+    virtual void noteOn( int noteNum ) override {
+        if( advancedWindow )
+        {
+            int scalenote = processor.tuning.scalePositionForMidiNote(noteNum);
+            advancedWindow->editor->scaleNoteOn( scalenote );
+        }
+    }
+    virtual void noteOff( int noteNum ) override {
+        if( advancedWindow )
+        {
+            int scalenote = processor.tuning.scalePositionForMidiNote(noteNum);
+            advancedWindow->editor->scaleNoteOff( scalenote );
+        }
+    }
+
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -68,6 +84,7 @@ private:
     bool isSCL;
     bool supressFirstTextChange;
     TuningworkbenchsynthAudioProcessor &processor;
+    surgesynthteam::ScaleEditorWindow *advancedWindow = nullptr;
     //[/UserVariables]
 
     //==============================================================================

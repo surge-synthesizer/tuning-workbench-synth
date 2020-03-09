@@ -240,6 +240,7 @@ TuningworkbenchsynthAudioProcessor::TuningworkbenchsynthAudioProcessor()
     factoryPresets.push_back( mt( "Init", 0, 0 ) );              
     factoryPresets.push_back( mt( "Init Sine", BinaryData::INIT_Sine_twsxml, BinaryData::INIT_Sine_twsxmlSize ) );
     factoryPresets.push_back( mt( "Init Square", BinaryData::INIT_Square_twsxml, BinaryData::INIT_Square_twsxmlSize ) );
+    factoryPresets.push_back( mt( "Init Saw", BinaryData::INIT_Saw_twsxml, BinaryData::INIT_Saw_twsxmlSize ) );
     factoryPresets.push_back( mt( "TWS Init ", BinaryData::TWS_Init_twsxml, BinaryData::TWS_Init_twsxmlSize ) );
     factoryPresets.push_back( mt( "Pads", 0, 0 ) );             
     factoryPresets.push_back( mt( "Discovery", BinaryData::Discovery_twsxml, BinaryData::Discovery_twsxmlSize ) );              
