@@ -628,7 +628,6 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
 
 
     //[Constructor] You can add your own custom stuff here..
-    sineMix->setValue( 1.0 );
     //[/Constructor]
 }
 
