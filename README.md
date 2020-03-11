@@ -1,12 +1,19 @@
-# SUPER ALPHA
+# Tuning Workbench Synth
 
-This is super alpha
+Tuning Workbench Synth is a synthesizer for learning and experimenting with microtonal scales. For motivation and
+documentation please see [the surge synth team TWS landing page](https://surge-synth-team.org/tuning-workbench-synth/).
 
-If you aren't chatting with the team on slack right now, you probably want to come back in a week.
+This is the developer documentation. Currently we are in an early beta. Some features are still not implemented,
+but the ones which are work well.
 
-# How to Build
+We distribute a built version of the codebase for mac windows and linux [here](https://github.com/surge-synthesizer/tuning-workbench-synth/releases/tag/Nightly)
 
-hop on slack if you get stuck
+If you find a bug or want to make a change, please open a github issue or join our slack.
+
+# How to Build 
+
+We follow the protocol of downloading JUCE and building our own JUCE output files in every build. This is accomplised by a 
+small set of scripts in the scripts/ directory which are also run in our CI pipeline.
 
 ## macOS
 
@@ -16,6 +23,8 @@ scripts/get-juce.sh
 scripts/projuce-mac.sh
 scripts/build-mac.sh
 ```
+
+This will generate the standalone and generate and locally install the VST3 and AU
 
 ## windows
 
@@ -45,4 +54,6 @@ export VST2SDK_DIR=~/Location/Of/SDK
 scripts/projuce-lin-vst2.sh
 scripts/build-lin.sh
 ```
+
+You will need to install the VST2 in the location appropriate for your system.
 

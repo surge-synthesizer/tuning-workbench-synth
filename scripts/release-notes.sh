@@ -3,7 +3,10 @@
 cat <<- EOH
 # Automated build of surge-synth-team tuning-workbench-synth
 
-ALPHA SOFTWARE. GO AWAY UNLESS YOU HAVE CHATTED ON OUR SLACK!
+The tuning-workbench-synth is currently in a beta stage, ready for
+general testing from people who are OK runnign beta music software.
+
+For more information see https://surge-synth-team.org/tuning-workbench-synth/
 
 EOH
 date
