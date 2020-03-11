@@ -9,6 +9,8 @@
   <MAINGROUP id="Wx8OVz" name="tuning-workbench-synth">
     <GROUP id="{CA268845-16D3-86C8-8B06-4671890A089B}" name="Resources">
       <GROUP id="{87647819-483F-55E4-D7A2-227D730F4A73}" name="factory_patches">
+        <FILE id="slokAG" name="Bamboo_Flute.twsxml" compile="0" resource="1"
+              file="Resources/factory_patches/Bamboo_Flute.twsxml"/>
         <FILE id="btX2c0" name="Brass_Lead.twsxml" compile="0" resource="1"
               file="Resources/factory_patches/Brass_Lead.twsxml"/>
         <FILE id="Je3k6P" name="Discovery.twsxml" compile="0" resource="1"
