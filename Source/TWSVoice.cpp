@@ -458,7 +458,7 @@ void TWSVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample
                 auto oscTri = analogishTri(ca + 0.03) * trilv;
                 
                 auto currentVoice = AEG * ( oscSqr + oscSin + oscSaw + oscTri );
-                
+
                 int panIdx = ( pan[i] + 1 ) * N_PAN / 2;
                 if( panIdx < 0 ) panIdx = 0;
                 if( panIdx >= N_PAN ) panIdx = N_PAN - 1;
@@ -466,6 +466,14 @@ void TWSVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample
                 // This isn't precise enough to bother interpolating
                 auto lW = panBufferL[panIdx];
                 auto rW = panBufferR[panIdx];
+
+                if( nunison == 1 )
+                {
+                    // Force absolute mono
+                    auto t = (lW + rW) * 0.5;
+                    lW = t;
+                    rW = t;
+                }
 
                 // Apply the volume LFO
                 if( *( p->lfo_vcolev ) != 0 )
@@ -735,7 +743,7 @@ void TWSSynthesiser::renderVoices( AudioBuffer<float> &b, int s, int n )
 
         sR *= ( 1.0 + ms );
         sR = std::min( 1.f, std::max( -1.f, sR ) );
-        sL = 1.5 * sR - 0.5 * sR * sR * sR;
+        sR = 1.5 * sR - 0.5 * sR * sR * sR;
         
         b.setSample(0,s+i,sL * ml);
         b.setSample(1,s+i,sR * ml);
