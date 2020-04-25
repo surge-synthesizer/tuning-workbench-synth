@@ -1,0 +1,8 @@
+#include "version.h"
+
+namespace Build
+{
+    const std::string build_date = __DATE__;
+    const std::string git_branch = "@GIT_BRANCH@";
+    const std::string git_commit_hash = "@GIT_COMMIT_HASH@";
+}

@@ -1,9 +1,9 @@
-[submodule "lib/vst3sdk"]
-	path = lib/vst3sdk
-	url = https://github.com/steinbergmedia/vst3sdk.git
 [submodule "lib/tuning-library"]
 	path = lib/tuning-library
 	url = https://github.com/surge-synthesizer/tuning-library.git
 [submodule "lib/surgesynthteam_tuningui"]
 	path = lib/surgesynthteam_tuningui
 	url = https://github.com/surge-synthesizer/surgesynthteam_tuningui
+[submodule "lib/JUCE"]
+	path = lib/JUCE
+	url = https://github.com/juce-framework/JUCE

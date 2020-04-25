@@ -22,6 +22,7 @@
 #include "TWSTextAndControls.h"
 #include "TWSTuningGrid.h"
 #include "Constants.h"
+#include "version.h"
 //[/Headers]
 
 #include "TWSMainPanel.h"
@@ -592,7 +593,8 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
 
 
     //[UserPreSize]
-    version->setText( TWS_VERSION, dontSendNotification );
+    auto buildinfo = Build::git_commit_hash + " / " + Build::build_date;
+    version->setText( buildinfo.c_str(), dontSendNotification );
 
     sclTextAndControls = dynamic_cast<TWSTextAndControls*>( tabbedComponent->getTabContentComponent(0) );
     sclTextAndControls->textEditor->setText( processor.currentSCLString );
