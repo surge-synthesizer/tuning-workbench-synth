@@ -19,6 +19,7 @@
 
 //[Headers] You can add your own extra header files here...
 #include "Constants.h"
+#include "version.h"
 //[/Headers]
 
 #include "TWSAbout.h"
@@ -102,7 +103,8 @@ TWSAbout::TWSAbout ()
     drawable1 = Drawable::createFromImageData (BinaryData::TWSLogo_Inverted_NoBG_120_png, BinaryData::TWSLogo_Inverted_NoBG_120_pngSize);
 
     //[UserPreSize]
-    version->setText( "version: " TWS_VERSION, dontSendNotification );
+    auto vt = std::string( "version: " ) + Build::git_commit_hash + " branch " + Build::git_branch;
+    version->setText( vt.c_str() , dontSendNotification );
     builddate->setText( "built: " __DATE__, dontSendNotification );
     //[/UserPreSize]
 

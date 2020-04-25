@@ -7,40 +7,8 @@ pr:
 - master
 
 jobs:
-# We projuce on mac and share the assets so we don't have to run projucer on linux
-- job: Projuce
-  pool:
-    vmImage: 'macos-10.14'
-
-  steps:
-  - checkout: self
-    fetchDepth: 1
-
-  - bash: |
-      set -e
-      set -o xtrace
-      echo "Uname -s output"
-      uname -s
-     
-      git submodule update --init --recursive
-
-      ./scripts/get-juce.sh osx
-      ./scripts/projuce-mac.sh
-
-      mkdir pipeline
-      tar czf pipeline/juced.tgz Builds/ JuceLibraryCode/
-    displayName: Make Projuce Output
-    
-  - task: PublishPipelineArtifact@0
-    inputs:
-      artifactName: 'JUCE_OUTPUTS'
-      targetPath: 'pipeline/'
-    displayName: Publish JUCE Artifacts 
-  
 
 - job: Build
-  dependsOn: Projuce
-  condition: succeeded()
   strategy:
     matrix:
       mac:
@@ -61,67 +29,6 @@ jobs:
     fetchDepth: 1
     # submodules: recursive # can't do submodules here b'cuz depth=1 fails with Github
 
-  - bash: |
-      mkdir pipeline
-    displayName: Setup Pipeline Dir
-
-  - task: DownloadPipelineArtifact@0
-    inputs:
-      artifactName: 'JUCE_OUTPUTS'
-      targetPath: 'pipeline/'
-
-  - bash: |
-      ./scripts/get-juce.sh
-      ls -l pipeline
-      tar xvzf pipeline/juced.tgz
-      
-      git submodule update --init --recursive
-
-      ./scripts/set-version.sh
-
-    displayName: Setup for Building
-
-  - bash: |
-      ./scripts/build-mac.sh
-      ./scripts/package-mac.sh
-    displayName: Build Mac Plugins
-    condition: variables.isMac
-
-
-  - task: PublishPipelineArtifact@0
-    inputs:
-      artifactName: 'MACOS_BUILD'
-      targetPath: 'products/'
-    displayName: Publish Mac DMG
-    condition: variables.isMac
-
-  - task: MSBuild@1
-    inputs:
-      solution: 'Builds\VisualStudio2017\tuning-workbench-synth.sln'
-      maximumCpuCount: true
-      platform: 'x64'
-      configuration: 'Release'
-    condition: variables.isWindows
-    displayName: Build Windows x64
-
-  - bash: |
-      cd Builds/VisualStudio2017/x64
-      mkdir assets
-      mv Release/Standalone\ Plugin/tuning-workbench-synth.exe assets/
-      mv Release/VST3/tuning-workbench-synth.vst3 assets/
-      GIT_TAG=`git rev-parse --short HEAD`
-      BUILDDATE=`date +%Y%m%d`
-      ZIPV="${GIT_TAG}-${BUILDDATE}"
-      7z.exe a ../../../products/tuning-workbench-synth-Win64bit-${ZIPV}.zip assets 
-    displayName: Build Windows Zip
-    condition: variables.isWindows
-
-  - task: PublishPipelineArtifact@0
-    inputs:
-      artifactName: 'WINDOWS_BUILD'
-      targetPath: 'products/'
-    displayName: Publish Windows Zip
-    condition: variables.isWindows
 
   - bash: |
       sudo apt-get install -y libgtk-3-dev
@@ -147,24 +54,31 @@ jobs:
     condition: variables.isLinux
 
   - bash: |
-      ./scripts/build-lin.sh
-    displayName: Build Linux Plugins
-    condition: variables.isLinux
+      git submodule update --init --recursive
+      cmake -Bbuild
+      cmake --build build --config Release
+    displayName: Build
 
-  - bash: |
-      rm -rf products
-      mkdir products
-      ./scripts/package-lin.sh
 
-      md5sum products/*
-      ls -lt products/*
-    displayName: Package Linux Plugins
-    condition: variables.isLinux
+  - task: PublishPipelineArtifact@0
+    inputs:
+      artifactName: 'MACOS_BUILD'
+      targetPath: 'build/asset/'
+    displayName: Publish Mac DMG
+    condition: variables.isMac
+
+
+  - task: PublishPipelineArtifact@0
+    inputs:
+      artifactName: 'WINDOWS_BUILD'
+      targetPath: 'build/asset/'
+    displayName: Publish Windows Zip
+    condition: variables.isWindows
 
   - task: PublishPipelineArtifact@0
     inputs:
       artifactName: 'LINUX_BUILD'
-      targetPath: 'products/'
+      targetPath: 'build/asset'
     displayName: Publish Linux Tar
     condition: variables.isLinux
 

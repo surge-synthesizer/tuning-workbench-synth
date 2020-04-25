@@ -7,3 +7,6 @@
 [submodule "lib/surgesynthteam_tuningui"]
 	path = lib/surgesynthteam_tuningui
 	url = https://github.com/surge-synthesizer/surgesynthteam_tuningui
+[submodule "lib/JUCE"]
+	path = lib/JUCE
+	url = https://github.com/juce-framework/JUCE

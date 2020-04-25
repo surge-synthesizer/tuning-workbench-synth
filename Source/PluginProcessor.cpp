@@ -354,16 +354,15 @@ void TuningworkbenchsynthAudioProcessor::processBlock (AudioBuffer<float>& buffe
     if( noteListeners.size() > 0 )
     {
         bool noteTog = false;
-        MidiBuffer::Iterator midiIterator (midiMessages);
-        midiIterator.setNextSamplePosition (0);
+        MidiBufferIterator midiIterator  = midiMessages.begin();
         int midiEventPos;
-        MidiMessage m;
 
         int ons[127], offs[127];
         int onp=0, offp=0;
 
-        while( midiIterator.getNextEvent(m, midiEventPos ) )
+        while( midiIterator != midiMessages.end() )
         {
+            auto m = (*midiIterator).getMessage();
             if( m.isNoteOn() )
             {
                 ons[onp++] = m.getNoteNumber();
