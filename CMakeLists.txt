@@ -80,7 +80,9 @@ target_compile_definitions(tuning-workbench-synth PUBLIC
     JUCE_USE_CURL=0
     JUCE_WEB_BROWSER=0
     JUCE_DISPLAY_SPLASH_SCREEN=0
-    JUCE_REPORT_APP_USAGE=0 
+    JUCE_REPORT_APP_USAGE=0
+    JUCE_ALSA=0
+    JUCE_JACK=1
 )
 
 juce_add_module(
@@ -99,38 +101,33 @@ target_link_libraries(tuning-workbench-synth PRIVATE
 
 # Build installers
 get_target_property( OUTPUT_DIR tuning-workbench-synth RUNTIME_OUTPUT_DIRECTORY )
+add_custom_target( tuning-workbench-synth-pkg ALL )
+add_dependencies( tuning-workbench-synth-pkg tuning-workbench-synth )
 
 if( APPLE )
-  add_custom_target( tuning-workbench-synth.dmg ALL )
-  add_dependencies( tuning-workbench-synth.dmg tuning-workbench-synth )
   add_custom_command(
-    TARGET tuning-workbench-synth.dmg
+    TARGET tuning-workbench-synth-pkg
     POST_BUILD
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     COMMAND ${CMAKE_COMMAND} -E make_directory  ${CMAKE_BINARY_DIR}/asset
     COMMAND hdiutil create ${CMAKE_BINARY_DIR}/asset/tuning-workbench-synth-macos-${GIT_COMMIT_HASH}.dmg -ov -volname "TWS-${GIT_COMMIT_HASH}" -fs HFS+ -srcfolder ${OUTPUT_DIR}
     )
 elseif( UNIX )
-  add_custom_target( tuning-workbench-synth.tgz ALL )
-  add_dependencies( tuning-workbench-synth.tgz tuning-workbench-synth )
   add_custom_command(
-    TARGET tuning-workbench-synth.tgz
+    TARGET tuning-workbench-synth-pkg
     POST_BUILD
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     COMMAND ${CMAKE_COMMAND} -E make_directory  ${CMAKE_BINARY_DIR}/asset
     COMMAND cd ${OUTPUT_DIR} && tar cf "${CMAKE_BINARY_DIR}/asset/tuning-workbench-synth-linux-${GIT_COMMIT_HASH}.tgz" "tuning-workbench-synth" "tuning-workbench-synth.vst3" 
     )
 else()
-  add_custom_target( tuning-workbench-synth.zip ALL )
-  add_dependencies( tuning-workbench-synth.zip tuning-workbench-synth )
   add_custom_command(
-    TARGET tuning-workbench-synth.zip
+    TARGET tuning-workbench-synth-pkg
     POST_BUILD
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     COMMAND ${CMAKE_COMMAND} -E make_directory  ${CMAKE_BINARY_DIR}/asset
     COMMAND cd ${OUTPUT_DIR} && powershell Compress-Archive 
              -DestinationPath "${CMAKE_BINARY_DIR}\\asset\\tuning-workbench-synth-win-${GIT_COMMIT_HASH}.zip" 
-             -Path "tuning-workbench-synth.exe","tuning-workbench-synth.vst3" 
+             -Path "tuning-workbench-synth.exe", "tuning-workbench-synth.vst3" 
     )
-  
 endif()

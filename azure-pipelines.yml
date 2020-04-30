@@ -55,8 +55,12 @@ jobs:
 
   - bash: |
       git submodule update --init --recursive
+    displayName: Submodule Update
+
+  - bash: |
       cmake -Bbuild
-      cmake --build build --config Release
+      cmake --build build --config Release --target tuning-workbench-synth
+      cmake --build build --config Release --target tuning-wodkbench-synth-pkg
     displayName: Build
 
 
