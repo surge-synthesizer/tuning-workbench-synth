@@ -118,15 +118,16 @@ elseif( UNIX )
     POST_BUILD
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     COMMAND ${CMAKE_COMMAND} -E make_directory  ${CMAKE_BINARY_DIR}/asset
+    COMMAND ls -l ${OUTPUT_DIR}
     COMMAND cd ${OUTPUT_DIR} && tar cf "${CMAKE_BINARY_DIR}/asset/tuning-workbench-synth-linux-${GIT_COMMIT_HASH}.tgz" "tuning-workbench-synth" "tuning-workbench-synth.vst3" 
     )
 else()
   add_custom_command(
     TARGET tuning-workbench-synth-pkg
     POST_BUILD
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    WORKING_DIRECTORY ${OUTPUT_DIR}
     COMMAND ${CMAKE_COMMAND} -E make_directory  ${CMAKE_BINARY_DIR}/asset
-    COMMAND cd ${OUTPUT_DIR} && powershell Compress-Archive 
+    COMMAND powershell Compress-Archive 
              -DestinationPath "${CMAKE_BINARY_DIR}\\asset\\tuning-workbench-synth-win-${GIT_COMMIT_HASH}.zip" 
              -Path "tuning-workbench-synth.exe", "tuning-workbench-synth.vst3" 
     )
