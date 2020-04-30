@@ -15,7 +15,7 @@ jobs:
         imageName: 'macos-10.14'
         isMac: True
       win:
-        imageName: 'vs2017-win2016'
+        imageName: 'windows-2019'
         isWindows: True
       lin:
         imageName: 'ubuntu-18.04'
@@ -61,7 +61,12 @@ jobs:
   - bash: |
       cmake -Bbuild
       cmake --build build --config Release --target tuning-workbench-synth
-      cmake --build build --config Release --target tuning-workbench-synth-pkg
+
+      # I am unsure why this doesn't seem to work reliably as an internal cmake rule on win and lin
+      cmake --build build --config Release --target tuning-workbench-synth_Standalone
+
+      # And make the final package
+      cmake --build build --config Release --target installer-pkg
     displayName: Build
 
 
