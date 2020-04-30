@@ -19,9 +19,9 @@ git clone https://github.com/surge-synthesizer/tuning-workbench-synth.git   # or
 cd tuning-workbench-synth
 git submodule update --init --recursive
 cmake -Bbuild     # macos users may want cmake -Bbuild -GXcode if they want an xcode file
-cmake --build build --target Release 
+cmake --build build --config Release 
 ```
 
-and you should get your build working. That's it. Amazing eh?
+and you should get your build working. That's it. Cool eh?
 
 Of course cmake will create IDE assets in a normal way if you want them. They will all appear in the build directory.
