@@ -51,6 +51,10 @@ jobs:
       sudo apt-get install -y libxcursor1 
       sudo apt-get install -y libxcb-cursor-dev 
       sudo apt-get install -y libxcb-cursor0
+
+      apt list --installed
+
+      find /usr/include -name "asoundlib.h" -print
     displayName: Prepare Linux Host
     condition: variables.isLinux
 
