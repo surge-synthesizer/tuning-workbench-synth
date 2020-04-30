@@ -31,6 +31,7 @@ jobs:
 
 
   - bash: |
+      sudo apt-get update
       sudo apt-get install -y libgtk-3-dev
       sudo apt-get install -y libwebkit2gtk-4.0
       sudo apt-get install -y libwebkit2gtk-4.0-dev
@@ -51,6 +52,11 @@ jobs:
       sudo apt-get install -y libxcursor1 
       sudo apt-get install -y libxcb-cursor-dev 
       sudo apt-get install -y libxcb-cursor0
+      sudo apt-get install -y --fix-missing
+
+      apt list --installed
+
+      find /usr/include -name "asoundlib.h" -print
     displayName: Prepare Linux Host
     condition: variables.isLinux
 

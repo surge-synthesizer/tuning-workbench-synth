@@ -89,7 +89,7 @@ target_compile_definitions(tuning-workbench-synth PUBLIC
     JUCE_DISPLAY_SPLASH_SCREEN=0
     JUCE_REPORT_APP_USAGE=0
 
-    JUCE_ALSA=0
+    JUCE_ALSA=1
     JUCE_JACK=1
 )
 
