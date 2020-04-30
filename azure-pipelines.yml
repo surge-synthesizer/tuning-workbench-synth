@@ -60,7 +60,7 @@ jobs:
   - bash: |
       cmake -Bbuild
       cmake --build build --config Release --target tuning-workbench-synth
-      cmake --build build --config Release --target tuning-wodkbench-synth-pkg
+      cmake --build build --config Release --target tuning-workbench-synth-pkg
     displayName: Build
 
 
