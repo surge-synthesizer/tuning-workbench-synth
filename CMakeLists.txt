@@ -123,6 +123,12 @@ if( APPLE )
     COMMAND hdiutil create ${INSTALLER_DIR}/${INSTALLER_BASENAME}-macos-${GIT_COMMIT_HASH}.dmg -ov -volname "${INSTALLER_BASENAME}-${GIT_COMMIT_HASH}" -fs HFS+ -srcfolder ${OUTPUT_DIR}
     )
 elseif( UNIX )
+  add_custom_command( TARGET tuning-workbench-synth_VST3
+                      POST_BUILD
+                      WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+                      COMMAND echo Stripping VST3
+                      COMMAND strip -s ${OUTPUT_DIR}/tuning-workbench-synth.vst3/Contents/x86_64-linux/tuning-workbench-synth.so 
+                      )
   add_custom_command(
     TARGET installer-pkg
     POST_BUILD
