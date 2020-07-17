@@ -66,13 +66,6 @@ jobs:
 
   - bash: |
       cmake -Bbuild
-      cmake --build build --config Release --target tuning-workbench-synth
-
-      # I am unsure why this doesn't seem to work reliably as an internal cmake rule on win and lin
-      cmake --build build --config Release --target tuning-workbench-synth_Standalone
-      cmake --build build --config Release --target tuning-workbench-synth_VST3
-
-      # And make the final package
       cmake --build build --config Release --target installer-pkg
     displayName: Build
 
@@ -83,7 +76,6 @@ jobs:
       targetPath: 'build/asset/'
     displayName: Publish Mac DMG
     condition: variables.isMac
-
 
   - task: PublishPipelineArtifact@0
     inputs:

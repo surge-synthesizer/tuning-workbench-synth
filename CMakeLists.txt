@@ -109,10 +109,56 @@ target_link_libraries(tuning-workbench-synth PRIVATE
 
 # Build installers
 get_target_property( OUTPUT_DIR tuning-workbench-synth RUNTIME_OUTPUT_DIRECTORY )
+add_custom_target( well-named-assets )
+if( APPLE )
+  add_custom_target( well-named-au )
+  add_dependencies( well-named-au tuning-workbench-synth_AU )
+  add_dependencies( well-named-assets well-named-au )
+endif()
+add_custom_target( well-named-vst3 )
+add_dependencies( well-named-vst3 tuning-workbench-synth_VST3 )
+add_dependencies( well-named-assets well-named-vst3 )
+
+add_custom_target( well-named-standalone )
+add_dependencies( well-named-standalone tuning-workbench-synth_Standalone )
+add_dependencies( well-named-assets well-named-standalone )
+
 add_custom_target( installer-pkg )
+add_dependencies( installer-pkg well-named-assets )
+add_dependencies( installer-pkg well-named-vst3 )
 add_dependencies( installer-pkg tuning-workbench-synth )
+add_dependencies( installer-pkg tuning-workbench-synth_Standalone )
+add_dependencies( installer-pkg tuning-workbench-synth_VST3 )
+
 set( INSTALLER_DIR ${CMAKE_BINARY_DIR}/asset )
+set( WELL_NAMED_ASSET_DIR ${CMAKE_BINARY_DIR}/product )
 set( INSTALLER_BASENAME "tuning-workbench-synth" )
+
+add_custom_command(
+  TARGET well-named-vst3
+  POST_BUILD
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+  COMMAND ${CMAKE_COMMAND} -E make_directory  ${WELL_NAMED_ASSET_DIR}
+  COMMAND ${CMAKE_COMMAND} -E copy_directory ${OUTPUT_DIR}/VST3 ${WELL_NAMED_ASSET_DIR}
+  )
+
+add_custom_command(
+  TARGET well-named-standalone
+  POST_BUILD
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+  COMMAND ${CMAKE_COMMAND} -E make_directory  ${WELL_NAMED_ASSET_DIR}
+  COMMAND ${CMAKE_COMMAND} -E copy_directory ${OUTPUT_DIR}/Standalone ${WELL_NAMED_ASSET_DIR}
+  )
+
+if( APPLE )
+  add_custom_command(
+    TARGET well-named-au
+    POST_BUILD
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    COMMAND ${CMAKE_COMMAND} -E make_directory  ${WELL_NAMED_ASSET_DIR}
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${OUTPUT_DIR}/AU ${WELL_NAMED_ASSET_DIR}
+  )
+endif()
 
 if( APPLE )
   add_custom_command(
@@ -120,34 +166,33 @@ if( APPLE )
     POST_BUILD
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     COMMAND ${CMAKE_COMMAND} -E make_directory  ${INSTALLER_DIR}
-    COMMAND hdiutil create ${INSTALLER_DIR}/${INSTALLER_BASENAME}-macos-${GIT_COMMIT_HASH}.dmg -ov -volname "${INSTALLER_BASENAME}-${GIT_COMMIT_HASH}" -fs HFS+ -srcfolder ${OUTPUT_DIR}
+    COMMAND hdiutil create ${INSTALLER_DIR}/${INSTALLER_BASENAME}-macos-${GIT_COMMIT_HASH}.dmg -ov -volname "${INSTALLER_BASENAME}-${GIT_COMMIT_HASH}" -fs HFS+ -srcfolder ${WELL_NAMED_ASSET_DIR}
     )
 elseif( UNIX )
-  add_custom_command( TARGET tuning-workbench-synth_VST3
-                      POST_BUILD
-                      WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-                      COMMAND echo Stripping VST3
-                      COMMAND strip -s ${OUTPUT_DIR}/tuning-workbench-synth.vst3/Contents/x86_64-linux/tuning-workbench-synth.so 
-                      )
+  execute_process(
+    COMMAND uname -m
+    OUTPUT_VARIABLE LINUX_BUILD_ARCH
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+  )
+
   add_custom_command(
     TARGET installer-pkg
     POST_BUILD
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     COMMAND ${CMAKE_COMMAND} -E make_directory  ${INSTALLER_DIR}
     COMMAND ls -l ${OUTPUT_DIR}
-    COMMAND cd ${OUTPUT_DIR} && tar cf "${INSTALLER_DIR}/${INSTALLER_BASENAME}-linux-${GIT_COMMIT_HASH}.tgz" "${INSTALLER_BASENAME}" "${INSTALLER_BASENAME}.vst3" 
+    COMMAND cd ${WELL_NAMED_ASSET_DIR} && tar czf "${INSTALLER_DIR}/${INSTALLER_BASENAME}-linux-${LINUX_BUILD_ARCH}-${GIT_COMMIT_HASH}.tgz" .
     )
 else()
   file( TO_NATIVE_PATH "${INSTALLER_DIR}/${INSTALLER_BASENAME}-win-${GIT_COMMIT_HASH}.zip" OUTPUT_ZIP )
-  message( "Creating ${OUTPUT_ZIP}" )
   add_custom_command(
     TARGET installer-pkg
     POST_BUILD
-    WORKING_DIRECTORY ${OUTPUT_DIR}
+    WORKING_DIRECTORY ${WELL_NAMED_ASSET_DIR}
     COMMAND ${CMAKE_COMMAND} -E make_directory  ${INSTALLER_DIR}
-    COMMAND ls
     COMMAND powershell Compress-Archive 
              -DestinationPath "${OUTPUT_ZIP}"
-             -Path "${INSTALLER_BASENAME}.exe", "${INSTALLER_BASENAME}.vst3" 
+             -Force
+             -Path "${WELL_NAMED_ASSET_DIR}"
     )
 endif()
