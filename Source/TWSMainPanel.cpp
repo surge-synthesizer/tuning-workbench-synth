@@ -130,7 +130,7 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     AEG_A.reset (new Slider ("aeg_A"));
     addAndMakeVisible (AEG_A.get());
     AEG_A->setRange (0, 10, 0);
-    AEG_A->setSliderStyle (Slider::Rotary);
+    AEG_A->setSliderStyle (Slider::RotaryVerticalDrag);
     AEG_A->setTextBoxStyle (Slider::TextBoxBelow, false, 60, 15);
 
     AEG_A->setBounds (232, 142, 63, 72);
@@ -138,7 +138,7 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     FEG_A.reset (new Slider ("feg_A"));
     addAndMakeVisible (FEG_A.get());
     FEG_A->setRange (0, 10, 0);
-    FEG_A->setSliderStyle (Slider::Rotary);
+    FEG_A->setSliderStyle (Slider::RotaryVerticalDrag);
     FEG_A->setTextBoxStyle (Slider::TextBoxBelow, false, 60, 15);
 
     FEG_A->setBounds (232, 46, 63, 72);
@@ -146,7 +146,7 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     AEG_D.reset (new Slider ("aeg_D"));
     addAndMakeVisible (AEG_D.get());
     AEG_D->setRange (0, 10, 0);
-    AEG_D->setSliderStyle (Slider::Rotary);
+    AEG_D->setSliderStyle (Slider::RotaryVerticalDrag);
     AEG_D->setTextBoxStyle (Slider::TextBoxBelow, false, 60, 15);
 
     AEG_D->setBounds (296, 142, 63, 72);
@@ -154,7 +154,7 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     FEG_D.reset (new Slider ("feg_D"));
     addAndMakeVisible (FEG_D.get());
     FEG_D->setRange (0, 10, 0);
-    FEG_D->setSliderStyle (Slider::Rotary);
+    FEG_D->setSliderStyle (Slider::RotaryVerticalDrag);
     FEG_D->setTextBoxStyle (Slider::TextBoxBelow, false, 60, 15);
 
     FEG_D->setBounds (296, 46, 63, 72);
@@ -162,7 +162,7 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     AEG_S.reset (new Slider ("aeg_S"));
     addAndMakeVisible (AEG_S.get());
     AEG_S->setRange (0, 10, 0);
-    AEG_S->setSliderStyle (Slider::Rotary);
+    AEG_S->setSliderStyle (Slider::RotaryVerticalDrag);
     AEG_S->setTextBoxStyle (Slider::TextBoxBelow, false, 60, 15);
 
     AEG_S->setBounds (360, 142, 63, 72);
@@ -170,7 +170,7 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     FEG_S.reset (new Slider ("feg_S"));
     addAndMakeVisible (FEG_S.get());
     FEG_S->setRange (0, 10, 0);
-    FEG_S->setSliderStyle (Slider::Rotary);
+    FEG_S->setSliderStyle (Slider::RotaryVerticalDrag);
     FEG_S->setTextBoxStyle (Slider::TextBoxBelow, false, 60, 15);
 
     FEG_S->setBounds (360, 46, 63, 72);
@@ -178,7 +178,7 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     AEG_R.reset (new Slider ("aeg_R"));
     addAndMakeVisible (AEG_R.get());
     AEG_R->setRange (0, 10, 0);
-    AEG_R->setSliderStyle (Slider::Rotary);
+    AEG_R->setSliderStyle (Slider::RotaryVerticalDrag);
     AEG_R->setTextBoxStyle (Slider::TextBoxBelow, false, 60, 15);
 
     AEG_R->setBounds (424, 142, 63, 72);
@@ -186,7 +186,7 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     FEG_R.reset (new Slider ("feg_R"));
     addAndMakeVisible (FEG_R.get());
     FEG_R->setRange (0, 10, 0);
-    FEG_R->setSliderStyle (Slider::Rotary);
+    FEG_R->setSliderStyle (Slider::RotaryVerticalDrag);
     FEG_R->setTextBoxStyle (Slider::TextBoxBelow, false, 60, 15);
 
     FEG_R->setBounds (424, 46, 63, 72);
@@ -200,7 +200,7 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     Filt_Cutoff.reset (new Slider ("filt_cutoff"));
     addAndMakeVisible (Filt_Cutoff.get());
     Filt_Cutoff->setRange (0, 10, 0);
-    Filt_Cutoff->setSliderStyle (Slider::Rotary);
+    Filt_Cutoff->setSliderStyle (Slider::RotaryVerticalDrag);
     Filt_Cutoff->setTextBoxStyle (Slider::TextBoxBelow, false, 60, 15);
 
     Filt_Cutoff->setBounds (641, 45, 63, 72);
@@ -208,7 +208,7 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     Filt_Q.reset (new Slider ("fllt_Q"));
     addAndMakeVisible (Filt_Q.get());
     Filt_Q->setRange (0, 10, 0);
-    Filt_Q->setSliderStyle (Slider::Rotary);
+    Filt_Q->setSliderStyle (Slider::RotaryVerticalDrag);
     Filt_Q->setTextBoxStyle (Slider::TextBoxBelow, false, 60, 15);
 
     Filt_Q->setBounds (705, 45, 63, 72);
@@ -244,7 +244,7 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     master_sat.reset (new Slider ("master_sat"));
     addAndMakeVisible (master_sat.get());
     master_sat->setRange (0, 10, 0);
-    master_sat->setSliderStyle (Slider::Rotary);
+    master_sat->setSliderStyle (Slider::RotaryVerticalDrag);
     master_sat->setTextBoxStyle (Slider::TextBoxBelow, false, 60, 15);
 
     master_sat->setBounds (641, 236, 63, 72);
@@ -252,7 +252,7 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     master_out.reset (new Slider ("master_out"));
     addAndMakeVisible (master_out.get());
     master_out->setRange (0, 10, 0);
-    master_out->setSliderStyle (Slider::Rotary);
+    master_out->setSliderStyle (Slider::RotaryVerticalDrag);
     master_out->setTextBoxStyle (Slider::TextBoxBelow, false, 60, 15);
 
     master_out->setBounds (705, 236, 63, 72);
@@ -260,7 +260,7 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     FEG_depth.reset (new Slider ("feg_depth"));
     addAndMakeVisible (FEG_depth.get());
     FEG_depth->setRange (0, 10, 0);
-    FEG_depth->setSliderStyle (Slider::Rotary);
+    FEG_depth->setSliderStyle (Slider::RotaryVerticalDrag);
     FEG_depth->setTextBoxStyle (Slider::TextBoxBelow, false, 60, 15);
 
     FEG_depth->setBounds (487, 46, 63, 72);
@@ -319,7 +319,7 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     lfo_rate.reset (new Slider ("lfo_rate"));
     addAndMakeVisible (lfo_rate.get());
     lfo_rate->setRange (0, 10, 0);
-    lfo_rate->setSliderStyle (Slider::Rotary);
+    lfo_rate->setSliderStyle (Slider::RotaryVerticalDrag);
     lfo_rate->setTextBoxStyle (Slider::TextBoxBelow, false, 60, 15);
 
     lfo_rate->setBounds (304, 238, 63, 72);
@@ -327,7 +327,7 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     lfo_delay.reset (new Slider ("lfo_delay"));
     addAndMakeVisible (lfo_delay.get());
     lfo_delay->setRange (0, 10, 0);
-    lfo_delay->setSliderStyle (Slider::Rotary);
+    lfo_delay->setSliderStyle (Slider::RotaryVerticalDrag);
     lfo_delay->setTextBoxStyle (Slider::TextBoxBelow, false, 60, 15);
 
     lfo_delay->setBounds (368, 238, 63, 72);
@@ -335,7 +335,7 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     lfo_attack.reset (new Slider ("lfo_attack"));
     addAndMakeVisible (lfo_attack.get());
     lfo_attack->setRange (0, 10, 0);
-    lfo_attack->setSliderStyle (Slider::Rotary);
+    lfo_attack->setSliderStyle (Slider::RotaryVerticalDrag);
     lfo_attack->setTextBoxStyle (Slider::TextBoxBelow, false, 60, 15);
 
     lfo_attack->setBounds (432, 238, 63, 72);
@@ -402,7 +402,7 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     delay_time.reset (new Slider ("delay_time"));
     addAndMakeVisible (delay_time.get());
     delay_time->setRange (0, 10, 0);
-    delay_time->setSliderStyle (Slider::Rotary);
+    delay_time->setSliderStyle (Slider::RotaryVerticalDrag);
     delay_time->setTextBoxStyle (Slider::TextBoxBelow, false, 60, 15);
 
     delay_time->setBounds (640, 144, 63, 72);
@@ -434,7 +434,7 @@ TWSMainPanel::TWSMainPanel (TuningworkbenchsynthAudioProcessor &p)
     pluck_lev.reset (new Slider ("lfo_rate"));
     addAndMakeVisible (pluck_lev.get());
     pluck_lev->setRange (0, 10, 0);
-    pluck_lev->setSliderStyle (Slider::Rotary);
+    pluck_lev->setSliderStyle (Slider::RotaryVerticalDrag);
     pluck_lev->setTextBoxStyle (Slider::TextBoxBelow, false, 60, 15);
 
     pluck_lev->setBounds (144, 240, 63, 72);
