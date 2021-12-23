@@ -4,6 +4,18 @@ set(CMAKE_OSX_DEPLOYMENT_TARGET 10.11 CACHE STRING "Build for 10.11")
 
 project(tuning-workbench-synth VERSION 0.9.0 LANGUAGES CXX)
 
+set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_CXX_STANDARD 14)
+
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
+  # Any Clang or any GCC
+  add_compile_options(
+          -Wno-multichar
+          -fvisibility=hidden
+          $<$<AND:$<NOT:$<BOOL:${WIN32}>>,$<COMPILE_LANGUAGE:CXX>>:-fvisibility-inlines-hidden>
+  )
+endif()
+
 add_subdirectory(lib/JUCE)
 
 execute_process(
@@ -35,11 +47,19 @@ juce_add_plugin(tuning-workbench-synth
     NEEDS_MIDI_INPUT TRUE
     NEEDS_MIDI_OUTPUT FALSE
     IS_MIDI_EFFECT FALSE
+
+    COPY_PLUGIN_AFTER_BUILD TRUE
     
     FORMATS AU VST3 Standalone
 )
 
 juce_generate_juce_header( tuning-workbench-synth )
+
+if (CLAP_JUCE_EXTENSIONS_ROOT)
+  add_subdirectory(${CLAP_JUCE_EXTENSIONS_ROOT} clap-extensions)
+  clap_juce_extensions_plugin(TARGET tuning-workbench-synth
+          CLAP_ID "org.surge-synth-team.tuning-workbench-synth")
+endif()
 
 file(GLOB TWS_RESOURCES_GLOB
   Resources/*.ttf 
@@ -89,6 +109,8 @@ target_compile_definitions(tuning-workbench-synth PUBLIC
     JUCE_DISPLAY_SPLASH_SCREEN=0
     JUCE_REPORT_APP_USAGE=0
 
+    JUCE_MODAL_LOOPS_PERMITTED=1
+
     JUCE_ALSA=1
     JUCE_JACK=1
 )
@@ -99,11 +121,10 @@ juce_add_module(
 target_link_libraries(tuning-workbench-synth PRIVATE
     tuning-workbench-synth-binary
     surgesynthteam_tuningui
+    juce::juce_core
     juce::juce_analytics
     juce::juce_audio_utils
     juce::juce_audio_processors
-    juce::juce_blocks_basics
-    juce::juce_box2d
     juce::juce_dsp
 )
 
