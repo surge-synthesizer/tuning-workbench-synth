@@ -49,7 +49,7 @@ juce_add_plugin(tuning-workbench-synth
     IS_MIDI_EFFECT FALSE
 
     COPY_PLUGIN_AFTER_BUILD TRUE
-    
+
     FORMATS AU VST3 Standalone
 )
 
@@ -101,6 +101,7 @@ target_sources(tuning-workbench-synth PRIVATE
 target_compile_definitions(tuning-workbench-synth PUBLIC
     JUCE_ALLOW_STATIC_NULL_VARIABLES=0
     JUCE_STRICT_REFCOUNTEDPOINTER=1
+    JUCE_MODAL_LOOPS_PERMITTED=1
 
     JUCE_VST3_CAN_REPLACE_VST2=0
     JUCE_USE_CURL=0
@@ -122,7 +123,6 @@ target_link_libraries(tuning-workbench-synth PRIVATE
     tuning-workbench-synth-binary
     surgesynthteam_tuningui
     juce::juce_core
-    juce::juce_analytics
     juce::juce_audio_utils
     juce::juce_audio_processors
     juce::juce_dsp
