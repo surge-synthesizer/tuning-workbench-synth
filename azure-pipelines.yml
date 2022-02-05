@@ -96,6 +96,8 @@ jobs:
     matrix:
       lin:
         imageName: 'ubuntu-20.04'
+  pool:
+    vmImage: $(imageName)
   dependsOn: Build
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
 
