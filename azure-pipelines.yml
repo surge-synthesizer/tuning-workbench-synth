@@ -94,6 +94,7 @@ jobs:
 - job: UpdateGithubRelease
   dependsOn: Build
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+  imageName: 'ubuntu-20.04'
 
   steps:
   - task: DownloadPipelineArtifact@0
